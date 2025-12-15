@@ -47,6 +47,9 @@ if st.sidebar.button("⚡ Atualização Rápida (Gap)"):
         try:
             latest = ds.get_latest_data_date()
             if latest:
+                # Update ETFs first (short period to cover gaps)
+                ds.update_sector_data(period="1mo")
+                # Update Constituents
                 ds.update_constituents_data(start_date=latest, progress_callback=update_progress)
                 st.sidebar.success("Atualização concluída!")
                 st.cache_data.clear()
@@ -154,14 +157,15 @@ elif page == "Performance Matrix":
             
             df_matrix['Sector'] = df_matrix.index.map(ticker_to_name)
             
-            # Reorder columns: Sector first, then periods
-            cols = ['Sector'] + [c for c in df_matrix.columns if c != 'Sector']
+            # Reorder columns: Sector first, then Last Price, Date, then periods
+            cols = ['Sector', 'Last Price', 'Date'] + [c for c in df_matrix.columns if c not in ['Sector', 'Last Price', 'Date']]
             df_display = df_matrix[cols]
             
             # Apply styling
             st.dataframe(
                 df_display.style.background_gradient(cmap='RdYlGn', subset=['5d', '10d', '20d', '40d', '252d'])
-                                .format("{:.2f}%", subset=['5d', '10d', '20d', '40d', '252d']),
+                                .format("{:.2f}%", subset=['5d', '10d', '20d', '40d', '252d'])
+                                .format("{:.2f}", subset=['Last Price']),
                 use_container_width=True,
                 height=500
             )
@@ -188,12 +192,12 @@ elif page == "Momentum Ranking":
             df_mom['Sector'] = df_mom.index.map(ticker_to_name)
             
             # Reorder
-            cols = ['Sector', 'Score', 'R(5-1)', 'R(10-5)', 'R(20-10)', 'R(40-20)']
+            cols = ['Sector', 'Last Price', 'Date', 'Score', 'Score -5d', 'Score -20d', 'Score -50d', 'Score Chg (5d)', 'R(5-1)', 'R(10-5)', 'R(20-10)', 'R(40-20)']
             df_display = df_mom[cols]
             
             st.dataframe(
-                df_display.style.background_gradient(cmap='RdYlGn', subset=['Score'])
-                                .format("{:.2f}", subset=['Score', 'R(5-1)', 'R(10-5)', 'R(20-10)', 'R(40-20)']),
+                df_display.style.background_gradient(cmap='RdYlGn', subset=['Score', 'Score -5d', 'Score -20d', 'Score -50d'])
+                                .format("{:.2f}", subset=['Score', 'Score Chg (5d)', 'Score -5d', 'Score -20d', 'Score -50d', 'R(5-1)', 'R(10-5)', 'R(20-10)', 'R(40-20)', 'Last Price']),
                 use_container_width=True,
                 height=600
             )

@@ -181,7 +181,17 @@ def get_sector_performance_matrix(weight_type='cap', periods=[5, 10, 20, 40, 252
     # Transpose so Index = Ticker
     # Currently index of ret is Ticker. So DataFrame(results) has Tickers as Index.
     
-    return perf_df * 100 # Return as percentage
+    # Combine into DataFrame
+    perf_df = pd.DataFrame(results)
+    
+    # Multiply returns by 100
+    perf_df = perf_df * 100
+    
+    # Add Last Price and Date
+    perf_df['Last Price'] = current_price
+    perf_df['Date'] = df.index[-1].strftime('%Y-%m-%d')
+    
+    return perf_df
 
 def get_momentum_ranking(weight_type='cap'):
     """
@@ -192,52 +202,101 @@ def get_momentum_ranking(weight_type='cap'):
     20% * Return (20d to 10d)
     20% * Return (40d to 20d)
     """
-    # Need at least 40 days of history + buffer
-    buffer_days = 60
+    # Need at least 40 days of history + buffer + lookback for past scores (50 days)
+    # Total needed: 50 (max offset) + 40 (calc window) + buffer
+    buffer_days = 200
     
     df = get_sector_data_from_db(period_days=buffer_days, weight_type=weight_type)
     
-    if df.empty or len(df) < 41:
+    if df.empty or len(df) < 100: # Need enough data
         return pd.DataFrame()
         
-    # Get Prices at specific lags
-    # Using iloc[-N] where N is 1-based index from end
-    # Today = -1
-    # T-1 = -2
-    # T-5 = -6
-    # ...
-    # We want returns BETWEEN days, so:
-    # Ret(5-1) means return from T-5 to T-1.
+    def calculate_score_at_index(df_slice, idx_loc):
+        """
+        Calculates score for a given integer location index.
+        idx_loc: The integer location in df_slice (e.g. -1 for latest, -6 for 5 days ago)
+        """
+        try:
+            # We need p_1 (T-1), p_5 (T-5), etc. relative to the 'as of' date
+            # If idx_loc is -1 (today), then p_1 is -2.
+            # If idx_loc is -6 (5 days ago), then p_1 is -7.
+            
+            # Base index
+            base = idx_loc
+            
+            p_1 = df_slice.iloc[base - 1]
+            p_5 = df_slice.iloc[base - 5]
+            p_10 = df_slice.iloc[base - 10]
+            p_20 = df_slice.iloc[base - 20]
+            p_40 = df_slice.iloc[base - 40]
+            
+            # Calculate Return Intervals
+            r_5_1 = (p_1 / p_5) - 1
+            r_10_5 = (p_5 / p_10) - 1
+            r_20_10 = (p_10 / p_20) - 1
+            r_40_20 = (p_20 / p_40) - 1
+            
+            # Score
+            score = (0.3 * r_5_1) + (0.3 * r_10_5) + (0.2 * r_20_10) + (0.2 * r_40_20)
+            return score, r_5_1, r_10_5, r_20_10, r_40_20
+        except IndexError:
+            return None, None, None, None, None
+
+    # Calculate Current Score
+    results = {}
     
-    try:
-        p_1 = df.iloc[-2]  # T-1
-        p_5 = df.iloc[-6]  # T-5
-        p_10 = df.iloc[-11] # T-10
-        p_20 = df.iloc[-21] # T-20
-        p_40 = df.iloc[-41] # T-40
-    except IndexError:
-        return pd.DataFrame() # Not enough data
+    for ticker in df.columns:
+        series = df[ticker].dropna()
+        if len(series) < 50: continue
         
-    # Calculate Interval Returns
-    r_5_1 = (p_1 / p_5) - 1
-    r_10_5 = (p_5 / p_10) - 1
-    r_20_10 = (p_10 / p_20) - 1
-    r_40_20 = (p_20 / p_40) - 1
+        # Current (-1)
+        score, r5, r10, r20, r40 = calculate_score_at_index(series, -1)
+        
+        if score is None: continue
+
+        # History
+        score_5d, _, _, _, _ = calculate_score_at_index(series, -6)   # 5 days ago (1 + 5)
+        score_20d, _, _, _, _ = calculate_score_at_index(series, -21) # 20 days ago (1 + 20)
+        score_50d, _, _, _, _ = calculate_score_at_index(series, -51) # 50 days ago (1 + 50)
+        
+        # Calculate Change Ratio (Score / Score -5d)
+        score_chg_5d = None
+        if score_5d and score_5d != 0:
+            score_chg_5d = score / score_5d
+        
+        results[ticker] = {
+            'Score': score,
+            'Score Chg (5d)': score_chg_5d,
+            'Score -5d': score_5d,
+            'Score -20d': score_20d,
+            'Score -50d': score_50d,
+            'R(5-1)': r5,
+            'R(10-5)': r10,
+            'R(20-10)': r20,
+            'R(40-20)': r40,
+            'Last Price': series.iloc[-1],
+            'Date': series.index[-1].strftime('%Y-%m-%d')
+        }
     
-    # Calculate Score
-    score = (0.3 * r_5_1) + (0.3 * r_10_5) + (0.2 * r_20_10) + (0.2 * r_40_20)
+    rank_df = pd.DataFrame.from_dict(results, orient='index')
     
-    # Create DataFrame
-    rank_df = pd.DataFrame({
-        'Score': score,
-        'R(5-1)': r_5_1,
-        'R(10-5)': r_10_5,
-        'R(20-10)': r_20_10,
-        'R(40-20)': r_40_20
-    })
+    if rank_df.empty:
+        return pd.DataFrame()
+
+    # Scale scores and returns to percentage
+    # Note: Last Price is absolute, Date is string, Score Chg is a ratio (no scaling needed usually, or maybe scale?)
+    # User asked for "Score today / Score 5 days ago". If Score=2.0 and Score-5d=1.0, Ratio=2.0.
+    # Scores are scaled by 100 below.
+    # If I calculate ratio using raw scores (0.02 / 0.01 = 2.0), it's the same as scaled (2.0 / 1.0 = 2.0).
+    # So I don't need to scale the Ratio itself.
     
+    scale_cols = ['Score', 'Score -5d', 'Score -20d', 'Score -50d', 'R(5-1)', 'R(10-5)', 'R(20-10)', 'R(40-20)']
     
-    return rank_df.sort_values(by='Score', ascending=False) * 100 # percentage
+    # Check if cols exist (some might be None if history missing for specific ticker)
+    # Fill N/As in scores? Or leave as None? Leave as None/NaN
+    rank_df[scale_cols] = rank_df[scale_cols] * 100
+    
+    return rank_df.sort_values(by='Score', ascending=False)
 
 def import_constituents(sector_name, tickers):
     """
