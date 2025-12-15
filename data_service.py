@@ -3,7 +3,7 @@ import pandas as pd
 from sqlalchemy.orm import Session
 from database import get_db, init_db
 from models import Sector, PriceData, Constituent, BreadthMetric, ConstituentPrice
-from datetime import date
+from datetime import date, timedelta
 import time
 
 # List of US Sector ETFs (SPDR and Invesco Equal Weight)
@@ -65,15 +65,18 @@ def update_sector_data(period="1y"):
         data = data.to_frame()
 
     try:
-        # Resolve Sector IDs
-        sector_map = {s.ticker: s.id for s in db.query(Sector).all()}
+        # Resolve Sector IDs and Objects
+        sector_map = {s.ticker: s for s in db.query(Sector).all()}
         
         for ticker in data.columns:
             if ticker not in sector_map:
                 continue
                 
-            sector_id = sector_map[ticker]
+            sector_obj = sector_map[ticker]
             series = data[ticker].dropna()
+            
+            # Keep track if we added/updated anything for this ticker
+            updated_ticker = False
             
             for dt, price in series.items():
                 if pd.isna(price):
@@ -81,20 +84,94 @@ def update_sector_data(period="1y"):
                     
                 # Check if exists (Naive approach for now, optimize with bulk upsert later if needed)
                 date_val = dt.date()
-                existing = db.query(PriceData).filter_by(sector_id=sector_id, date=date_val).first()
+                existing = db.query(PriceData).filter_by(sector_id=sector_obj.id, date=date_val).first()
                 
                 if not existing:
-                    new_price = PriceData(sector_id=sector_id, date=date_val, close=float(price))
+                    new_price = PriceData(sector_id=sector_obj.id, date=date_val, close=float(price))
                     db.add(new_price)
+                    updated_ticker = True
                 else:
                     # Update close if changed (e.g. adjustments)
                     if abs(existing.close - float(price)) > 0.001:
                         existing.close = float(price)
+                        updated_ticker = True
+            
+            db.commit() # Commit prices first
+            
+            if updated_ticker:
+                 # Recalculate momentum for this sector (to ensure latest score is saved)
+                # We need to load recent history to calc momentum
+                # Load last 60 days
+                history_query = db.query(PriceData).filter(PriceData.sector_id == sector_obj.id).order_by(PriceData.date.desc()).limit(60)
+                history_rows = history_query.all()
+                # Reverse to chrono order
+                history_rows = history_rows[::-1]
+                
+                if len(history_rows) > 50:
+                     # Convert to list of dicts for DataFrame
+                    data_hist = [{'id': r.id, 'close': r.close} for r in history_rows]
+                    df_calc = pd.DataFrame(data_hist)
+                    
+                    # Calculate simple manual momentum for the LATEST row only to update it
+                    # Logic same as vectorized but single point
+                    p = df_calc['close']
+                    try:
+                        p_1 = p.iloc[-2]
+                        p_5 = p.iloc[-6]
+                        p_10 = p.iloc[-11]
+                        p_20 = p.iloc[-21]
+                        p_40 = p.iloc[-41]
                         
-        db.commit()
+                        r_5_1 = (p_1 / p_5) - 1
+                        r_10_5 = (p_5 / p_10) - 1
+                        r_20_10 = (p_10 / p_20) - 1
+                        r_40_20 = (p_20 / p_40) - 1
+                        
+                        score = (0.3 * r_5_1) + (0.3 * r_10_5) + (0.2 * r_20_10) + (0.2 * r_40_20)
+                        
+                        # Update latest row in DB
+                        # Need to re-fetch or use existing object if session is consistent
+                        latest_obj = history_rows[-1]
+                        latest_obj.momentum_score = score
+                        db.commit()
+                    except IndexError:
+                        pass
+                        
     except Exception as e:
         db.rollback()
         raise e
+    finally:
+        db.close()
+
+def get_momentum_history(sector_ticker, period_days=252):
+    """
+    Fetches historical momentum scores for a given sector ticker.
+    Returns DataFrame with Index=Date, Col=Score
+    """
+    db = next(get_db())
+    try:
+        sector = db.query(Sector).filter(Sector.ticker == sector_ticker).first()
+        if not sector:
+            return pd.DataFrame()
+            
+        # Calc start date
+        end_date = db.query(func.max(PriceData.date)).scalar()
+        if not end_date: return pd.DataFrame()
+        start_date = end_date - timedelta(days=period_days)
+        
+        query = db.query(PriceData.date, PriceData.momentum_score).filter(
+            PriceData.sector_id == sector.id,
+            PriceData.date >= start_date,
+            PriceData.momentum_score.isnot(None)
+        ).order_by(PriceData.date)
+        
+        df = pd.read_sql(query.statement, db.bind)
+        if not df.empty:
+            df.set_index('date', inplace=True)
+            df.index = pd.to_datetime(df.index)
+            df.columns = ['Score'] # Rename momentum_score to Score
+            df['Score'] = df['Score'] * 100 # Scale to percentage
+        return df
     finally:
         db.close()
 
@@ -606,3 +683,54 @@ def get_breadth_data(sector_name, metric='pct_above_ma50', days=1825):
         return df
     finally:
         db.close()
+
+def get_price_history(ticker, period_days=252):
+    """
+    Fetches price history for a ticker.
+    Returns Series with Index=Date, Values=Close
+    """
+    db = next(get_db())
+    try:
+        # Find sector by ticker
+        sector = db.query(Sector).filter(Sector.ticker == ticker).first()
+        if not sector: return pd.Series()
+        
+        end_date = db.query(func.max(PriceData.date)).scalar()
+        if not end_date: return pd.Series()
+        start_date = end_date - timedelta(days=period_days)
+        
+        query = db.query(PriceData.date, PriceData.close).filter(
+            PriceData.sector_id == sector.id,
+            PriceData.date >= start_date
+        ).order_by(PriceData.date)
+        
+        df = pd.read_sql(query.statement, db.bind)
+        if not df.empty:
+            df.set_index('date', inplace=True)
+            df.index = pd.to_datetime(df.index)
+            return df['close']
+        return pd.Series()
+    finally:
+        db.close()
+
+def get_all_sector_options():
+    """
+    Returns a list of dictionaries with valid sector options for UI.
+    [{'name': 'Energy (XLE)', 'ticker': 'XLE', 'type': 'cap', 'sector': 'Energy'}, ...]
+    """
+    options = []
+    # SECTORS_CONFIG is global in this file
+    for name, config in SECTORS_CONFIG.items():
+        options.append({
+            'name': f"{name} ({config['cap']})", 
+            'ticker': config['cap'],
+            'type': 'cap',
+            'sector': name
+        })
+        options.append({
+            'name': f"{name} ({config['equal']})", 
+            'ticker': config['equal'],
+            'type': 'equal',
+            'sector': name
+        })
+    return options

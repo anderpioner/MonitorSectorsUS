@@ -201,6 +201,175 @@ elif page == "Momentum Ranking":
                 use_container_width=True,
                 height=600
             )
+            
+            # --- Momentum History Chart ---
+            st.divider()
+            st.divider()
+            st.subheader("Momentum History Chart")
+            
+            st.divider()
+            st.subheader("Momentum History Chart")
+            
+            col_ctrl_1, col_ctrl_2 = st.columns(2)
+            with col_ctrl_1:
+                 # Slider for view range
+                history_days = st.slider("History Length (Days)", min_value=30, max_value=750, value=252, step=10)
+            with col_ctrl_2:
+                # Comparison Price Overlay
+                # Get all options for dropdown
+                all_opts = ds.get_all_sector_options() # [{'name':'...', 'ticker':'...'}, ...]
+                price_overlay_opts = ["None"] + [o['name'] for o in all_opts]
+                price_overlay_sel = st.selectbox("Overlay Price (Right Axis):", price_overlay_opts)
+
+            st.write("**Select Sectors to Compare (Momentum Score):**")
+            
+            # Use ALL sector options for checkboxes
+            # Create a map for name -> ticker
+            name_to_ticker_all = {o['name']: o['ticker'] for o in all_opts}
+            
+            # Organize options by type
+            cap_opts = sorted([o for o in all_opts if o['type'] == 'cap'], key=lambda x: x['sector'])
+            eq_opts = sorted([o for o in all_opts if o['type'] == 'equal'], key=lambda x: x['sector'])
+            
+            # Default selection logic needs to match new name format "Energy (XLE)"
+            # Current view "Energy". We need to find the option that matches this sector and current weight type.
+            # actually we can just look up by ticker if we have it.
+            # Let's find the tickers of the current view's top 3.
+            # But df_display only has Sector Name "Energy". 
+            # We know the current mode (weight_type).
+            current_top_sectors = df_display['Sector'].head(3).tolist() # ["Energy", "Tech"]
+            
+            # Build list of default names to check
+            default_chk_names = []
+            for s_name in current_top_sectors:
+                # Find matching option in all_opts
+                match = next((o for o in all_opts if o['sector'] == s_name and o['type'] == weight_type), None)
+                if match:
+                    default_chk_names.append(match['name'])
+            
+            selected_sectors_chart = []
+            
+            col_sel_1, col_sel_2 = st.columns(2)
+            
+            with col_sel_1:
+                st.caption("Cap Weighted")
+                for opt in cap_opts:
+                    is_checked = opt['name'] in default_chk_names
+                    if st.checkbox(opt['name'], value=is_checked, key=f"chk_mom_{opt['ticker']}"):
+                        selected_sectors_chart.append(opt['name'])
+                        
+            with col_sel_2:
+                st.caption("Equal Weighted")
+                for opt in eq_opts:
+                    is_checked = opt['name'] in default_chk_names
+                    if st.checkbox(opt['name'], value=is_checked, key=f"chk_mom_{opt['ticker']}"):
+                        selected_sectors_chart.append(opt['name'])
+            
+            if selected_sectors_chart or price_overlay_sel != "None":
+                import plotly.graph_objects as go
+                from plotly.subplots import make_subplots
+                
+                # Create figure with secondary y-axis
+                fig = make_subplots(specs=[[{"secondary_y": True}]])
+                
+                # 1. Momentum Scores (Left Axis)
+                min_score, max_score = 0, 0
+                has_mom_data = False
+                
+                # Collect dates for gap removal
+                all_dates = pd.Index([])
+
+                for s_name in selected_sectors_chart:
+                    ticker = name_to_ticker_all[s_name]
+                    # Fetch requested history length
+                    hist = ds.get_momentum_history(ticker, period_days=history_days)
+                    if not hist.empty:
+                        has_mom_data = True
+                        if all_dates.empty: all_dates = hist.index
+                        else: all_dates = all_dates.union(hist.index)
+                        
+                        min_score = min(min_score, hist['Score'].min())
+                        max_score = max(max_score, hist['Score'].max())
+                        
+                        fig.add_trace(
+                            go.Scatter(x=hist.index, y=hist['Score'], name=s_name, mode='lines'),
+                            secondary_y=False
+                        )
+
+                # 2. Price Compare (Right Axis)
+                if price_overlay_sel != "None":
+                    ticker_p = name_to_ticker_all[price_overlay_sel]
+                    price_hist = ds.get_price_history(ticker_p, period_days=history_days)
+                    
+                    if not price_hist.empty:
+                        if all_dates.empty: all_dates = price_hist.index
+                        else: all_dates = all_dates.union(price_hist.index)
+                        
+                        fig.add_trace(
+                            go.Scatter(
+                                x=price_hist.index, 
+                                y=price_hist, 
+                                name=f"{price_overlay_sel} Price", 
+                                mode='lines',
+                                line=dict(dash='dot', width=1)
+                            ),
+                            secondary_y=True
+                        )
+
+                # Background Colors (Green/Red)
+                # Only apply if we have momentum data to make sense of the scale
+                if has_mom_data:
+                    # Margins for background
+                    y_top = max(max_score, 1.1) * 1.05
+                    y_bottom = min(min_score, 0.9)
+                    if y_bottom < 0: y_bottom *= 1.05
+                    else: y_bottom *= 0.95
+                    
+                    # Green Zone (> 100) - Note: Score is percentage now, so 1%?
+                    # Wait, previous user request: "score multipled by 100".
+                    # So 1.0 score becomes 100.0?
+                    # Previous implementation: df['Score'] = df['Score'] * 100
+                    # Original Score around 1.0? 
+                    # Let's check verify output: "Score 0.011109" (raw). * 100 = 1.11.
+                    # User request "light green above 1 and light red below 1".
+                    # If score is 1.11, it is > 1.
+                    # So Threshold is 1.0 (if stored as percentage 1%) or 100?
+                    # Raw score formula: 0.3 * Ret. Returns are like 0.05 (5%).
+                    # Score is approx weighted avg of returns.
+                    # If returns are ~+5%, Score ~ 0.05. * 100 = 5.0.
+                    # Wait, looking at previously verified data (Step 163):
+                    # Score 1.82 means 1.82%.
+                    # User said "green above 1". This implies 1%.
+                    # OK, threshold is 1.0.
+
+                    fig.add_hrect(
+                        y0=1, y1=y_top,
+                        fillcolor="rgba(0, 255, 0, 0.05)",
+                        line_width=0,
+                        layer="below",
+                        secondary_y=False
+                    )
+                    fig.add_hrect(
+                        y0=y_bottom, y1=1,
+                        fillcolor="rgba(255, 0, 0, 0.05)",
+                        line_width=0,
+                        layer="below",
+                        secondary_y=False
+                    )
+
+                # Remove Gaps
+                if not all_dates.empty:
+                    dt_all = pd.date_range(start=all_dates.min(), end=all_dates.max())
+                    dt_breaks = dt_all.difference(all_dates)
+                    fig.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
+
+                fig.update_yaxes(title_text="Momentum Score (%)", secondary_y=False)
+                fig.update_yaxes(title_text="Price ($)", secondary_y=True, showgrid=False)
+                fig.update_layout(title="Momentum Score & Price Evolution", hovermode="x unified")
+                
+                st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.info("Select sectors to view chart.")
     except Exception as e:
         st.error(f"Error calculating momentum: {e}")
 
@@ -315,6 +484,17 @@ elif page == "Market Breadth":
                 secondary_y=True,
                 showgrid=False
             )
+            
+            # Remove Gaps (Weekends/Holidays)
+            # Combine dates from both dataframes to be safe
+            all_dates = df_breadth.index
+            if not df_etf.empty:
+                all_dates = all_dates.union(df_etf.index)
+            
+            if not all_dates.empty:
+                dt_all = pd.date_range(start=all_dates.min(), end=all_dates.max())
+                dt_breaks = dt_all.difference(all_dates)
+                fig.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
             
             # Add 50% threshold line
             fig.add_shape(

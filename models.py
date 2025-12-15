@@ -23,6 +23,7 @@ class PriceData(Base):
     sector_id = Column(Integer, ForeignKey("sectors.id"), nullable=False)
     date = Column(Date, nullable=False, index=True)
     close = Column(Float, nullable=False)
+    momentum_score = Column(Float, nullable=True)
     
     sector = relationship("Sector", back_populates="prices")
 
