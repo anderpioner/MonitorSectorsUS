@@ -91,7 +91,7 @@ def load_matrix(w_type):
     return df_matrix
 
 # Navigation
-page = st.sidebar.radio("View", ["Overview", "Performance Matrix", "Momentum Ranking", "Market Breadth"])
+page = st.sidebar.radio("View", ["Overview", "Performance Matrix", "Momentum Ranking", "Market Breadth", "Sector Dashboard"])
 
 if page == "Overview":
     try:
@@ -203,10 +203,6 @@ elif page == "Momentum Ranking":
             )
             
             # --- Momentum History Chart ---
-            st.divider()
-            st.divider()
-            st.subheader("Momentum History Chart")
-            
             st.divider()
             st.subheader("Momentum History Chart")
             
@@ -512,3 +508,74 @@ elif page == "Market Breadth":
             
         else:
             st.warning(f"No data for {label}. Try updating the database.")
+
+elif page == "Sector Dashboard":
+    st.header("Sector Dashboard")
+    st.markdown("Consolidated view of **Momentum Scores** and **Market Breadth** (% Stocks > MA).")
+    
+    # Weight Type Selection
+    col_dash_1, col_dash_2 = st.columns([1, 4])
+    with col_dash_1:
+         weight_type_dash = st.radio("Weight Type:", ['Cap Weighted', 'Equal Weighted'], index=0, key='dash_weight')
+    
+    w_type = 'cap' if weight_type_dash == 'Cap Weighted' else 'equal'
+    
+    # 1. Fetch Consolidated Data
+    df_dash = ds.get_dashboard_data(weight_type=w_type)
+    
+    if not df_dash.empty:
+        # Prep DataFrame for Display
+        # Columns in df_dash: [Score, R(5-1)..., Last Price, Date, Score -5d, -20d, -50d, Score Chg (5d), pct_above_ma5...]
+        
+        # Select Cols
+        cols_to_show = [
+            'Sector', 'Date',
+            'Score', 'Score -5d', 'Score -20d', 'Score -50d', 
+            'pct_above_ma5', 'pct_above_ma20', 'pct_above_ma20_5d', 'pct_above_ma50', 'pct_above_ma200'
+        ]
+        
+        # Filter existing cols
+        display_cols = [c for c in cols_to_show if c in df_dash.columns]
+        df_view = df_dash[display_cols].copy()
+        
+        # Rename Breadth Cols for compact view
+        rename_map = {
+            'pct_above_ma5': '% > MA5',
+            'pct_above_ma20': '% > MA20',
+            'pct_above_ma20_5d': '% > MA20 -5d',
+            'pct_above_ma50': '% > MA50',
+            'pct_above_ma200': '% > MA200'
+        }
+        df_view.rename(columns=rename_map, inplace=True)
+        
+        # Custom formatters to handle None/NaN safely
+        def fmt_pct(x):
+            return "{:.1f}%".format(x) if pd.notnull(x) else "-"
+            
+        def fmt_score(x):
+            return "{:.2f}".format(x) if pd.notnull(x) else "-"
+
+        # Styling
+        st.dataframe(
+            df_view.style
+            .format({
+                'Score': fmt_score,
+                'Score -5d': fmt_score,
+                'Score -20d': fmt_score,
+                'Score -50d': fmt_score,
+                '% > MA5': fmt_pct,
+                '% > MA20': fmt_pct,
+                '% > MA20 -5d': fmt_pct,
+                '% > MA50': fmt_pct,
+                '% > MA200': fmt_pct,
+            })
+            .background_gradient(subset=['Score', 'Score -5d', 'Score -20d', 'Score -50d'], cmap='RdYlGn', vmin=-10, vmax=10)
+            .background_gradient(subset=['% > MA5', '% > MA20', '% > MA20 -5d', '% > MA50', '% > MA200'], cmap='RdYlGn', vmin=0, vmax=100),
+            height=600,
+            use_container_width=True,
+            column_config={
+                "Sector": st.column_config.TextColumn("Sector", width="medium"),
+            }
+        )
+    else:
+        st.info("No data available.")

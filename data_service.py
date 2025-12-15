@@ -734,3 +734,90 @@ def get_all_sector_options():
             'sector': name
         })
     return options
+
+def get_dashboard_data(weight_type='cap'):
+    """
+    Returns a consolidated DataFrame for the dashboard.
+    Columns: Sector, Score, Score -5d, -20d, -50d, % > MA5, 10, 20, 50, 200
+    """
+    # 1. Get Momentum Data (already has Score history)
+    df_mom = get_momentum_ranking(weight_type=weight_type)
+    if df_mom.empty:
+        return pd.DataFrame()
+        
+    # df_mom has Index=Ticker, Coins: Sector, Score, Score -ND...
+    
+    # 2. Get Breadth Data
+    # We need latest breadth for each sector in the list relative to weight_type
+    # Helper to get sector name from ticker (Index of df_mom)
+    
+    db = next(get_db())
+    try:
+        breadth_results = []
+        
+        # Latest date for breadth to ensure freshness?
+        # We'll just take the latest available for each sector/metric logic
+        # OR query for the max date globally first.
+        max_date = db.query(func.max(BreadthMetric.date)).scalar()
+        
+        if not max_date:
+            return df_mom # Return just momentum if no breadth
+            
+        # Optimization: Fetch all metrics for max_date
+        # Use Sector.name for mapping as it is consistent across weight types (Cap/Equal)
+        records = db.query(BreadthMetric.value, BreadthMetric.metric, Sector.name)\
+            .join(Sector)\
+            .filter(BreadthMetric.date == max_date)\
+            .all()
+            
+        # Process into dict: {SectorName: {metric: value}}
+        breadth_map = {}
+        for val, metric, s_name in records:
+            if s_name not in breadth_map: breadth_map[s_name] = {}
+            breadth_map[s_name][metric] = val
+        
+        # --- NEW: Get Breadth History (Last 5 days for MA20) ---
+        # Get the date 5 periods ago
+        # We need distinct dates available in BreadthMetric
+        dates_subq = db.query(BreadthMetric.date)\
+            .distinct()\
+            .order_by(BreadthMetric.date.desc())\
+            .limit(6)\
+            .all() # Returns list of tuples [(date,), (date,)...]
+        
+        breadth_map_5d = {}
+        if len(dates_subq) >= 6:
+            date_5d = dates_subq[-1][0] # T-5 date
+            
+            # Fetch MA20 values for that date
+            records_5d = db.query(BreadthMetric.value, Sector.name)\
+                .join(Sector)\
+                .filter(BreadthMetric.date == date_5d)\
+                .filter(BreadthMetric.metric == 'pct_above_ma20')\
+                .all()
+            
+            for val, s_name in records_5d:
+                breadth_map_5d[s_name] = val
+                
+        # Merge into df_mom
+        # df_mom has 'Sector' column with the name (e.g. "Energy")
+        # WAIT: get_momentum_ranking returns DF with Index=Ticker. It does NOT have 'Sector' col.
+        # We need to add it.
+        sector_tickers = get_sector_tickers(weight_type=weight_type)
+        # map: Name -> Ticker. Reverse it: Ticker -> Name
+        ticker_to_name = {v: k for k, v in sector_tickers.items()}
+        df_mom['Sector'] = df_mom.index.map(ticker_to_name)
+        
+        # Add columns to df_mom
+        metrics = ['pct_above_ma5', 'pct_above_ma10', 'pct_above_ma20', 'pct_above_ma50', 'pct_above_ma200']
+        
+        for m in metrics:
+            # Map using the 'Sector' column in df_mom
+            df_mom[m] = df_mom['Sector'].map(lambda s: breadth_map.get(s, {}).get(m, None))
+            
+        # Add 5d MA20
+        df_mom['pct_above_ma20_5d'] = df_mom['Sector'].map(lambda s: breadth_map_5d.get(s, None))
+            
+        return df_mom
+    finally:
+        db.close()
