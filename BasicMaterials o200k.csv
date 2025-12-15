@@ -1,0 +1,217 @@
+"No.","Ticker","Company","Sector","Industry","Country","Market Cap","P/E","Price","Change","Volume"
+1,"INHD","Inno Holdings Inc","Basic Materials","Steel","Hong Kong",1.99,,0.15,10.95%,137887552
+2,"CNEY","CN Energy Group Inc","Basic Materials","Specialty Chemicals","China",2.96,,0.95,-1.77%,267656
+3,"ITP","IT Tech Packaging Inc","Basic Materials","Paper & Paper Products","China",4.15,,0.24,1.28%,154959
+4,"CHNR","China Natural Resources Inc","Basic Materials","Other Industrial Metals & Mining","Hong Kong",5.03,,4.07,10.43%,31622
+5,"CAPS","Capstone Holding Corp","Basic Materials","Building Materials","USA",7.21,,0.87,0.85%,209009
+6,"NITO","N2OFF Inc","Basic Materials","Agricultural Inputs","Israel",7.79,,2.87,-3.69%,23679
+7,"BSLK","Bolt Projects Holdings Inc","Basic Materials","Specialty Chemicals","USA",9.30,,2.13,-4.91%,211691
+8,"BON","Bon Natural Life Ltd","Basic Materials","Specialty Chemicals","China",12.51,0.58,1.79,-0.56%,21863
+9,"YMAT","J-Star Holding Co Ltd","Basic Materials","Specialty Chemicals","Taiwan",13.83,12.39,0.80,6.63%,167162
+10,"SEED","Origin Agritech Ltd","Basic Materials","Agricultural Inputs","China",16.94,,1.39,-1.06%,8814
+11,"HUDI","Huadi International Group Co Ltd","Basic Materials","Steel","China",17.85,,1.25,0.00%,17352
+12,"CAPT","Captivision Inc","Basic Materials","Building Materials","United Kingdom",20.30,,0.63,-17.61%,660185
+13,"TSE","Trinseo PLC","Basic Materials","Specialty Chemicals","USA",23.98,,0.67,-4.45%,1085239
+14,"FMST","Foremost Clean Energy Ltd","Basic Materials","Other Industrial Metals & Mining","Canada",42.31,,2.93,-4.25%,146139
+15,"LOOP","Loop Industries Inc","Basic Materials","Specialty Chemicals","Canada",52.37,,1.09,0.00%,32773
+16,"LITM","Snow Lake Resources Ltd","Basic Materials","Other Industrial Metals & Mining","Canada",52.96,,3.42,-4.47%,242724
+17,"XPL","Solitario Resources Corp","Basic Materials","Other Industrial Metals & Mining","USA",58.18,,0.64,0.91%,279118
+18,"ORGN","Origin Materials Inc","Basic Materials","Chemicals","USA",67.37,,0.45,-8.12%,786128
+19,"NAMM","Namib Minerals","Basic Materials","Gold","Cayman Islands",69.24,,1.29,-1.53%,194708
+20,"LGO","Largo Inc","Basic Materials","Other Industrial Metals & Mining","Canada",85.81,,1.03,-0.96%,221808
+21,"PZG","Paramount Gold Nevada Corp","Basic Materials","Gold","USA",90.90,,1.16,4.50%,1653520
+22,"BIOX","Bioceres Crop Solutions Corp","Basic Materials","Agricultural Inputs","Argentina",94.84,,1.50,-5.06%,255974
+23,"ELBM","Electra Battery Materials Corp","Basic Materials","Other Industrial Metals & Mining","Canada",95.52,,1.02,-1.92%,925545
+24,"AMTX","Aemetis Inc","Basic Materials","Specialty Chemicals","USA",99.66,,1.52,-6.75%,935653
+25,"ATLX","Atlas Lithium Corporation","Basic Materials","Other Industrial Metals & Mining","Brazil",108.19,,4.59,-9.47%,1068051
+26,"FURY","Fury Gold Mines Ltd","Basic Materials","Other Industrial Metals & Mining","Canada",114.50,,0.62,4.24%,673221
+27,"OMEX","Odyssey Marine Exploration, Inc","Basic Materials","Other Industrial Metals & Mining","USA",115.94,,2.08,-2.35%,621861
+28,"GRO","Brazil Potash Corp","Basic Materials","Other Industrial Metals & Mining","Canada",118.87,,2.23,-3.04%,261595
+29,"GORO","Gold Resource Corp","Basic Materials","Gold","USA",121.42,,0.75,-2.63%,1000267
+30,"WWR","Westwater Resources Inc","Basic Materials","Other Industrial Metals & Mining","USA",122.71,,1.04,0.97%,4859766
+31,"MERC","Mercer International Inc","Basic Materials","Paper & Paper Products","Canada",123.92,,1.85,-1.07%,557885
+32,"LODE","Comstock Inc","Basic Materials","Other Precious Metals & Mining","USA",173.79,,3.39,-9.60%,715977
+33,"ALTO","Alto Ingredients Inc","Basic Materials","Specialty Chemicals","USA",194.13,,2.51,-10.04%,1617347
+34,"TRX","TRX Gold Corp","Basic Materials","Gold","Canada",230.39,311.08,0.81,6.42%,3260195
+35,"USAU","U.S. Gold Corp","Basic Materials","Gold","USA",239.77,,16.67,-3.08%,173878
+36,"VGZ","Vista Gold Corp","Basic Materials","Gold","USA",243.58,,1.93,-0.52%,1368576
+37,"OEC","Orion S.A","Basic Materials","Specialty Chemicals","Luxembourg",279.63,,4.98,0.40%,437474
+38,"PLG","Platinum Group Metals Ltd","Basic Materials","Other Precious Metals & Mining","Canada",287.18,,2.46,2.93%,2444329
+39,"CLW","Clearwater Paper Corp","Basic Materials","Paper & Paper Products","USA",288.21,,17.97,2.04%,134676
+40,"GLDG","GoldMining Inc","Basic Materials","Gold","Canada",302.51,,1.46,3.55%,3132995
+41,"AREC","American Resources Corporation","Basic Materials","Coking Coal","USA",304.18,,3.00,-5.36%,3885308
+42,"IONR","ioneer Ltd ADR","Basic Materials","Other Industrial Metals & Mining","Australia",314.96,,4.71,-2.89%,105108
+43,"NVA","Nova Minerals Limited ADR","Basic Materials","Other Industrial Metals & Mining","Australia",317.84,,9.21,-11.27%,2052443
+44,"HDSN","Hudson Technologies, Inc","Basic Materials","Specialty Chemicals","USA",318.70,14.56,7.31,-4.19%,1488900
+45,"THM","International Tower Hill Mines Ltd","Basic Materials","Gold","Canada",361.71,,1.74,0.00%,689334
+46,"VOXR","Vox Royalty Corp","Basic Materials","Other Precious Metals & Mining","Canada",370.71,,5.43,4.02%,740744
+47,"RYAM","Rayonier Advanced Materials Inc","Basic Materials","Chemicals","USA",422.14,,6.30,-1.25%,524960
+48,"DVS","Dolly Varden Silver Corp","Basic Materials","Silver","Canada",425.32,,4.68,2.18%,1181781
+49,"ASIX","AdvanSix Inc","Basic Materials","Chemicals","USA",430.36,8.33,16.02,1.84%,451805
+50,"ASTL","Algoma Steel Group Inc","Basic Materials","Steel","Canada",435.46,,4.15,0.00%,1854141
+51,"CMCL","Caledonia Mining Corporation Plc","Basic Materials","Gold","United Kingdom",466.60,9.24,24.17,-3.93%,226331
+52,"NMG","Nouveau Monde Graphite Inc","Basic Materials","Other Industrial Metals & Mining","Canada",469.39,,3.08,-4.05%,249435
+53,"MAGN","Magnera Corp","Basic Materials","Paper & Paper Products","USA",503.03,,14.13,1.36%,923395
+54,"BAK","Braskem S.A. ADR","Basic Materials","Chemicals","Brazil",503.79,,2.92,-1.68%,1386326
+55,"WRN","Western Copper & Gold Corp","Basic Materials","Other Industrial Metals & Mining","Canada",507.17,,2.51,0.00%,970878
+56,"NEWP","New Pacific Metals Corp","Basic Materials","Silver","Canada",521.79,,2.84,8.81%,1270594
+57,"LWLG","Lightwave Logic Inc","Basic Materials","Specialty Chemicals","USA",538.54,,4.03,-4.28%,532379
+58,"KRO","Kronos Worldwide, Inc","Basic Materials","Specialty Chemicals","USA",544.20,,4.73,-1.05%,195002
+59,"GEVO","Gevo Inc","Basic Materials","Specialty Chemicals","USA",554.89,,2.29,-3.38%,1901032
+60,"SXC","SunCoke Energy Inc","Basic Materials","Coking Coal","USA",575.73,8.94,6.80,0.59%,1103770
+61,"IDR","Idaho Strategic Resources Inc","Basic Materials","Gold","USA",592.82,54.65,38.02,-2.31%,290001
+62,"TROX","Tronox Holdings plc","Basic Materials","Chemicals","USA",608.84,,3.84,0.26%,2173866
+63,"DC","Dakota Gold Corp","Basic Materials","Gold","USA",609.35,,5.38,-0.92%,1145628
+64,"GAU","Galiano Gold Inc","Basic Materials","Gold","Canada",620.90,,2.39,1.70%,2314342
+65,"ITRG","Integra Resources Corp","Basic Materials","Other Precious Metals & Mining","Canada",621.37,44.48,3.67,1.38%,882729
+66,"LXU","LSB Industries, Inc","Basic Materials","Chemicals","USA",635.27,,8.83,-3.07%,338138
+67,"MATV","Mativ Holdings Inc","Basic Materials","Specialty Chemicals","USA",660.55,,12.08,-0.49%,205654
+68,"MTA","Metalla Royalty and Streaming Ltd","Basic Materials","Other Precious Metals & Mining","Canada",675.69,,7.30,-3.44%,528500
+69,"GPRE","Green Plains Inc","Basic Materials","Chemicals","USA",680.19,,9.74,-5.62%,1176986
+70,"MTUS","Metallus Inc","Basic Materials","Steel","USA",724.69,,17.40,0.52%,219345
+71,"ASPI","ASP Isotopes Inc","Basic Materials","Chemicals","USA",724.89,,6.54,-1.95%,6944679
+72,"GROY","Gold Royalty Corp","Basic Materials","Gold","Canada",739.21,,4.25,-2.97%,2698104
+73,"NB","NioCorp Developments Ltd","Basic Materials","Other Industrial Metals & Mining","USA",777.04,,6.51,-5.92%,5351827
+74,"TMQ","Trilogy Metals Inc","Basic Materials","Other Industrial Metals & Mining","Canada",797.14,,4.66,-0.85%,4763582
+75,"LAR","Lithium Argentina AG","Basic Materials","Other Industrial Metals & Mining","Switzerland",834.22,,5.14,-1.72%,1648197
+76,"CMP","Compass Minerals International Inc","Basic Materials","Other Industrial Metals & Mining","USA",845.45,,20.28,0.80%,368098
+77,"ASM","Avino Silver & Gold Mines Ltd","Basic Materials","Other Precious Metals & Mining","Canada",861.11,37.78,5.49,-0.90%,4183140
+78,"GSM","Ferroglobe Plc","Basic Materials","Other Industrial Metals & Mining","United Kingdom",869.68,,4.66,-0.43%,869898
+79,"UAMY","United States Antimony Corp","Basic Materials","Other Industrial Metals & Mining","USA",890.63,,6.36,3.92%,16027941
+80,"ODV","Osisko Development Corp","Basic Materials","Gold","Canada",923.24,,3.62,1.69%,919834
+81,"HYMC","Hycroft Mining Holding Corporation","Basic Materials","Gold","USA",927.06,,11.45,-4.34%,1287194
+82,"ECVT","Ecovyst Inc","Basic Materials","Specialty Chemicals","USA",996.53,,8.74,2.46%,2454878
+83,"MUX","McEwen Inc","Basic Materials","Other Precious Metals & Mining","Canada",1022.60,,18.77,0.27%,966376
+84,"NFGC","New Found Gold Corp","Basic Materials","Gold","Canada",1045.88,,3.10,3.33%,2733114
+85,"IAUX","i-80 Gold Corp","Basic Materials","Gold","USA",1049.38,,1.27,1.60%,6271502
+86,"SGML","Sigma Lithium Corporation","Basic Materials","Other Industrial Metals & Mining","Brazil",1050.31,,9.43,-5.51%,3276596
+87,"SLI","Standard Lithium Ltd","Basic Materials","Other Industrial Metals & Mining","Canada",1086.56,8.80,4.56,-3.39%,2498819
+88,"METC","Ramaco Resources Inc","Basic Materials","Coking Coal","USA",1107.14,,17.64,-3.08%,3527274
+89,"NAK","Northern Dynasty Minerals Ltd","Basic Materials","Other Industrial Metals & Mining","Canada",1143.74,,2.07,-0.96%,10441919
+90,"CRML","Critical Metals Corp","Basic Materials","Other Industrial Metals & Mining","United Kingdom",1188.81,,10.10,1.61%,12117907
+91,"USAS","Americas Gold and Silver Corp","Basic Materials","Other Industrial Metals & Mining","Canada",1253.23,,4.58,2.46%,2515790
+92,"LAC","Lithium Americas Corp (NewCo)","Basic Materials","Other Industrial Metals & Mining","Canada",1292.58,,5.33,-2.02%,12219921
+93,"LOMA","Loma Negra Compania Industrial Argentina Sociedad Anonima ADR","Basic Materials","Building Materials","Argentina",1426.07,38.78,12.22,-0.81%,536910
+94,"FMC","FMC Corp","Basic Materials","Agricultural Inputs","USA",1658.94,,13.28,-0.08%,4994234
+95,"ALM","Almonty Industries Inc","Basic Materials","Other Industrial Metals & Mining","Canada",1676.06,,7.24,0.56%,1481655
+96,"CLMT","Calumet Inc","Basic Materials","Specialty Chemicals","USA",1677.83,,19.34,-0.57%,449961
+97,"VZLA","Vizsla Silver Corp","Basic Materials","Other Industrial Metals & Mining","Canada",1723.89,,5.01,1.21%,3821478
+98,"SVM","Silvercorp Metals Inc","Basic Materials","Silver","Canada",1742.65,70.00,7.91,1.02%,6055318
+99,"HUN","Huntsman Corp","Basic Materials","Chemicals","USA",1744.46,,10.04,0.30%,4820795
+100,"WS","Worthington Steel Inc","Basic Materials","Steel","USA",1825.92,15.24,35.92,-1.18%,182578
+101,"IOSP","Innospec Inc","Basic Materials","Specialty Chemicals","USA",1859.31,,75.04,1.39%,230644
+102,"NGVT","Ingevity Corp","Basic Materials","Specialty Chemicals","USA",1902.86,,52.91,1.26%,255109
+103,"CC","Chemours Company","Basic Materials","Specialty Chemicals","USA",1903.63,,12.70,1.28%,2383107
+104,"TGB","Taseko Mines Ltd","Basic Materials","Copper","Canada",1910.17,,5.30,-0.93%,6620687
+105,"SLVM","Sylvamo Corp","Basic Materials","Paper & Paper Products","USA",1921.83,11.18,48.73,1.82%,268770
+106,"IE","Ivanhoe Electric Inc","Basic Materials","Copper","USA",2157.70,,14.91,-2.42%,3076985
+107,"SID","Companhia Siderurgica Nacional ADR","Basic Materials","Steel","Brazil",2174.79,,1.64,-7.87%,4809897
+108,"USAR","USA Rare Earth Inc","Basic Materials","Other Industrial Metals & Mining","USA",2284.04,,17.22,-1.49%,14110750
+109,"AMR","Alpha Metallurgical Resources Inc","Basic Materials","Coking Coal","USA",2302.36,,179.06,-2.95%,242691
+110,"OLN","Olin Corp","Basic Materials","Chemicals","USA",2334.93,44.11,20.46,0.10%,2598337
+111,"TGLS","Tecnoglass Inc","Basic Materials","Building Materials","Colombia",2390.41,13.35,51.33,-0.02%,367354
+112,"CSTM","Constellium SE","Basic Materials","Aluminum","France",2448.74,22.11,17.77,-2.26%,1441676
+113,"DRD","DRDGold Ltd. ADR","Basic Materials","Gold","South Africa",2517.73,20.46,29.10,1.78%,325298
+114,"EXK","Endeavour Silver Corp","Basic Materials","Silver","Canada",2550.54,,8.67,-0.23%,13887196
+115,"ERO","Ero Copper Corp","Basic Materials","Copper","Canada",2597.25,18.88,25.00,-0.52%,1149893
+116,"CGAU","Centerra Gold Inc","Basic Materials","Gold","Canada",2664.85,8.03,13.21,-0.68%,621687
+117,"SKE","Skeena Resources Ltd","Basic Materials","Other Industrial Metals & Mining","Canada",2671.25,,22.06,2.46%,684687
+118,"ASH","Ashland Inc","Basic Materials","Specialty Chemicals","USA",2678.62,,58.59,0.51%,948208
+119,"BCC","Boise Cascade Co","Basic Materials","Lumber & Wood Production","USA",2706.00,14.45,73.05,-1.63%,466336
+120,"AAUC","Allied Gold Corp","Basic Materials","Gold","Canada",2756.39,,22.22,0.91%,683530
+121,"AVNT","Avient Corp","Basic Materials","Specialty Chemicals","USA",2810.09,24.89,30.69,-0.81%,624384
+122,"FSM","Fortuna Mining Corp","Basic Materials","Gold","Canada",2842.45,12.51,9.26,-0.43%,6529815
+123,"ARMN","Aris Mining Corp","Basic Materials","Gold","Canada",2868.20,56.04,14.15,0.00%,1137112
+124,"TTAM","Titan America SA","Basic Materials","Building Materials","Belgium",2870.52,15.85,15.57,-1.58%,248209
+125,"CENX","Century Aluminum Co","Basic Materials","Aluminum","USA",2901.07,38.92,31.08,0.71%,1596413
+126,"MEOH","Methanex Corp","Basic Materials","Chemicals","Canada",2946.65,12.00,38.10,1.93%,451483
+127,"SMG","Scotts Miracle-Gro Company","Basic Materials","Agricultural Inputs","USA",3121.31,22.19,53.82,-1.64%,661534
+128,"SA","Seabridge Gold, Inc","Basic Materials","Gold","Canada",3124.24,,29.94,-2.35%,1652415
+129,"TMC","TMC the metals company Inc","Basic Materials","Other Industrial Metals & Mining","Canada",3138.40,,7.59,-2.69%,6135868
+130,"FUL","H.B. Fuller Company","Basic Materials","Specialty Chemicals","USA",3145.27,27.94,58.15,0.00%,292630
+131,"PPTA","Perpetua Resources Corp","Basic Materials","Other Precious Metals & Mining","USA",3158.94,,25.92,0.70%,1706969
+132,"AUGO","Aura Minerals Inc","Basic Materials","Gold","USA",3443.29,,41.22,-0.94%,534422
+133,"CBT","Cabot Corp","Basic Materials","Specialty Chemicals","USA",3455.88,10.87,65.33,1.92%,518646
+134,"SSL","Sasol Ltd ADR","Basic Materials","Specialty Chemicals","South Africa",3804.78,10.40,6.00,-2.28%,1086699
+135,"SXT","Sensient Technologies Corp","Basic Materials","Specialty Chemicals","USA",3924.91,28.26,92.39,-2.15%,199658
+136,"NG","Novagold Resources Inc","Basic Materials","Gold","USA",4004.19,,9.84,-1.11%,1812582
+137,"ORLA","Orla Mining Ltd","Basic Materials","Gold","Canada",4221.56,96.88,12.42,-9.80%,4563453
+138,"KNF","Knife River Corp","Basic Materials","Building Materials","USA",4229.41,28.69,74.64,0.80%,362150
+139,"PRM","Perimeter Solutions Inc","Basic Materials","Specialty Chemicals","USA",4238.01,68.00,28.65,2.14%,759958
+140,"SSRM","SSR Mining Inc","Basic Materials","Gold","USA",4246.76,20.61,20.92,-1.46%,1578218
+141,"HCC","Warrior Met Coal Inc","Basic Materials","Coking Coal","USA",4290.25,122.23,81.61,-1.21%,622781
+142,"GGB","Gerdau S.A. ADR","Basic Materials","Steel","Brazil",4365.52,13.21,3.48,-5.95%,30817688
+143,"CE","Celanese Corp","Basic Materials","Chemicals","USA",4449.18,,40.63,1.98%,1880409
+144,"WFG","West Fraser Timber Co., Ltd","Basic Materials","Lumber & Wood Production","Canada",4914.89,,62.34,0.58%,132736
+145,"UFPI","UFP Industries Inc","Basic Materials","Lumber & Wood Production","USA",5283.93,16.93,90.70,-0.06%,310610
+146,"NGD","New Gold Inc","Basic Materials","Gold","Canada",6088.33,24.62,7.69,-1.28%,13102634
+147,"BTG","B2gold Corp","Basic Materials","Gold","Canada",6092.80,30.87,4.56,0.00%,28657587
+148,"AXTA","Axalta Coating Systems Ltd","Basic Materials","Specialty Chemicals","USA",6203.93,13.95,29.08,-0.62%,5185372
+149,"EGO","Eldorado Gold Corp","Basic Materials","Gold","Canada",6259.81,17.25,31.10,-0.61%,1597941
+150,"ESI","Element Solutions Inc","Basic Materials","Specialty Chemicals","USA",6386.38,26.74,26.39,0.46%,1743424
+151,"OR","OR Royalties Inc","Basic Materials","Gold","Canada",6389.05,43.41,33.95,-0.76%,752374
+152,"BVN","Compania de Minas Buenaventura S.A. ADR","Basic Materials","Other Precious Metals & Mining","Peru",6406.43,14.80,25.25,-0.24%,846180
+153,"ICL","ICL Group Ltd","Basic Materials","Agricultural Inputs","Israel",6685.68,18.12,5.18,0.00%,1066536
+154,"TFPM","Triple Flag Precious Metals Corp","Basic Materials","Other Precious Metals & Mining","Canada",6764.84,32.52,32.75,-0.12%,326569
+155,"HBM","Hudbay Minerals Inc","Basic Materials","Copper","Canada",6924.70,15.05,17.48,0.81%,5063819
+156,"CLF","Cleveland-Cliffs Inc","Basic Materials","Steel","USA",7001.70,,12.29,-3.61%,15458119
+157,"EMN","Eastman Chemical Co","Basic Materials","Specialty Chemicals","USA",7018.71,10.26,61.53,1.43%,1657256
+158,"SSD","Simpson Manufacturing Co., Inc","Basic Materials","Lumber & Wood Production","USA",7026.10,20.62,169.47,0.25%,265943
+159,"EXP","Eagle Materials Inc","Basic Materials","Building Materials","USA",7121.07,16.39,222.09,0.09%,302727
+160,"AG","First Majestic Silver Corporation","Basic Materials","Silver","Canada",7397.92,122.84,15.06,0.27%,18102975
+161,"CMC","Commercial Metals Co","Basic Materials","Steel","USA",7424.67,87.92,66.86,2.50%,1643362
+162,"SOLS","Solstice Advanced Materials Inc","Basic Materials","Specialty Chemicals","USA",7480.82,,47.13,0.36%,2207013
+163,"MOS","Mosaic Company","Basic Materials","Agricultural Inputs","USA",7494.00,,23.61,-2.03%,7299407
+164,"TX","Ternium S.A. ADR","Basic Materials","Steel","Luxembourg",7544.19,13.14,38.43,-0.44%,200381
+165,"WLK","Westlake Corporation","Basic Materials","Specialty Chemicals","USA",8725.14,,68.02,0.07%,1488022
+166,"SBSW","Sibanye Stillwater Limited ADR","Basic Materials","Other Precious Metals & Mining","South Africa",8739.35,,12.35,0.00%,5163569
+167,"SQM","Sociedad Quimica Y Minera de Chile S.A. ADR","Basic Materials","Specialty Chemicals","Chile",8749.15,33.59,61.26,0.97%,1381781
+168,"IAG","Iamgold Corp","Basic Materials","Gold","Canada",8784.83,25.72,15.27,0.73%,6812842
+169,"CDE","Coeur Mining Inc","Basic Materials","Gold","USA",10185.37,23.25,15.86,-1.49%,13664578
+170,"EQX","Equinox Gold Corp","Basic Materials","Gold","Canada",10924.14,265.14,13.92,-0.22%,8956402
+171,"MP","MP Materials Corporation","Basic Materials","Other Industrial Metals & Mining","USA",11004.24,,62.09,0.47%,9245191
+172,"AA","Alcoa Corp","Basic Materials","Aluminum","USA",11334.86,9.94,43.77,-0.55%,5135350
+173,"HL","Hecla Mining Co","Basic Materials","Other Precious Metals & Mining","USA",11371.57,55.90,16.97,0.89%,16472887
+174,"SUZ","Suzano S.A. ADR","Basic Materials","Paper & Paper Products","Brazil",11419.81,9.80,9.24,-0.54%,3837563
+175,"JHX","James Hardie Industries plc","Basic Materials","Building Materials","Ireland",11589.59,41.91,20.01,1.21%,5771411
+176,"HMY","Harmony Gold Mining Co Ltd ADR","Basic Materials","Gold","South Africa",12048.15,15.29,19.29,0.78%,2795642
+177,"CF","CF Industries Holdings Inc","Basic Materials","Agricultural Inputs","USA",12147.30,9.39,77.88,-2.93%,2060366
+178,"RPM","RPM International, Inc","Basic Materials","Specialty Chemicals","USA",13501.43,19.66,105.30,0.29%,896813
+179,"LYB","LyondellBasell Industries NV","Basic Materials","Specialty Chemicals","United Kingdom",13953.19,,43.35,0.44%,6327786
+180,"ALB","Albemarle Corp","Basic Materials","Specialty Chemicals","USA",14734.56,,125.19,5.08%,5265002
+181,"RS","Reliance Inc","Basic Materials","Steel","USA",14944.66,20.90,285.82,-0.79%,272210
+182,"AGI","Alamos Gold Inc","Basic Materials","Gold","Canada",15178.14,28.30,36.08,-0.03%,1689955
+183,"DOW","Dow Inc","Basic Materials","Chemicals","USA",16319.22,,22.96,0.39%,9023708
+184,"CX","Cemex S.A.B. De C.V. ADR","Basic Materials","Building Materials","Mexico",16371.71,11.69,10.83,-1.37%,2910083
+185,"DD","DuPont de Nemours Inc","Basic Materials","Specialty Chemicals","USA",16972.69,,40.51,1.73%,4490858
+186,"RGLD","Royal Gold, Inc","Basic Materials","Gold","USA",17019.71,27.65,201.66,-0.71%,573384
+187,"IFF","International Flavors & Fragrances Inc","Basic Materials","Specialty Chemicals","USA",17204.55,,67.18,1.04%,2046881
+188,"PAAS","Pan American Silver Corp","Basic Materials","Gold","Canada",18734.80,25.66,44.39,0.43%,4561173
+189,"TECK","Teck Resources Ltd","Basic Materials","Other Industrial Metals & Mining","Canada",22003.17,26.11,45.07,0.42%,4389181
+190,"PPG","PPG Industries, Inc","Basic Materials","Specialty Chemicals","USA",22671.13,18.03,101.03,0.36%,2474694
+191,"STLD","Steel Dynamics Inc","Basic Materials","Steel","USA",24127.88,21.92,165.22,-1.72%,1444067
+192,"NTR","Nutrien Ltd","Basic Materials","Agricultural Inputs","Canada",29164.74,16.26,60.34,0.48%,2638661
+193,"AMRZ","Amrize Ltd","Basic Materials","Building Materials","Switzerland",30256.77,25.70,54.74,3.79%,6432339
+194,"MT","ArcelorMittal","Basic Materials","Steel","Luxembourg",32142.95,12.90,42.26,-0.87%,897281
+195,"KGC","Kinross Gold Corp","Basic Materials","Gold","Canada",33008.53,19.04,27.28,-0.22%,7122849
+196,"NUE","Nucor Corp","Basic Materials","Steel","USA",36491.51,22.41,159.45,-1.90%,1974085
+197,"MLM","Martin Marietta Materials, Inc","Basic Materials","Building Materials","USA",37653.97,32.89,624.37,0.90%,354857
+198,"GFI","Gold Fields Ltd ADR","Basic Materials","Gold","South Africa",37778.79,20.24,42.21,1.42%,2913301
+199,"VMC","Vulcan Materials Co","Basic Materials","Building Materials","USA",38961.44,35.05,294.87,0.42%,846640
+200,"FNV","Franco-Nevada Corporation","Basic Materials","Gold","Canada",39167.11,42.61,203.17,0.12%,433849
+201,"AU","AngloGold Ashanti Plc","Basic Materials","Gold","United Kingdom",41616.18,35.39,82.45,-1.12%,3348941
+202,"CTVA","Corteva Inc","Basic Materials","Agricultural Inputs","USA",44598.31,28.18,66.00,-0.44%,5353349
+203,"WPM","Wheaton Precious Metals Corp","Basic Materials","Gold","Canada",49075.02,49.06,108.09,-0.65%,1391349
+204,"VALE","Vale S.A. ADR","Basic Materials","Other Industrial Metals & Mining","Brazil",55067.26,10.20,12.90,-4.87%,77142918
+205,"APD","Air Products & Chemicals Inc","Basic Materials","Specialty Chemicals","USA",58027.05,,260.69,-0.36%,1315574
+206,"FCX","Freeport-McMoRan Inc","Basic Materials","Copper","USA",64904.07,31.78,45.20,1.32%,20208133
+207,"B","Barrick Mining Corp","Basic Materials","Gold","Canada",69252.13,19.71,41.04,0.32%,10209356
+208,"ECL","Ecolab, Inc","Basic Materials","Specialty Chemicals","USA",73553.47,37.35,259.69,-1.79%,1550994
+209,"CRH","CRH Plc","Basic Materials","Building Materials","USA",80090.63,23.78,119.49,-1.29%,9165211
+210,"SHW","Sherwin-Williams Co","Basic Materials","Specialty Chemicals","USA",82575.80,32.53,333.11,-0.67%,2011891
+211,"AEM","Agnico Eagle Mines Ltd","Basic Materials","Gold","Canada",84761.10,24.66,168.83,-1.52%,2477032
+212,"RIO","Rio Tinto plc ADR","Basic Materials","Other Industrial Metals & Mining","United Kingdom",91620.89,11.59,73.06,-0.91%,4658006
+213,"NEM","Newmont Corp","Basic Materials","Gold","USA",97951.76,13.95,89.76,-1.06%,6500403
+214,"SCCO","Southern Copper Corporation","Basic Materials","Copper","USA",115009.20,30.19,140.41,0.33%,1257741
+215,"BHP","BHP Group Limited ADR","Basic Materials","Other Industrial Metals & Mining","Australia",149426.03,16.58,58.85,-0.20%,3652245
+216,"LIN","Linde Plc","Basic Materials","Specialty Chemicals","United Kingdom",186578.79,26.75,399.57,-1.03%,3183625

@@ -1,0 +1,496 @@
+"No.","Ticker","Company","Sector","Industry","Country","Market Cap","P/E","Price","Change","Volume"
+1,"YGMZ","MingZhu Logistics Holdings Ltd","Industrials","Trucking","China",0.38,0.18,0.08,24.25%,51346383
+2,"UGRO","Urban-gro Inc","Industrials","Farm & Heavy Construction Machinery","USA",2.86,,0.23,-8.53%,494228
+3,"GP","GreenPower Motor Company Inc","Industrials","Farm & Heavy Construction Machinery","Canada",3.11,,1.01,-3.81%,24140
+4,"SGLY","Singularity Future Technology Ltd","Industrials","Integrated Freight & Logistics","USA",4.44,,0.61,-0.39%,18492
+5,"WXM","WF International Ltd","Industrials","Industrial Distribution","China",4.48,,0.52,5.86%,21093
+6,"LNKS","Linkers Industries Ltd","Industrials","Electrical Equipment & Parts","Malaysia",4.57,,0.34,-2.02%,19931
+7,"CISS","C3is Inc","Industrials","Marine Shipping","Greece",4.80,,1.86,-1.12%,46215
+8,"CCTG","CCSC Technology International Holdings Ltd","Industrials","Electrical Equipment & Parts","Hong Kong",5.14,,0.22,3.97%,694422
+9,"DFSC","DEFSEC Technologies Inc","Industrials","Aerospace & Defense","Canada",5.21,,3.72,-2.36%,202194
+10,"CDTG","CDT Environmental Technology Investment Holdings Ltd","Industrials","Waste Management","China",5.22,20.67,0.42,-4.29%,10742
+11,"ATXG","Addentax Group Corp","Industrials","Integrated Freight & Logistics","China",5.51,,0.47,1.03%,42789
+12,"GWAV","Greenwave Technology Solutions Inc","Industrials","Waste Management","USA",5.57,,6.71,-3.17%,133391
+13,"CETY","Clean Energy Technologies Inc","Industrials","Specialty Industrial Machinery","USA",5.70,,1.10,-9.84%,613810
+14,"AIHS","Senmiao Technology Ltd","Industrials","Rental & Leasing Services","China",5.93,,1.30,-2.11%,26279
+15,"SKK","SKK Holdings Ltd","Industrials","Engineering & Construction","Singapore",5.96,8.48,0.32,-2.65%,30278
+16,"POLA","Polar Power Inc","Industrials","Electrical Equipment & Parts","USA",6.11,,2.30,2.45%,16563
+17,"FGL","Founder Group Ltd","Industrials","Engineering & Construction","Malaysia",6.18,,0.37,-2.80%,834447
+18,"IVDA","Iveda Solutions Inc","Industrials","Security & Protection Services","USA",6.99,,1.19,-9.85%,271606
+19,"HXHX","Haoxin Holdings Ltd","Industrials","Integrated Freight & Logistics","China",7.00,13.83,0.51,-6.61%,40552
+20,"VCIG","VCI Global Ltd","Industrials","Consulting Services","Malaysia",7.33,,1.12,-4.27%,4466376
+21,"CIIT","Tianci International Inc","Industrials","Integrated Freight & Logistics","Hong Kong",7.46,,0.45,-7.96%,148834
+22,"DEVS","DevvStream Corp","Industrials","Pollution & Treatment Controls","USA",7.68,,2.00,-10.71%,2126136
+23,"BKYI","Bio-Key International Inc","Industrials","Security & Protection Services","USA",8.29,,0.76,0.79%,142972
+24,"EHGO","Eshallgo Inc","Industrials","Business Equipment & Supplies","China",8.52,,0.29,0.03%,50323
+25,"IPDN","Professional Diversity Network Inc","Industrials","Staffing & Employment Services","USA",8.93,,1.83,-5.18%,74825
+26,"CRE","Cre8 Enterprise Ltd","Industrials","Specialty Business Services","Hong Kong",9.13,27.17,0.38,0.53%,150811
+27,"VRME","VerifyMe Inc","Industrials","Security & Protection Services","USA",9.20,,0.74,-1.37%,2881686
+28,"ZDAI","DirectBooking Technology Co Ltd","Industrials","Engineering & Construction","Hong Kong",9.25,,0.35,-2.12%,69866
+29,"INLF","INLIF Ltd","Industrials","Specialty Industrial Machinery","China",9.29,,0.64,-3.84%,324522
+30,"SOAR","Volato Group Inc","Industrials","Airports & Air Services","USA",9.53,1.25,1.28,-6.57%,159648
+31,"PMAX","Powell Max Ltd","Industrials","Specialty Business Services","Hong Kong",9.58,,3.31,12.97%,409007
+32,"FBGL","FBS Global Ltd","Industrials","Engineering & Construction","USA",10.38,,0.77,2.93%,865379
+33,"AWX","Avalon Holdings Corp","Industrials","Waste Management","USA",10.65,59.22,2.73,-1.09%,7625
+34,"AEHL","Antelope Enterprise Holdings Ltd","Industrials","Building Products & Equipment","China",11.08,,3.24,0.31%,914051
+35,"SFHG","Samfine Creation Holdings Group Ltd","Industrials","Specialty Business Services","Hong Kong",11.15,,0.55,5.64%,215450
+36,"ENGS","Energys Group Ltd","Industrials","Waste Management","United Kingdom",11.43,,0.80,-12.08%,354579
+37,"XPON","Expion360 Inc","Industrials","Electrical Equipment & Parts","USA",11.59,,1.20,-3.23%,282045
+38,"ELPW","Elong Power Holding Ltd","Industrials","Electrical Equipment & Parts","China",11.95,0.95,0.21,-3.79%,73194
+39,"LBGJ","Li Bang International Corp Inc","Industrials","Specialty Industrial Machinery","China",12.15,,0.65,-8.73%,96822
+40,"TLIH","Ten League International Holdings Ltd","Industrials","Industrial Distribution","Singapore",12.71,4.39,0.43,-1.88%,138862
+41,"MIMI","Mint Inc Ltd","Industrials","Engineering & Construction","Hong Kong",12.82,,0.51,2.13%,281371
+42,"WFF","WF Holding Ltd","Industrials","Specialty Industrial Machinery","Malaysia",13.40,,0.53,-2.69%,38901
+43,"GRNQ","Greenpro Capital Corp","Industrials","Consulting Services","Malaysia",13.57,,1.62,0.31%,22809
+44,"KITT","Nauticus Robotics Inc","Industrials","Aerospace & Defense","USA",15.36,,1.12,-4.27%,33726882
+45,"NCT","Intercont (Cayman) Ltd","Industrials","Marine Shipping","Hong Kong",15.92,4.66,0.54,0.84%,149661
+46,"GLXG","Galaxy Payroll Group Ltd","Industrials","Staffing & Employment Services","Hong Kong",18.15,,3.15,-8.70%,2462
+47,"GFAI","Guardforce AI Co Ltd","Industrials","Security & Protection Services","Singapore",18.45,,0.88,-3.96%,373976
+48,"INTJ","Intelligent Group Ltd","Industrials","Consulting Services","Hong Kong",19.07,,0.62,4.71%,137324
+49,"MNTS","Momentus Inc","Industrials","Aerospace & Defense","USA",19.32,,0.80,1.28%,976350
+50,"ONEG","OneConstruction Group Ltd","Industrials","Engineering & Construction","Hong Kong",19.36,,1.21,-6.20%,127995
+51,"RVSN","Rail Vision Ltd","Industrials","Railroads","Israel",20.11,,0.39,-2.48%,1078161
+52,"JOB","GEE Group Inc","Industrials","Staffing & Employment Services","USA",20.88,,0.19,0.42%,305272
+53,"HCAI","Huachen AI Parking Management Technology Holding Co. Ltd","Industrials","Farm & Heavy Construction Machinery","China",21.29,,0.43,4.54%,20779
+54,"AQMS","Aqua Metals Inc","Industrials","Waste Management","USA",21.43,,7.19,-4.39%,157168
+55,"STAI","ScanTech AI Systems Inc","Industrials","Building Products & Equipment","USA",21.58,,0.29,-5.99%,3855209
+56,"SGBX","Safe & Green Holdings Corp","Industrials","Metal Fabrication","USA",21.67,,3.81,-6.16%,2293620
+57,"UFG","Uni Fuels Holdings Ltd","Industrials","Marine Shipping","Singapore",23.90,,0.74,-3.91%,117086
+58,"PRZO","ParaZero Technologies Ltd","Industrials","Aerospace & Defense","Israel",25.71,,1.37,-3.52%,1187937
+59,"SIDU","Sidus Space Inc","Industrials","Aerospace & Defense","USA",26.11,,0.74,-8.11%,792665
+60,"NIXX","Nixxy Inc","Industrials","Staffing & Employment Services","USA",27.61,,1.11,-3.48%,303048
+61,"VNTG","Vantage Corp","Industrials","Marine Shipping","Singapore",28.25,,0.89,1.07%,52076
+62,"BTOC","Armlogi Holding Corp","Industrials","Integrated Freight & Logistics","USA",28.49,,0.63,-0.13%,109432
+63,"AERT","Aeries Technology Inc","Industrials","Consulting Services","Singapore",30.97,,0.63,-0.80%,126289
+64,"EPOW","Sunrise New Energy Co. Ltd","Industrials","Electrical Equipment & Parts","China",33.63,,1.06,-6.61%,673842
+65,"FLUX","Flux Power Holdings inc","Industrials","Electrical Equipment & Parts","USA",33.72,,1.58,-7.06%,196955
+66,"MGN","Megan Holdings Ltd","Industrials","Engineering & Construction","Malaysia",34.45,33.12,2.12,3.41%,48328
+67,"SDST","Stardust Power Inc","Industrials","Electrical Equipment & Parts","USA",34.46,,3.51,-2.77%,60475
+68,"CVU","CPI Aerostructures Inc","Industrials","Aerospace & Defense","USA",37.97,,2.88,1.05%,51341
+69,"MOB","Mobilicom Limited ADR","Industrials","Aerospace & Defense","Israel",38.61,,8.01,7.81%,515303
+70,"MSGY","Masonglory Ltd","Industrials","Engineering & Construction","Hong Kong",40.26,,2.83,0.71%,272132
+71,"CLIR","ClearSign Technologies Corp","Industrials","Pollution & Treatment Controls","USA",40.77,,0.77,0.68%,25670
+72,"GWH","ESS Tech Inc","Industrials","Electrical Equipment & Parts","USA",42.37,,2.16,-9.24%,521948
+73,"SVRN","OceanPal Inc","Industrials","Marine Shipping","Greece",43.26,,1.39,-0.71%,59827
+74,"QRHC","Quest Resource Holding Corp","Industrials","Waste Management","USA",44.04,,2.11,9.90%,402585
+75,"RYOJ","rYojbaba Co. Ltd","Industrials","Consulting Services","Japan",45.34,5037.50,4.03,1.38%,40458
+76,"SCWO","374Water Inc","Industrials","Pollution & Treatment Controls","USA",45.66,,0.27,-2.21%,664097
+77,"CIGL","Concorde International Group Ltd","Industrials","Security & Protection Services","Singapore",45.77,,2.05,12.64%,31371
+78,"XTIA","XTI Aerospace Inc","Industrials","Aerospace & Defense","USA",46.89,,1.43,-8.92%,1845922
+79,"XCH","XCHG Ltd ADR","Industrials","Specialty Industrial Machinery","Germany",50.33,,1.23,-10.87%,35446
+80,"BGSF","BGSF Inc","Industrials","Staffing & Employment Services","USA",50.51,,4.51,1.12%,51040
+81,"FTEK","Fuel Tech Inc","Industrials","Pollution & Treatment Controls","USA",52.52,,1.69,-5.59%,84653
+82,"YSXT","Ysx Tech Co.Ltd","Industrials","Specialty Business Services","China",53.91,12.81,2.30,-1.29%,385129
+83,"KSCP","Knightscope Inc","Industrials","Security & Protection Services","USA",54.55,,4.74,-3.66%,288128
+84,"RITR","Reitar Logtech Holdings Ltd","Industrials","Engineering & Construction","Hong Kong",58.07,58.13,0.93,2.20%,36257
+85,"ZONE","CleanCore Solutions Inc","Industrials","Pollution & Treatment Controls","USA",59.97,,0.30,-5.46%,1854856
+86,"STI","Solidion Technology Inc","Industrials","Electrical Equipment & Parts","USA",62.63,,8.39,-3.89%,34624
+87,"LASE","Laser Photonics Corp","Industrials","Specialty Industrial Machinery","USA",62.71,,2.79,-4.45%,209898
+88,"CSTE","Caesarstone Ltd","Industrials","Building Products & Equipment","Israel",62.89,,1.82,4.00%,253015
+89,"BWEN","Broadwind Inc","Industrials","Specialty Industrial Machinery","USA",71.92,14.11,3.10,-4.02%,110866
+90,"OPTT","Ocean Power Technologies","Industrials","Specialty Industrial Machinery","USA",76.02,,0.42,-5.59%,2256356
+91,"CBAT","CBAK Energy Technology Inc","Industrials","Electrical Equipment & Parts","China",76.43,,0.86,-3.12%,155986
+92,"HOVR","New Horizon Aircraft Ltd","Industrials","Aerospace & Defense","Canada",76.74,16.84,1.77,-1.12%,638382
+93,"SLGB","Smart Logistics Global Ltd","Industrials","Integrated Freight & Logistics","Hong Kong",84.87,,2.07,0.00%,13470
+94,"SKBL","Skyline Builders Group Holding Ltd","Industrials","Engineering & Construction","Hong Kong",89.77,958.06,2.97,1.02%,317351
+95,"DFLI","Dragonfly Energy Holdings Corp","Industrials","Electrical Equipment & Parts","USA",90.59,,0.75,-6.70%,3593554
+96,"GPUS","Hyperscale Data Inc","Industrials","Aerospace & Defense","USA",96.75,,0.28,-4.53%,22085988
+97,"BAER","Bridger Aerospace Group Holdings Inc","Industrials","Security & Protection Services","USA",101.09,,1.82,1.11%,1496937
+98,"BURU","Nuburu Inc","Industrials","Specialty Industrial Machinery","USA",101.21,,0.23,-4.73%,22824902
+99,"PEW","GrabAGun Digital Holdings Inc","Industrials","Aerospace & Defense","USA",105.66,,3.52,-2.76%,356987
+100,"SPAI","Safe Pro Group Inc","Industrials","Aerospace & Defense","USA",107.59,,5.13,-1.16%,43230
+101,"NEOV","NeoVolta Inc","Industrials","Electrical Equipment & Parts","USA",129.23,,3.72,-3.88%,394883
+102,"BLNK","Blink Charging Co","Industrials","Engineering & Construction","USA",137.48,,1.20,-15.49%,7913264
+103,"SRFM","Surf Air Mobility Inc","Industrials","Airlines","USA",140.84,,2.25,-8.91%,3367356
+104,"SCAG","Scage Future. ADR","Industrials","Farm & Heavy Construction Machinery","China",143.04,,1.98,3.66%,10099
+105,"VWAV","VisionWave Holdings Inc","Industrials","Aerospace & Defense","USA",145.92,,9.73,-2.01%,212324
+106,"TBI","TrueBlue Inc","Industrials","Staffing & Employment Services","USA",146.70,,4.90,-1.80%,107382
+107,"ALTG","Alta Equipment Group Inc","Industrials","Rental & Leasing Services","USA",158.28,,4.91,-0.61%,146743
+108,"ARQ","Arq Inc","Industrials","Pollution & Treatment Controls","USA",160.96,,3.77,-1.82%,189403
+109,"RGP","Resources Connection Inc","Industrials","Consulting Services","USA",162.28,,4.86,0.00%,229053
+110,"AIRJ","AirJoule Technologies Corp","Industrials","Building Products & Equipment","USA",169.90,,2.80,-5.08%,234515
+111,"DPRO","Draganfly Inc","Industrials","Aerospace & Defense","Canada",178.40,,7.67,-7.26%,1848316
+112,"ISSC","Innovative Solutions And Support Inc","Industrials","Aerospace & Defense","USA",180.25,15.41,10.22,2.40%,333898
+113,"TGEN","Tecogen Inc","Industrials","Electrical Equipment & Parts","USA",209.22,,7.01,-3.97%,316382
+114,"JELD","JELD-WEN Holding Inc","Industrials","Building Products & Equipment","USA",222.97,,2.61,0.00%,889073
+115,"DSX","Diana Shipping Inc","Industrials","Marine Shipping","Greece",223.44,11.84,1.93,-1.53%,606596
+116,"POWW","Outdoor Holding Co","Industrials","Aerospace & Defense","USA",226.02,,1.93,-0.52%,469801
+117,"SHMD","SCHMID Group N.V","Industrials","Specialty Industrial Machinery","Germany",227.37,,4.67,-8.79%,94863
+118,"SATL","Satellogic Inc","Industrials","Aerospace & Defense","USA",228.94,,1.69,-3.43%,1804082
+119,"MAGH","Magnitude International Ltd","Industrials","Engineering & Construction","Singapore",236.60,,6.76,0.00%,0
+120,"NVX","Novonix Limited ADR","Industrials","Electrical Equipment & Parts","Australia",237.31,,1.13,-0.88%,1163259
+121,"ELVA","Electrovaya, Inc","Industrials","Electrical Equipment & Parts","Canada",254.65,192.11,5.36,1.90%,681503
+122,"PESI","Perma-Fix Environmental Services, Inc","Industrials","Waste Management","USA",258.88,,13.98,0.79%,71398
+123,"PAL","Proficient Auto Logistics Inc","Industrials","Integrated Freight & Logistics","USA",261.05,,9.38,2.18%,183958
+124,"SKYX","SKYX Platforms Corp","Industrials","Electrical Equipment & Parts","USA",269.59,,2.37,-2.87%,738868
+125,"SPCE","Virgin Galactic Holdings Inc","Industrials","Aerospace & Defense","USA",272.39,,4.31,-4.01%,2346711
+126,"YDDL","One and one Green Technologies. Inc","Industrials","Waste Management","Philippines",273.24,,5.06,-0.20%,125956
+127,"BNC","CEA Industries Inc","Industrials","Farm & Heavy Construction Machinery","USA",292.10,,6.78,-5.04%,534629
+128,"ASPN","Aspen Aerogels Inc","Industrials","Building Products & Equipment","USA",292.57,,3.54,-2.48%,1887684
+129,"AIRO","AIRO Group Holdings Inc","Industrials","Aerospace & Defense","USA",296.76,,9.48,-1.15%,438102
+130,"RLGT","Radiant Logistics, Inc","Industrials","Integrated Freight & Logistics","USA",298.67,20.45,6.37,-0.47%,120282
+131,"KELYA","Kelly Services, Inc","Industrials","Staffing & Employment Services","USA",301.34,,8.50,-2.19%,561381
+132,"SPIR","Spire Global Inc","Industrials","Specialty Business Services","USA",307.06,15.80,8.97,-0.88%,326129
+133,"QUAD","Quad/Graphics Inc","Industrials","Specialty Business Services","USA",307.55,14.76,6.04,1.51%,188798
+134,"ASLE","AerSale Corp","Industrials","Airports & Air Services","USA",312.84,51.32,6.63,-1.04%,263927
+135,"ACCO","Acco Brands Corporation","Industrials","Business Equipment & Supplies","USA",323.59,8.35,3.59,0.84%,384699
+136,"MTRX","Matrix Service Co","Industrials","Engineering & Construction","USA",328.49,,11.68,-2.67%,187237
+137,"MEC","Mayville Engineering Company Inc","Industrials","Metal Fabrication","USA",335.25,28.72,16.50,-2.54%,113758
+138,"SMX","SMX (Security Matters) Plc","Industrials","Specialty Business Services","Ireland",348.77,,331.98,135.45%,3906656
+139,"TITN","Titan Machinery Inc","Industrials","Industrial Distribution","USA",372.57,,15.94,-1.12%,161880
+140,"WNC","Wabash National Corp","Industrials","Farm & Heavy Construction Machinery","USA",377.62,1.53,9.32,0.87%,512166
+141,"FCEL","Fuelcell Energy Inc","Industrials","Electrical Equipment & Parts","USA",399.05,,8.37,3.85%,3444901
+142,"ORN","Orion Group Holdings Inc","Industrials","Engineering & Construction","USA",409.78,42.56,10.27,-1.06%,239131
+143,"CODI","Compass Diversified Holdings","Industrials","Conglomerates","USA",431.10,,5.73,-22.36%,4120311
+144,"EAF","GrafTech International Ltd","Industrials","Electrical Equipment & Parts","USA",431.71,,16.72,-2.51%,193975
+145,"ADUR","Aduro Clean Technologies Inc","Industrials","Pollution & Treatment Controls","Canada",432.92,,13.88,-0.29%,295371
+146,"MTW","Manitowoc Co., Inc","Industrials","Farm & Heavy Construction Machinery","USA",435.23,7.69,12.27,1.15%,218334
+147,"UP","Wheels Up Experience Inc","Industrials","Airports & Air Services","USA",436.63,,0.61,-8.31%,2304031
+148,"BYRN","Byrna Technologies Inc","Industrials","Aerospace & Defense","USA",447.01,29.35,19.67,2.13%,276969
+149,"PANL","Pangaea Logistics Solutions Ltd","Industrials","Marine Shipping","USA",465.21,24.21,7.16,-0.42%,204662
+150,"CYRX","CryoPort Inc","Industrials","Integrated Freight & Logistics","USA",477.66,,9.54,-3.44%,495084
+151,"ASC","Ardmore Shipping Corp","Industrials","Marine Shipping","Bermuda",480.58,15.19,11.83,-1.09%,449994
+152,"SWBI","Smith & Wesson Brands Inc","Industrials","Aerospace & Defense","USA",485.99,49.37,10.96,23.01%,3488723
+153,"CMCO","Columbus Mckinnon Corp","Industrials","Farm & Heavy Construction Machinery","USA",492.69,125.92,17.15,0.35%,156540
+154,"TWI","Titan International, Inc","Industrials","Farm & Heavy Construction Machinery","USA",525.04,,8.21,-1.20%,432481
+155,"RGR","Sturm, Ruger & Co., Inc","Industrials","Aerospace & Defense","USA",534.93,259.27,33.55,4.13%,353789
+156,"ABAT","American Battery Technology Company","Industrials","Waste Management","USA",539.38,,4.15,-0.95%,6105639
+157,"KFRC","Kforce Inc","Industrials","Staffing & Employment Services","USA",541.69,13.34,29.86,0.44%,246765
+158,"SB","Safe Bulkers, Inc","Industrials","Marine Shipping","Monaco",543.36,14.57,5.31,-0.38%,461416
+159,"FIP","FTAI Infrastructure Inc","Industrials","Conglomerates","USA",546.58,,4.70,-7.30%,977249
+160,"LTBR","Lightbridge Corp","Industrials","Electrical Equipment & Parts","USA",554.84,,17.14,-3.65%,955181
+161,"BW","Babcock & Wilcox Enterprises Inc","Industrials","Specialty Industrial Machinery","USA",631.05,,5.68,-15.85%,4434387
+162,"NPWR","NET Power Inc","Industrials","Specialty Industrial Machinery","USA",633.10,,2.85,-2.40%,631775
+163,"KRNT","Kornit Digital Ltd","Industrials","Specialty Industrial Machinery","Israel",634.59,,14.00,0.36%,149547
+164,"NX","Quanex Building Products Corp","Industrials","Building Products & Equipment","USA",635.39,,13.85,1.39%,474668
+165,"BKSY","BlackSky Technology Inc","Industrials","Specialty Business Services","USA",658.30,,18.29,-4.99%,855539
+166,"EVTL","Vertical Aerospace Ltd","Industrials","Aerospace & Defense","United Kingdom",667.03,,6.77,3.04%,3499506
+167,"HTLD","Heartland Express, Inc","Industrials","Trucking","USA",702.45,,9.07,0.78%,428434
+168,"KE","Kimball Electronics Inc","Industrials","Electrical Equipment & Parts","USA",718.23,30.90,29.51,0.14%,97781
+169,"CRESY","Cresud ADR","Industrials","Conglomerates","Argentina",725.94,5.19,11.49,-1.63%,241003
+170,"EH","EHang Holdings Ltd ADR","Industrials","Aerospace & Defense","China",750.98,,14.37,0.35%,530256
+171,"MATW","Matthews International Corp","Industrials","Conglomerates","USA",754.81,,24.51,0.04%,165497
+172,"SNCY","Sun Country Airlines Holdings Inc","Industrials","Airlines","USA",754.87,13.64,14.32,4.07%,658389
+173,"RYI","Ryerson Holding Corp","Industrials","Metal Fabrication","USA",770.13,,23.91,-0.66%,456233
+174,"ERII","Energy Recovery Inc","Industrials","Pollution & Treatment Controls","USA",779.75,43.26,14.72,0.27%,333137
+175,"FWRD","Forward Air Corp","Industrials","Integrated Freight & Logistics","USA",809.33,,25.90,1.33%,604120
+176,"APOG","Apogee Enterprises Inc","Industrials","Building Products & Equipment","USA",809.89,18.45,37.65,0.19%,94086
+177,"TH","Target Hospitality Corp","Industrials","Specialty Business Services","USA",822.18,,8.24,6.05%,564660
+178,"SWIM","Latham Group Inc","Industrials","Building Products & Equipment","USA",825.92,,7.08,-1.12%,412882
+179,"GNK","Genco Shipping & Trading Limited","Industrials","Marine Shipping","USA",835.46,,19.32,1.20%,477548
+180,"KODK","Eastman Kodak Co","Industrials","Specialty Business Services","USA",847.36,,8.79,3.66%,3008449
+181,"BLDP","Ballard Power Systems Inc","Industrials","Electrical Equipment & Parts","Canada",848.09,,2.82,0.71%,3682150
+182,"JBI","Janus International Group Inc","Industrials","Building Products & Equipment","USA",849.61,18.21,6.12,-1.13%,3968433
+183,"VLRS","Controladora Vuela Cia De Aviacion ADR","Industrials","Airlines","Mexico",858.30,,7.47,-4.72%,266890
+184,"GLDD","Great Lakes Dredge & Dock Corporation","Industrials","Engineering & Construction","USA",874.47,10.85,12.86,-0.23%,366613
+185,"RR","Richtech Robotics Inc","Industrials","Specialty Industrial Machinery","USA",884.58,,4.46,-2.83%,47153181
+186,"MRTN","Marten Transport, Ltd","Industrials","Trucking","USA",916.29,47.27,11.24,0.45%,549338
+187,"VSTS","Vestis Corp","Industrials","Rental & Leasing Services","USA",923.07,,7.00,6.71%,3492628
+188,"THH","TryHard Holdings Ltd","Industrials","Specialty Business Services","Japan",925.92,,18.50,0.82%,43255
+189,"MEG","Montrose Environmental Group Inc","Industrials","Waste Management","USA",929.38,,26.30,0.88%,353003
+190,"DLX","Deluxe Corp","Industrials","Conglomerates","USA",940.21,11.45,20.89,1.21%,158141
+191,"RCAT","Red Cat Holdings Inc","Industrials","Aerospace & Defense","USA",957.36,,8.02,-3.61%,4500312
+192,"AEBI","Aebi Schmidt Holding AG","Industrials","Farm & Heavy Construction Machinery","Switzerland",976.05,,12.62,0.72%,181372
+193,"SERV","Serve Robotics Inc","Industrials","Specialty Industrial Machinery","USA",999.57,,13.42,3.23%,13585515
+194,"RDW","Redwire Corporation","Industrials","Aerospace & Defense","USA",1055.31,,6.39,4.07%,6051256
+195,"KDK","Kodiak AI Inc","Industrials","Farm & Heavy Construction Machinery","USA",1090.87,,6.02,0.33%,470539
+196,"TTI","Tetra Technologies, Inc","Industrials","Conglomerates","USA",1126.15,9.16,8.42,-4.75%,2004845
+197,"EVLV","Evolv Technologies Holdings Inc","Industrials","Security & Protection Services","USA",1164.70,,6.67,-0.60%,1819046
+198,"PRG","PROG Holdings Inc","Industrials","Rental & Leasing Services","USA",1168.97,7.50,29.56,0.03%,619131
+199,"ULCC","Frontier Group Holdings Inc","Industrials","Airlines","USA",1183.68,,5.17,3.82%,4129174
+200,"BV","BrightView Holdings Inc","Industrials","Specialty Business Services","USA",1190.38,288.97,12.57,0.08%,653129
+201,"SFL","SFL Corporation Ltd","Industrials","Marine Shipping","Bermuda",1201.32,,8.31,0.12%,716316
+202,"HSII","Heidrick & Struggles International, Inc","Industrials","Staffing & Employment Services","USA",1226.28,34.46,58.97,0.05%,321904
+203,"TE","T1 Energy Inc","Industrials","Electrical Equipment & Parts","USA",1238.09,,5.83,14.09%,18941069
+204,"ENR","Energizer Holdings Inc","Industrials","Electrical Equipment & Parts","USA",1246.10,5.48,18.21,0.55%,1544867
+205,"THR","Thermon Group Holdings Inc","Industrials","Specialty Industrial Machinery","USA",1284.70,22.35,39.12,3.57%,603659
+206,"MAN","ManpowerGroup","Industrials","Staffing & Employment Services","USA",1291.23,,27.89,-0.78%,664128
+207,"GSL","Global Ship Lease Inc","Industrials","Marine Shipping","Greece",1294.18,3.25,36.18,-0.22%,323263
+208,"ECO","Okeanis Eco Tankers Corp","Industrials","Marine Shipping","Greece",1313.52,15.56,37.07,2.46%,363824
+209,"NSP","Insperity Inc","Industrials","Staffing & Employment Services","USA",1324.92,79.45,35.14,-2.23%,1121994
+210,"PSIX","Power Solutions International Inc","Industrials","Specialty Industrial Machinery","USA",1371.63,11.32,59.53,-2.60%,368307
+211,"CTOS","Custom Truck One Source Inc","Industrials","Rental & Leasing Services","USA",1384.28,,6.11,0.16%,615275
+212,"VOYG","Voyager Technologies Inc","Industrials","Aerospace & Defense","USA",1414.26,,23.75,1.02%,1741866
+213,"GBX","Greenbrier Cos., Inc","Industrials","Railroads","USA",1431.04,7.29,46.22,-0.62%,212624
+214,"ROCK","Gibraltar Industries Inc","Industrials","Building Products & Equipment","USA",1457.04,666.49,49.32,-0.70%,199737
+215,"AMSC","American Superconductor Corp","Industrials","Specialty Industrial Machinery","USA",1467.22,87.28,32.47,-1.64%,743311
+216,"NVRI","Enviri Corp","Industrials","Waste Management","USA",1469.49,,18.22,0.50%,1478046
+217,"NSSC","NAPCO Security Technologies Inc","Industrials","Security & Protection Services","USA",1473.29,33.63,41.31,0.93%,501324
+218,"ALGT","Allegiant Travel","Industrials","Airlines","USA",1513.43,,82.64,4.03%,218706
+219,"ARLO","Arlo Technologies Inc","Industrials","Building Products & Equipment","USA",1537.95,412.22,14.51,0.83%,761725
+220,"WLDN","Willdan Group Inc","Industrials","Engineering & Construction","USA",1538.41,37.44,104.30,-0.81%,126184
+221,"PBI","Pitney Bowes, Inc","Industrials","Integrated Freight & Logistics","USA",1572.17,22.72,9.77,-0.61%,1984688
+222,"HTZ","Hertz Global Holdings Inc","Industrials","Rental & Leasing Services","USA",1576.66,,5.06,-1.56%,7259058
+223,"AMPX","Amprius Technologies Inc","Industrials","Electrical Equipment & Parts","USA",1589.29,,12.18,-0.33%,4583905
+224,"ARCB","ArcBest Corp","Industrials","Trucking","USA",1602.56,16.89,71.19,2.36%,295154
+225,"BLBD","Blue Bird Corp","Industrials","Farm & Heavy Construction Machinery","USA",1626.03,13.20,51.27,0.71%,408156
+226,"LZ","LegalZoom.com Inc","Industrials","Specialty Business Services","USA",1662.80,75.40,9.38,-0.74%,1272964
+227,"PCT","PureCycle Technologies Inc","Industrials","Pollution & Treatment Controls","USA",1674.04,,9.29,-3.53%,2221593
+228,"EVEX","Eve Holding Inc","Industrials","Aerospace & Defense","USA",1689.28,,4.85,-3.77%,1381175
+229,"HLMN","Hillman Solutions Corp","Industrials","Tools & Accessories","USA",1740.09,46.82,8.82,-1.89%,830833
+230,"JBLU","Jetblue Airways Corp","Industrials","Airlines","USA",1742.17,,4.79,3.01%,17519543
+231,"CDRE","Cadre Holdings Inc","Industrials","Aerospace & Defense","USA",1742.45,38.68,42.85,-2.17%,164806
+232,"VVX","V2X Inc","Industrials","Aerospace & Defense","USA",1751.77,22.03,55.55,-2.18%,163599
+233,"AMRC","Ameresco Inc","Industrials","Engineering & Construction","USA",1755.52,28.16,33.25,-2.38%,558998
+234,"DGNX","Diginex Ltd","Industrials","Consulting Services","United Kingdom",1756.97,,8.70,-5.02%,636440
+235,"WERN","Werner Enterprises, Inc","Industrials","Trucking","USA",1769.18,72.69,29.57,2.71%,900744
+236,"HLIO","Helios Technologies Inc","Industrials","Specialty Industrial Machinery","USA",1795.23,53.45,54.19,0.07%,268892
+237,"NNE","Nano Nuclear Energy Inc","Industrials","Specialty Industrial Machinery","USA",1796.95,,35.76,-2.21%,1527399
+238,"ATRO","Astronics Corp","Industrials","Aerospace & Defense","USA",1831.18,,51.14,0.51%,322996
+239,"BWLP","BW LPG Limited","Industrials","Marine Shipping","Singapore",1861.48,10.88,12.30,-2.77%,563607
+240,"ENVX","Enovix Corporation","Industrials","Electrical Equipment & Parts","USA",1933.71,,8.96,-1.43%,4878720
+241,"CMRE","Costamare Inc","Industrials","Marine Shipping","Monaco",1939.94,6.44,16.13,-1.22%,613388
+242,"CXW","CoreCivic Inc","Industrials","Security & Protection Services","USA",1949.46,18.60,18.64,0.16%,785037
+243,"CECO","Ceco Environmental Corp","Industrials","Pollution & Treatment Controls","USA",1957.76,38.81,54.93,-1.24%,241196
+244,"EPAC","Enerpac Tool Group Corp","Industrials","Specialty Industrial Machinery","USA",1969.85,21.82,37.18,-1.14%,282335
+245,"LUNR","Intuitive Machines Inc","Industrials","Aerospace & Defense","USA",2020.26,,11.21,-1.67%,5972833
+246,"TIC","TIC Solutions Inc","Industrials","Specialty Business Services","USA",2104.14,,9.54,0.32%,1983285
+247,"KMT","Kennametal Inc","Industrials","Tools & Accessories","USA",2119.19,22.86,27.85,-0.29%,452630
+248,"ATKR","Atkore Inc","Industrials","Electrical Equipment & Parts","USA",2154.63,,63.84,-1.27%,349400
+249,"TRN","Trinity Industries, Inc","Industrials","Railroads","USA",2216.99,24.13,27.65,0.07%,417653
+250,"HI","Hillenbrand Inc","Industrials","Specialty Industrial Machinery","USA",2244.94,52.35,31.84,0.19%,452690
+251,"SBLK","Star Bulk Carriers Corp","Industrials","Marine Shipping","Greece",2343.27,38.94,20.45,-0.24%,1399799
+252,"RXO","RXO Inc","Industrials","Trucking","USA",2368.13,,14.43,1.33%,1410630
+253,"GEO","Geo Group, Inc","Industrials","Security & Protection Services","USA",2381.67,10.10,17.11,-0.29%,1441114
+254,"FA","First Advantage Corp","Industrials","Specialty Business Services","USA",2408.01,,13.83,-0.43%,425315
+255,"ZIM","Zim Integrated Shipping Services Ltd","Industrials","Marine Shipping","Israel",2412.76,2.41,20.03,-1.81%,4872953
+256,"AERO","Grupo Aeromexico S.A.B. De C.V. ADR","Industrials","Airlines","Mexico",2493.76,0.41,18.28,-4.69%,152861
+257,"HUBG","Hub Group, Inc","Industrials","Integrated Freight & Logistics","USA",2524.42,23.76,41.28,4.11%,1086738
+258,"DNOW","Dnow Inc","Industrials","Industrial Distribution","USA",2589.98,15.95,13.95,-2.45%,1713453
+259,"CMPO","CompoSecure Inc","Industrials","Metal Fabrication","USA",2595.22,,20.53,0.69%,707963
+260,"RHI","Robert Half Inc","Industrials","Staffing & Employment Services","USA",2711.80,17.40,26.80,-0.04%,2002630
+261,"ABM","ABM Industries Inc","Industrials","Specialty Business Services","USA",2732.87,24.25,44.63,0.77%,360241
+262,"TNET","TriNet Group Inc","Industrials","Staffing & Employment Services","USA",2737.25,20.81,56.99,-1.26%,299986
+263,"WOR","Worthington Enterprises Inc","Industrials","Metal Fabrication","USA",2743.99,25.85,55.25,0.20%,102407
+264,"REVG","REV Group Inc","Industrials","Farm & Heavy Construction Machinery","USA",2752.18,26.70,56.39,-0.72%,540480
+265,"CBZ","Cbiz Inc","Industrials","Specialty Business Services","USA",2852.81,34.53,52.44,-2.11%,665980
+266,"HAFN","Hafnia Ltd","Industrials","Marine Shipping","Singapore",2968.02,9.75,5.96,0.00%,1120085
+267,"PLUG","Plug Power Inc","Industrials","Electrical Equipment & Parts","USA",3061.14,,2.20,-1.35%,94430854
+268,"XMTR","Xometry Inc","Industrials","Industrial Distribution","USA",3064.10,,59.79,2.40%,662712
+269,"FLY","Firefly Aerospace Inc","Industrials","Aerospace & Defense","USA",3154.74,,19.81,-2.03%,1881834
+270,"AZZ","AZZ Inc","Industrials","Specialty Business Services","USA",3160.50,10.11,105.15,-1.53%,131200
+271,"TEX","Terex Corp","Industrials","Farm & Heavy Construction Machinery","USA",3268.85,21.13,49.83,-0.89%,1407615
+272,"AIR","AAR Corp","Industrials","Aerospace & Defense","USA",3271.82,104.34,82.70,-1.30%,296281
+273,"CXT","Crane NXT Co","Industrials","Specialty Industrial Machinery","USA",3336.22,21.76,58.10,-0.43%,521990
+274,"GFF","Griffon Corp","Industrials","Building Products & Equipment","USA",3416.48,74.03,73.90,0.89%,255066
+275,"OTTR","Otter Tail Corporation","Industrials","Conglomerates","USA",3441.70,12.40,82.13,-0.57%,138123
+276,"KFY","Korn Ferry","Industrials","Staffing & Employment Services","USA",3461.47,14.04,66.07,-0.62%,435119
+277,"HAYW","Hayward Holdings Inc","Industrials","Electrical Equipment & Parts","USA",3489.33,25.90,16.09,-0.49%,1057228
+278,"MYRG","MYR Group Inc","Industrials","Engineering & Construction","USA",3547.59,36.92,228.54,-0.73%,218080
+279,"TPC","Tutor Perini Corp","Industrials","Engineering & Construction","USA",3577.05,,67.82,-1.19%,493006
+280,"MATX","Matson Inc","Industrials","Marine Shipping","USA",3629.04,8.86,116.39,2.28%,229627
+281,"EXPO","Exponent Inc","Industrials","Engineering & Construction","USA",3652.74,35.96,73.22,-1.39%,358234
+282,"TREX","TREX Co., Inc","Industrials","Building Products & Equipment","USA",3700.29,18.71,34.50,0.79%,1688130
+283,"WSC","WillScot Holdings Corp","Industrials","Rental & Leasing Services","USA",3749.90,17.03,20.61,-2.78%,2478320
+284,"MWA","Mueller Water Products Inc","Industrials","Specialty Industrial Machinery","USA",3841.50,20.18,24.57,-0.28%,1011819
+285,"PL","Planet Labs PBC","Industrials","Aerospace & Defense","USA",3932.18,,12.77,-1.31%,5322840
+286,"VSEC","VSE Corp","Industrials","Aerospace & Defense","USA",3962.88,130.56,169.41,-1.09%,176739
+287,"POWL","Powell Industries, Inc","Industrials","Electrical Equipment & Parts","USA",4137.06,23.04,342.13,1.54%,147913
+288,"SKYW","Skywest Inc","Industrials","Airlines","USA",4146.74,9.87,103.40,1.24%,233608
+289,"CAAP","Corporacion America Airports S.A","Industrials","Airports & Air Services","Luxembourg",4188.07,22.72,25.68,-1.34%,79520
+290,"FELE","Franklin Electric Co., Inc","Industrials","Specialty Industrial Machinery","USA",4189.32,30.74,94.12,-0.41%,249415
+291,"MRCY","Mercury Systems Inc","Industrials","Aerospace & Defense","USA",4241.87,,70.58,-1.08%,503969
+292,"AGX","Argan, Inc","Industrials","Engineering & Construction","USA",4332.69,36.97,313.70,-11.98%,1340936
+293,"SNDR","Schneider National Inc","Industrials","Trucking","USA",4549.02,40.02,25.95,2.45%,996515
+294,"MMS","Maximus Inc","Industrials","Specialty Business Services","USA",4611.26,15.23,84.67,0.12%,830357
+295,"MSM","MSC Industrial Direct Co., Inc","Industrials","Industrial Distribution","USA",4626.68,23.25,82.93,0.59%,491373
+296,"SPR","Spirit Aerosystems Holdings Inc","Industrials","Aerospace & Defense","USA",4642.17,,39.50,0.23%,11351898
+297,"ECG","Everus Construction Group","Industrials","Engineering & Construction","USA",4679.85,25.90,91.75,-2.89%,547634
+298,"HRI","Herc Holdings Inc","Industrials","Rental & Leasing Services","USA",4700.68,,141.29,-0.30%,274082
+299,"GVA","Granite Construction Inc","Industrials","Engineering & Construction","USA",4717.67,31.77,108.08,-0.21%,633071
+300,"CAR","Avis Budget Group Inc","Industrials","Rental & Leasing Services","USA",4746.31,,134.85,0.75%,496568
+301,"BCO","Brink's Co","Industrials","Security & Protection Services","USA",4847.95,29.54,116.69,0.20%,141620
+302,"EOSE","Eos Energy Enterprises Inc","Industrials","Electrical Equipment & Parts","USA",4858.23,,14.99,-3.85%,15554283
+303,"LSTR","Landstar System, Inc","Industrials","Integrated Freight & Logistics","USA",4878.32,36.28,142.04,0.97%,500154
+304,"CPA","Copa Holdings S.A","Industrials","Airlines","Panama",4899.17,7.37,118.99,0.63%,204924
+305,"LGN","Legence Corp","Industrials","Engineering & Construction","USA",4928.86,,46.79,-3.01%,529368
+306,"REZI","Resideo Technologies Inc","Industrials","Industrial Distribution","USA",5061.86,,33.81,-1.28%,1112426
+307,"ACA","Arcosa Inc","Industrials","Engineering & Construction","USA",5262.04,35.52,107.29,0.12%,228228
+308,"FCN","FTI Consulting Inc","Industrials","Consulting Services","USA",5273.32,,170.79,2.48%,337651
+309,"ENS","Enersys","Industrials","Electrical Equipment & Parts","USA",5449.63,17.26,147.65,0.79%,336756
+310,"KBR","KBR Inc","Industrials","Engineering & Construction","USA",5625.64,14.40,44.30,-0.65%,1270904
+311,"GTES","Gates Industrial Corporation plc","Industrials","Specialty Industrial Machinery","USA",5640.84,24.02,21.84,-1.00%,2392105
+312,"ALK","Alaska Air Group Inc","Industrials","Airlines","USA",5758.83,39.84,49.65,4.92%,5739733
+313,"TKR","Timken Co","Industrials","Tools & Accessories","USA",5796.04,19.68,83.21,0.54%,760890
+314,"ROAD","Construction Partners Inc","Industrials","Engineering & Construction","USA",5820.28,56.49,103.04,-2.22%,270889
+315,"SITE","SiteOne Landscape Supply Inc","Industrials","Industrial Distribution","USA",5850.32,42.54,131.36,0.85%,423604
+316,"LPX","Louisiana-Pacific Corp","Industrials","Building Products & Equipment","USA",5864.68,27.16,84.21,2.46%,987095
+317,"CWST","Casella Waste Systems, Inc","Industrials","Waste Management","USA",6004.56,394.21,94.57,-0.15%,360964
+318,"GXO","GXO Logistics Inc","Industrials","Integrated Freight & Logistics","USA",6015.48,68.78,52.54,0.75%,633571
+319,"FBIN","Fortune Brands Innovations Inc","Industrials","Building Products & Equipment","USA",6033.35,18.76,50.22,-1.01%,1509395
+320,"HXL","Hexcel Corp","Industrials","Aerospace & Defense","USA",6097.81,90.27,76.60,-1.29%,659611
+321,"KEX","Kirby Corp","Industrials","Marine Shipping","USA",6120.26,20.96,112.92,1.16%,694662
+322,"LOAR","Loar Holdings Inc","Industrials","Aerospace & Defense","USA",6296.11,101.72,67.25,-0.84%,558936
+323,"ACHR","Archer Aviation Inc","Industrials","Aerospace & Defense","USA",6300.29,,8.60,-3.91%,40694014
+324,"MIR","Mirion Technologies Inc","Industrials","Specialty Industrial Machinery","USA",6350.11,212.39,25.02,-1.88%,2662367
+325,"MSA","MSA Safety Inc","Industrials","Security & Protection Services","USA",6355.55,22.87,162.33,-0.54%,230186
+326,"MIDD","Middleby Corp","Industrials","Specialty Industrial Machinery","USA",6360.38,,126.27,0.33%,687245
+327,"DLB","Dolby Laboratories Inc","Industrials","Specialty Business Services","USA",6398.89,25.53,67.00,1.41%,662516
+328,"SMR","NuScale Power Corporation","Industrials","Specialty Industrial Machinery","USA",6475.28,,21.39,-6.39%,25834745
+329,"BETA","BETA Technologies Inc","Industrials","Aerospace & Defense","USA",6481.15,,28.39,-4.86%,983652
+330,"ADT","ADT Inc","Industrials","Security & Protection Services","USA",6705.66,11.68,8.18,0.86%,6429442
+331,"ESAB","ESAB Corp","Industrials","Metal Fabrication","USA",6717.67,27.94,110.65,-2.30%,443899
+332,"FSS","Federal Signal Corp","Industrials","Pollution & Treatment Controls","USA",6740.02,28.93,110.84,-0.08%,213852
+333,"PRIM","Primoris Services Corp","Industrials","Engineering & Construction","USA",6789.71,24.83,125.66,-0.16%,680364
+334,"TTC","Toro Co","Industrials","Tools & Accessories","USA",6966.81,21.59,71.19,-0.18%,826390
+335,"AMTM","Amentum Holdings Inc","Industrials","Specialty Business Services","USA",7035.11,106.33,28.88,-1.26%,2885945
+336,"FLR","Fluor Corporation","Industrials","Engineering & Construction","USA",7085.58,2.23,43.96,-3.28%,2496807
+337,"AAON","AAON Inc","Industrials","Building Products & Equipment","USA",7136.38,72.66,87.53,0.79%,837364
+338,"AL","Air Lease Corp","Industrials","Rental & Leasing Services","USA",7145.14,7.42,63.93,-0.03%,1513083
+339,"JBTM","JBT Marel Corp","Industrials","Specialty Industrial Machinery","USA",7327.96,,141.00,-0.18%,241487
+340,"R","Ryder System, Inc","Industrials","Rental & Leasing Services","USA",7525.78,15.81,186.39,3.54%,406799
+341,"ZWS","Zurn Elkay Water Solutions Corp","Industrials","Pollution & Treatment Controls","USA",7842.06,41.71,46.86,-0.13%,886695
+342,"AGCO","AGCO Corp","Industrials","Farm & Heavy Construction Machinery","USA",7854.88,20.97,105.26,-0.50%,614318
+343,"AWI","Armstrong World Industries Inc","Industrials","Building Products & Equipment","USA",7929.95,26.33,183.87,-0.60%,280592
+344,"TFII","TFI International Inc","Industrials","Trucking","Canada",8003.53,25.29,97.26,1.58%,218861
+345,"OSK","Oshkosh Corp","Industrials","Farm & Heavy Construction Machinery","USA",8187.01,12.62,129.43,-1.14%,691048
+346,"AEIS","Advanced Energy Industries Inc","Industrials","Electrical Equipment & Parts","USA",8280.61,57.71,219.38,2.20%,403380
+347,"KNX","Knight-Swift Transportation Holdings Inc","Industrials","Trucking","USA",8327.99,58.59,51.30,0.73%,2965907
+348,"KRMN","Karman Holdings Inc","Industrials","Aerospace & Defense","USA",8660.50,764.60,65.45,-1.55%,1027386
+349,"CAE","Cae Inc","Industrials","Aerospace & Defense","Canada",8797.61,28.29,27.36,0.07%,431851
+350,"SAIA","Saia Inc","Industrials","Trucking","USA",8816.32,31.26,330.91,0.76%,544677
+351,"SARO","StandardAero Inc","Industrials","Aerospace & Defense","USA",8883.53,48.14,26.56,-0.19%,1229527
+352,"TTEK","Tetra Tech, Inc","Industrials","Engineering & Construction","USA",8904.68,36.47,34.14,-3.45%,3098531
+353,"POOL","Pool Corporation","Industrials","Industrial Distribution","USA",8922.00,21.86,239.52,-0.99%,677505
+354,"DRS","Leonardo DRS Inc","Industrials","Aerospace & Defense","USA",9018.31,34.38,33.90,-1.19%,512152
+355,"FLS","Flowserve Corp","Industrials","Specialty Industrial Machinery","USA",9157.40,20.96,72.04,0.21%,1274767
+356,"GTLS","Chart Industries Inc","Industrials","Specialty Industrial Machinery","USA",9220.75,247.43,205.12,0.01%,544013
+357,"OC","Owens Corning","Industrials","Building Products & Equipment","USA",9339.45,,113.63,1.46%,1198982
+358,"AOS","A.O. Smith Corp","Industrials","Specialty Industrial Machinery","USA",9472.35,18.37,68.03,1.24%,1931240
+359,"GNRC","Generac Holdings Inc","Industrials","Specialty Industrial Machinery","USA",9526.18,30.90,162.33,-0.56%,763930
+360,"UHAL-B","U-Haul Holding Company","Industrials","Rental & Leasing Services","USA",9629.78,48.40,48.74,0.00%,502670
+361,"RRX","Regal Rexnord Corp","Industrials","Specialty Industrial Machinery","USA",9668.33,37.67,145.63,2.96%,1000610
+362,"AIT","Applied Industrial Technologies Inc","Industrials","Industrial Distribution","USA",9727.83,24.81,257.91,-0.36%,221850
+363,"AAL","American Airlines Group Inc","Industrials","Airlines","USA",9775.88,17.80,14.81,3.28%,56593224
+364,"CNM","Core & Main Inc","Industrials","Industrial Distribution","USA",9874.54,22.36,50.23,0.70%,2639764
+365,"ARMK","Aramark","Industrials","Specialty Business Services","USA",9978.35,31.07,37.95,0.98%,1784351
+366,"STRL","Sterling Infrastructure Inc","Industrials","Engineering & Construction","USA",9986.87,31.88,325.10,-2.16%,1331571
+367,"DY","Dycom Industries, Inc","Industrials","Engineering & Construction","USA",10186.74,34.64,351.80,-0.73%,249200
+368,"SPXC","SPX Technologies Inc","Industrials","Building Products & Equipment","USA",10399.19,44.52,208.67,0.21%,259531
+369,"BAH","Booz Allen Hamilton Holding Corp","Industrials","Consulting Services","USA",10675.72,13.44,88.01,0.41%,2140505
+370,"DCI","Donaldson Co. Inc","Industrials","Specialty Industrial Machinery","USA",10714.48,28.84,92.44,-1.83%,758231
+371,"CR","Crane Co","Industrials","Specialty Industrial Machinery","USA",10816.12,33.93,187.79,-0.07%,309438
+372,"SWK","Stanley Black & Decker Inc","Industrials","Tools & Accessories","USA",11224.51,25.07,72.47,0.36%,1621406
+373,"EMBJ","Embraer S.A. ADR","Industrials","Aerospace & Defense","Brazil",11344.51,36.26,61.86,-2.83%,1501343
+374,"AYI","Acuity Inc","Industrials","Electrical Equipment & Parts","USA",11387.72,29.68,371.99,-0.73%,233048
+375,"WMS","Advanced Drainage Systems Inc","Industrials","Building Products & Equipment","USA",11580.69,25.40,148.92,-0.75%,574074
+376,"CNH","CNH Industrial NV","Industrials","Farm & Heavy Construction Machinery","United Kingdom",11766.06,19.79,9.44,-0.32%,9875424
+377,"HII","Huntington Ingalls Industries Inc","Industrials","Aerospace & Defense","USA",11952.15,21.04,304.58,-3.58%,632912
+378,"BLDR","Builders Firstsource Inc","Industrials","Building Products & Equipment","USA",12164.97,20.93,110.01,-0.90%,2135309
+379,"BLD","TopBuild Corp","Industrials","Engineering & Construction","USA",12268.43,22.19,437.04,-1.30%,201610
+380,"MLI","Mueller Industries, Inc","Industrials","Metal Fabrication","USA",12598.94,16.96,113.49,0.42%,511445
+381,"CLH","Clean Harbors, Inc","Industrials","Waste Management","USA",12682.58,32.93,237.36,0.42%,339338
+382,"ZTO","ZTO Express (Cayman) Inc ADR","Industrials","Integrated Freight & Logistics","China",12826.54,14.53,21.68,3.19%,2375848
+383,"KTOS","Kratos Defense & Security Solutions Inc","Industrials","Aerospace & Defense","USA",12916.31,622.96,76.50,-1.52%,1545066
+384,"MAS","Masco Corp","Industrials","Building Products & Equipment","USA",13126.36,16.19,63.20,-1.86%,4281652
+385,"IEX","Idex Corporation","Industrials","Specialty Industrial Machinery","USA",13288.77,28.07,177.54,-0.83%,597292
+386,"WCC","Wesco International, Inc","Industrials","Industrial Distribution","USA",13297.93,21.45,273.36,0.76%,278518
+387,"NDSN","Nordson Corp","Industrials","Specialty Industrial Machinery","USA",13424.59,30.03,238.93,0.22%,360379
+388,"ACM","AECOM","Industrials","Engineering & Construction","USA",13503.69,22.55,102.43,-2.60%,1375780
+389,"LECO","Lincoln Electric Holdings, Inc","Industrials","Tools & Accessories","USA",13503.97,26.30,245.41,0.56%,426552
+390,"CSL","Carlisle Companies Inc","Industrials","Building Products & Equipment","USA",13525.22,18.31,323.68,0.27%,405599
+391,"ATI","ATI Inc","Industrials","Metal Fabrication","USA",13642.07,32.38,100.41,0.01%,906556
+392,"ALLE","Allegion plc","Industrials","Security & Protection Services","Ireland",13685.96,21.53,159.08,-1.10%,1160511
+393,"GGG","Graco Inc","Industrials","Specialty Industrial Machinery","USA",13838.84,28.52,83.47,0.06%,592871
+394,"AVAV","AeroVironment Inc","Industrials","Aerospace & Defense","USA",13900.63,,278.39,-3.15%,848862
+395,"JOBY","Joby Aviation Inc","Industrials","Airports & Air Services","USA",13913.81,,15.26,-3.17%,18214626
+396,"RBC","RBC Bearings Inc","Industrials","Tools & Accessories","USA",14017.78,54.11,443.44,0.05%,126436
+397,"QXO","QXO Inc","Industrials","Industrial Distribution","USA",14040.84,,20.82,1.17%,7084216
+398,"WSO","Watsco Inc","Industrials","Industrial Distribution","USA",14114.36,27.13,347.77,-0.06%,306126
+399,"ITT","ITT Inc","Industrials","Specialty Industrial Machinery","USA",14117.22,30.07,180.99,-1.31%,890107
+400,"RTO","Rentokil Initial Plc. ADR","Industrials","Specialty Business Services","United Kingdom",14298.30,43.18,28.43,0.57%,380678
+401,"LTM","LATAM Airlines Group S.A. ADR","Industrials","Airlines","Chile",14593.80,12.23,50.83,-1.49%,865852
+402,"TXT","Textron Inc","Industrials","Aerospace & Defense","USA",14709.42,18.36,83.47,0.40%,1910235
+403,"CRS","Carpenter Technology Corp","Industrials","Metal Fabrication","USA",15300.36,37.57,307.12,-2.42%,978646
+404,"ULS","UL Solutions Inc","Industrials","Specialty Business Services","USA",15397.54,45.71,76.60,-0.18%,4294903
+405,"GFL","GFL Environmental Inc","Industrials","Waste Management","Canada",16059.85,,44.72,0.04%,907430
+406,"BWXT","BWX Technologies Inc","Industrials","Aerospace & Defense","USA",16262.07,53.20,177.87,-0.26%,813542
+407,"APG","APi Group Corporation","Industrials","Engineering & Construction","USA",16401.53,107.51,39.06,0.15%,1315137
+408,"J","Jacobs Solutions Inc","Industrials","Engineering & Construction","USA",16651.01,58.06,140.22,-0.36%,1692617
+409,"XPO","XPO Inc","Industrials","Trucking","USA",16776.56,51.37,142.92,1.47%,1264012
+410,"PNR","Pentair plc","Industrials","Specialty Industrial Machinery","United Kingdom",17059.67,26.45,104.25,-0.61%,777391
+411,"MTZ","Mastec Inc","Industrials","Engineering & Construction","USA",17320.33,52.19,219.52,0.18%,542889
+412,"NVT","nVent Electric plc","Industrials","Electrical Equipment & Parts","United Kingdom",17381.65,29.68,107.72,-0.51%,1329521
+413,"JBHT","J.B. Hunt Transport Services, Inc","Industrials","Integrated Freight & Logistics","USA",17940.09,32.61,188.41,0.47%,813343
+414,"LII","Lennox International Inc","Industrials","Building Products & Equipment","USA",17944.29,21.59,511.63,1.37%,370878
+415,"SNA","Snap-on, Inc","Industrials","Tools & Accessories","USA",18057.54,18.20,347.21,0.31%,194660
+416,"FTAI","FTAI Aviation Ltd","Industrials","Rental & Leasing Services","USA",18157.46,40.48,177.02,0.67%,614272
+417,"WWD","Woodward Inc","Industrials","Aerospace & Defense","USA",18167.24,42.18,303.45,0.60%,473379
+418,"RBA","RB Global Inc","Industrials","Specialty Business Services","USA",18500.29,47.53,99.63,1.53%,716076
+419,"CHRW","C.H. Robinson Worldwide, Inc","Industrials","Integrated Freight & Logistics","USA",18573.53,31.87,157.22,-0.53%,1388305
+420,"LUV","Southwest Airlines Co","Industrials","Airlines","USA",19574.32,57.68,37.85,5.70%,15212320
+421,"CW","Curtiss-Wright Corp","Industrials","Aerospace & Defense","USA",20081.93,44.36,544.60,-0.99%,243747
+422,"EXPD","Expeditors International Of Washington, Inc","Industrials","Integrated Freight & Logistics","USA",20300.15,24.66,151.47,0.64%,1599108
+423,"HUBB","Hubbell Inc","Industrials","Electrical Equipment & Parts","USA",23411.86,27.32,440.53,0.64%,389051
+424,"AER","Aercap Holdings N.V","Industrials","Rental & Leasing Services","Ireland",24717.55,6.64,139.99,0.05%,1691554
+425,"VLTO","Veralto Corp","Industrials","Pollution & Treatment Controls","USA",25366.06,28.00,102.16,-0.71%,962929
+426,"EFX","Equifax, Inc","Industrials","Consulting Services","USA",25887.56,40.09,211.51,0.11%,2491133
+427,"RKLB","Rocket Lab Corp","Industrials","Aerospace & Defense","USA",26203.04,,49.06,-0.64%,14633125
+428,"DOV","Dover Corp","Industrials","Specialty Industrial Machinery","USA",26208.61,11.75,191.09,0.24%,770735
+429,"EME","Emcor Group, Inc","Industrials","Engineering & Construction","USA",27916.89,25.08,623.62,-1.85%,387716
+430,"BE","Bloom Energy Corp","Industrials","Electrical Equipment & Parts","USA",28187.35,,119.18,0.92%,13499667
+431,"VRSK","Verisk Analytics Inc","Industrials","Consulting Services","USA",30834.79,33.77,221.24,-0.38%,1194752
+432,"IR","Ingersoll-Rand Inc","Industrials","Specialty Industrial Machinery","USA",31553.52,59.24,79.86,-0.16%,1620988
+433,"ODFL","Old Dominion Freight Line, Inc","Industrials","Trucking","USA",32441.62,31.21,155.15,1.07%,2833579
+434,"OTIS","Otis Worldwide Corp","Industrials","Specialty Industrial Machinery","USA",33690.93,25.47,86.45,-0.53%,2662428
+435,"XYL","Xylem Inc","Industrials","Specialty Industrial Machinery","USA",33844.63,35.76,139.01,-1.32%,1569325
+436,"UAL","United Airlines Holdings Inc","Industrials","Airlines","USA",33976.30,10.51,104.95,0.21%,6375735
+437,"RYAAY","Ryanair Holdings Plc ADR","Industrials","Airlines","Ireland",34743.48,12.87,66.10,1.74%,1274266
+438,"FIX","Comfort Systems USA, Inc","Industrials","Engineering & Construction","USA",35324.15,42.41,1001.48,-0.32%,381358
+439,"SYM","Symbotic Inc","Industrials","Specialty Industrial Machinery","USA",35352.20,,59.70,-1.29%,12422845
+440,"WAB","Westinghouse Air Brake Technologies Corp","Industrials","Railroads","USA",36747.25,31.24,214.95,0.43%,523003
+441,"CPRT","Copart, Inc","Industrials","Specialty Business Services","USA",37481.65,23.75,38.72,-0.21%,8192385
+442,"HEI","Heico Corp","Industrials","Aerospace & Defense","USA",37744.60,68.42,312.20,-1.09%,240228
+443,"AXON","Axon Enterprise Inc","Industrials","Aerospace & Defense","USA",43475.72,174.41,550.95,0.06%,389684
+444,"DAL","Delta Air Lines, Inc","Industrials","Airlines","USA",43813.80,9.46,67.10,-0.21%,7895552
+445,"WCN","Waste Connections Inc","Industrials","Waste Management","Canada",44319.62,71.97,173.11,-0.08%,744401
+446,"ROK","Rockwell Automation Inc","Industrials","Specialty Industrial Machinery","USA",45391.08,52.78,404.29,0.10%,780316
+447,"CARR","Carrier Global Corp","Industrials","Building Products & Equipment","USA",45723.57,21.79,54.29,-0.39%,9063920
+448,"AME","Ametek Inc","Industrials","Specialty Industrial Machinery","USA",45994.73,31.52,199.80,0.29%,1562450
+449,"GWW","W.W. Grainger Inc","Industrials","Industrial Distribution","USA",46386.28,27.23,975.54,0.68%,208263
+450,"FER","Ferrovial S.E","Industrials","Engineering & Construction","Netherlands",47511.89,13.09,66.03,-0.08%,852812
+451,"FAST","Fastenal Co","Industrials","Industrial Distribution","USA",47643.48,38.91,41.50,-0.60%,7062806
+452,"FERG","Ferguson Enterprises Inc","Industrials","Industrial Distribution","USA",48720.10,26.62,248.38,-0.46%,1584918
+453,"URI","United Rentals, Inc","Industrials","Rental & Leasing Services","USA",50707.50,20.50,796.91,-1.34%,697537
+454,"LHX","L3Harris Technologies Inc","Industrials","Aerospace & Defense","USA",52094.22,29.90,278.50,-0.72%,710973
+455,"PCAR","Paccar Inc","Industrials","Farm & Heavy Construction Machinery","USA",57945.80,21.60,110.33,1.69%,3093878
+456,"TRI","Thomson-Reuters Corp","Industrials","Specialty Business Services","Canada",59350.55,34.30,133.42,-0.19%,723505
+457,"CNI","Canadian National Railway Co","Industrials","Railroads","Canada",60417.48,18.64,98.16,-0.41%,944133
+458,"FDX","Fedex Corp","Industrials","Integrated Freight & Logistics","USA",64720.23,16.03,274.29,0.09%,1034046
+459,"CP","Canadian Pacific Kansas City Limited","Industrials","Railroads","Canada",66445.22,22.39,73.76,-0.26%,2993419
+460,"RSG","Republic Services, Inc","Industrials","Waste Management","USA",67029.81,32.18,216.53,0.66%,1438021
+461,"CSX","CSX Corp","Industrials","Railroads","USA",67595.57,23.60,36.30,0.33%,10499834
+462,"PWR","Quanta Services, Inc","Industrials","Engineering & Construction","USA",68688.75,68.34,460.64,-0.90%,728790
+463,"JCI","Johnson Controls International plc","Industrials","Building Products & Equipment","Ireland",69810.02,22.43,114.23,0.03%,4329307
+464,"CMI","Cummins Inc","Industrials","Specialty Industrial Machinery","USA",70488.21,26.51,510.65,-0.02%,1063433
+465,"NSC","Norfolk Southern Corp","Industrials","Railroads","USA",71990.78,22.44,294.19,-0.32%,1045061
+466,"VRT","Vertiv Holdings Co","Industrials","Electrical Equipment & Parts","USA",72269.59,71.25,189.02,3.55%,7445754
+467,"ITW","Illinois Tool Works, Inc","Industrials","Specialty Industrial Machinery","USA",72437.97,24.23,249.70,0.13%,782716
+468,"RELX","RELX Plc ADR","Industrials","Specialty Business Services","United Kingdom",73350.14,30.14,40.32,-0.54%,2277996
+469,"CTAS","Cintas Corporation","Industrials","Specialty Business Services","USA",75048.61,41.50,186.75,1.48%,1709170
+470,"TDG","Transdigm Group Incorporated","Industrials","Aerospace & Defense","USA",75853.25,41.97,1346.86,-0.97%,178649
+471,"HWM","Howmet Aerospace Inc","Industrials","Aerospace & Defense","USA",76785.85,53.60,190.98,-2.70%,2754339
+472,"EMR","Emerson Electric Co","Industrials","Specialty Industrial Machinery","USA",77185.70,33.95,137.39,0.55%,1578770
+473,"NOC","Northrop Grumman Corp","Industrials","Aerospace & Defense","USA",78349.03,19.71,548.97,-0.73%,785551
+474,"UPS","United Parcel Service, Inc","Industrials","Integrated Freight & Logistics","USA",80486.34,14.66,94.87,0.12%,5523608
+475,"WM","Waste Management, Inc","Industrials","Waste Management","USA",86044.35,33.66,213.58,-0.28%,1277409
+476,"MMM","3M Co","Industrials","Conglomerates","USA",88969.57,26.76,167.48,-1.06%,3021437
+477,"TT","Trane Technologies plc","Industrials","Building Products & Equipment","Ireland",89012.68,30.89,401.43,-0.97%,1166572
+478,"GD","General Dynamics Corp","Industrials","Aerospace & Defense","USA",91114.32,21.86,337.31,-1.28%,1317905
+479,"LMT","Lockheed Martin Corp","Industrials","Aerospace & Defense","USA",104638.09,25.24,452.20,0.86%,1290903
+480,"PH","Parker-Hannifin Corp","Industrials","Specialty Industrial Machinery","USA",111044.30,31.34,880.00,0.73%,592351
+481,"HON","Honeywell International Inc","Industrials","Conglomerates","USA",121472.97,20.16,191.33,-0.47%,4294581
+482,"DE","Deere & Co","Industrials","Farm & Heavy Construction Machinery","USA",128436.20,25.67,475.11,-1.64%,1224918
+483,"ETN","Eaton Corporation plc","Industrials","Specialty Industrial Machinery","Ireland",131147.14,33.77,337.66,-0.37%,1845606
+484,"UNP","Union Pacific Corp","Industrials","Railroads","USA",139576.69,19.97,235.31,-0.83%,2494724
+485,"BA","Boeing Co","Industrials","Aerospace & Defense","USA",153455.67,,201.89,0.01%,6857199
+486,"GEV","GE Vernova Inc","Industrials","Specialty Industrial Machinery","USA",171290.04,102.31,631.32,0.35%,2348031
+487,"RTX","RTX Corp","Industrials","Aerospace & Defense","USA",229406.09,35.13,171.10,-0.12%,3032825
+488,"CAT","Caterpillar Inc","Industrials","Farm & Heavy Construction Machinery","USA",282271.24,30.95,603.17,0.67%,2177278
+489,"GE","GE Aerospace","Industrials","Aerospace & Defense","USA",299503.85,37.86,283.94,-2.71%,5220332
+490,"SMJF","SMJ International Holdings Inc","Industrials","Building Products & Equipment","USA",,,4.40,-2.44%,190794
+491,"ICON","Icon Energy Corp","Industrials","Marine Shipping","USA",,,0.80,-3.41%,143156
+492,"RUBI","Rubico Inc","Industrials","Marine Shipping","USA",,,2.65,-6.69%,1335597
+493,"OFAL","OFA Group","Industrials","Engineering & Construction","USA",,,0.84,2.32%,16615
+494,"ETS","Elite Express Holding Inc","Industrials","Trucking","USA",,,0.61,-0.57%,32636
+495,"FOFO","Hang Feng Technology Innovation Co Ltd","Industrials","Consulting Services","USA",,,12.40,1.64%,46859

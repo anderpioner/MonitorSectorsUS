@@ -1,0 +1,621 @@
+"No.","Ticker","Company","Sector","Industry","Country","Market Cap","P/E","Price","Change","Volume"
+1,"QH","Quhuo Ltd ADR","Technology","Software - Application","China",0.99,0.49,1.00,0.00%,635508
+2,"TAOP","Taoping Inc","Technology","Software - Infrastructure","China",2.51,,2.50,-2.72%,65727
+3,"HUBC","Hub Cyber Security Ltd","Technology","Software - Infrastructure","Israel",2.59,,0.85,-15.83%,2466560
+4,"IMTE","Integrated Media Technology Limited","Technology","Electronic Components","Malaysia",2.60,,0.76,2.83%,52606
+5,"BIYA","Baiya International Group Inc","Technology","Software - Application","China",3.23,,0.26,-1.15%,262701
+6,"WTO","UTime Ltd","Technology","Consumer Electronics","China",3.30,,1.13,-2.59%,232825
+7,"JDZG","Jiade Ltd","Technology","Information Technology Services","China",3.31,,1.43,-5.29%,14212
+8,"AUUD","Auddia Inc","Technology","Software - Application","USA",3.50,,1.13,-1.74%,46680
+9,"MYSZ","My Size Inc","Technology","Software - Application","Israel",3.71,,0.96,-4.52%,223288
+10,"FRGT","Freight Technologies Inc","Technology","Software - Application","USA",4.13,,0.70,6.43%,1551828
+11,"MASK","3 E Network Technology Group Ltd","Technology","Software - Application","China",4.14,2.57,0.37,-1.41%,77060
+12,"BOXL","Boxlight Corporation","Technology","Consumer Electronics","USA",4.62,,0.81,-12.93%,201853
+13,"ASNS","Actelis Networks Inc","Technology","Communication Equipment","USA",4.75,,2.72,-14.20%,147157
+14,"SGN","Signing Day Sports Inc","Technology","Software - Application","USA",4.82,,1.20,-4.76%,185517
+15,"ULY","Urgent.ly Inc","Technology","Software - Application","USA",4.89,,2.23,19.25%,460906
+16,"EPWK","EPWK Holdings Ltd","Technology","Software - Application","China",5.11,,1.38,-2.13%,127602
+17,"AGMH","AGM Group Holdings Inc","Technology","Computer Hardware","Hong Kong",5.67,0.07,2.81,0.35%,19500
+18,"ASTC","Astrotech Corp","Technology","Scientific & Technical Instruments","USA",5.98,,3.40,0.44%,4821
+19,"ASTI","Ascent Solar Technologies Inc","Technology","Solar","USA",6.71,,1.93,-0.52%,52814
+20,"LGCL","Lucas GC Ltd","Technology","Software - Application","China",7.00,0.04,2.51,2.45%,8673
+21,"AIXI","Xiao-I Corp ADR","Technology","Software - Application","China",7.21,,0.68,-1.27%,160184
+22,"MITQ","Moving iMage Technologies Inc","Technology","Communication Equipment","USA",7.37,,0.74,-3.48%,59904
+23,"IFBD","Infobird Co Ltd","Technology","Software - Application","Hong Kong",8.19,,1.00,-11.51%,21704
+24,"GLE","Global Engine Group Holding Ltd","Technology","Information Technology Services","Hong Kong",8.21,,0.45,4.81%,18030
+25,"SMTK","SmartKem Inc","Technology","Semiconductor Equipment & Materials","United Kingdom",8.33,,1.52,4.11%,108155
+26,"MSN","Emerson Radio Corp","Technology","Consumer Electronics","USA",9.12,,0.43,1.03%,21669
+27,"BNZI","Banzai International Inc","Technology","Software - Application","USA",9.14,,1.21,-8.33%,194256
+28,"PRSO","Peraso Inc","Technology","Semiconductors","USA",9.27,,1.00,5.80%,395005
+29,"RPGL","Republic Power Group Ltd","Technology","Software - Application","Singapore",9.29,,0.54,-0.81%,422902
+30,"FUSE","Fusemachines Inc","Technology","Software - Application","USA",10.06,,1.78,-1.11%,26849
+31,"ARBB","ARB IOT Group Ltd","Technology","Information Technology Services","Singapore",10.63,,6.02,-8.79%,10264
+32,"TURB","Turbo Energy S.A. ADR","Technology","Solar","Spain",10.69,,0.97,0.25%,209028
+33,"AMST","Amesite Inc","Technology","Software - Application","USA",10.79,,2.36,-4.45%,8963
+34,"IZM","Iczoom Group Inc","Technology","Electronics & Computer Distribution","China",10.82,8.44,0.90,-3.24%,10621
+35,"HTCR","HeartCore Enterprises Inc","Technology","Software - Application","Japan",11.27,,0.44,-3.76%,65192
+36,"RVYL","Ryvyl Inc","Technology","Software - Infrastructure","USA",11.40,,0.32,-6.26%,1966565
+37,"TGHL","Growhub Ltd","Technology","Software - Infrastructure","Singapore",11.81,,0.47,18.30%,179064
+38,"CXAI","CXApp Inc","Technology","Software - Application","USA",11.90,,0.42,-4.24%,337702
+39,"BNAI","Brand Engagement Network Inc","Technology","Software - Infrastructure","USA",11.90,,0.27,-6.09%,1537663
+40,"WLDS","Wearable Devices Ltd","Technology","Consumer Electronics","Israel",12.57,,1.90,-3.55%,262241
+41,"AIXC","AIxCrypto Holdings Inc","Technology","Software - Infrastructure","USA",12.90,,2.50,-4.94%,67392
+42,"WCT","Wellchange Holdings Co. Ltd","Technology","Software - Application","Hong Kong",12.90,,0.24,6.18%,159663
+43,"CYCU","Cycurion Inc","Technology","Information Technology Services","USA",13.83,,4.15,14.64%,393034
+44,"NVNI","Nvni Group Ltd","Technology","Software - Application","Brazil",13.99,,4.05,18.08%,1089624
+45,"SMSI","Smith Micro Software, Inc","Technology","Software - Application","USA",14.46,,0.62,-2.16%,89718
+46,"ZSPC","Zspace Inc","Technology","Computer Hardware","USA",15.35,,0.53,28.29%,2868587
+47,"ELWS","Earlyworks Co Ltd ADR","Technology","Software - Application","Japan",16.20,,5.36,-0.37%,7039
+48,"IPM","Intelligent Protection Management Corp","Technology","Software - Application","USA",16.99,,1.87,0.54%,13625
+49,"NXPL","NextPlat Corp","Technology","Software - Application","USA",17.02,,0.65,7.65%,231071
+50,"YAAS","Youxin Technology Ltd","Technology","Software - Application","China",18.15,,1.61,-5.29%,58744
+51,"WKEY","WISeKey International Holding Ltd ADR","Technology","Semiconductors","Switzerland",18.21,,9.06,-7.65%,383585
+52,"AUID","authID Inc","Technology","Software - Infrastructure","USA",18.69,,1.24,-7.46%,232660
+53,"YYAI","AiRWA Inc","Technology","Software - Infrastructure","USA",19.74,,1.04,0.00%,16221122
+54,"RYDE","Ryde Group Ltd","Technology","Software - Application","Singapore",19.79,,0.47,-4.28%,52863
+55,"CISO","CISO Global Inc","Technology","Software - Infrastructure","USA",20.16,,0.46,-13.63%,749312
+56,"TGL","Treasure Global Inc","Technology","Software - Application","USA",21.58,,25.44,276.44%,25611824
+57,"WETH","Wetouch Technology Inc","Technology","Electronic Components","China",21.72,2.92,1.82,-2.15%,168756
+58,"CSAI","Cloudastructure Inc","Technology","Software - Infrastructure","USA",21.73,,1.11,-3.48%,217151
+59,"AIFF","Firefly Neuroscience Inc","Technology","Software - Application","USA",21.99,,1.63,-5.78%,183946
+60,"SELX","Semilux International Ltd","Technology","Electronic Components","Cayman Islands",22.56,,0.60,-11.67%,34947
+61,"IDAI","T Stamp Inc","Technology","Software - Application","USA",22.92,,4.37,-2.89%,127569
+62,"VEEA","Veea Inc","Technology","Information Technology Services","USA",23.58,,0.47,-0.93%,43202
+63,"BTTC","Black Titan Corp","Technology","Software - Application","Malaysia",24.56,,3.18,-4.79%,61661
+64,"FTFT","Future FinTech Group Inc","Technology","Software - Application","USA",24.59,,1.22,-4.69%,46402
+65,"SLAI","SOLAI Ltd. ADR","Technology","Information Technology Services","USA",26.53,,1.42,-6.58%,48559
+66,"QCLS","Q/C Technologies Inc","Technology","Computer Hardware","USA",28.54,,6.85,-1.01%,28777227
+67,"MSAI","MultiSensor AI Holdings Inc","Technology","Software - Infrastructure","USA",28.79,,0.55,-7.15%,1591171
+68,"MKDW","MKDWELL Tech Inc","Technology","Electronic Components","Taiwan",29.01,,0.20,0.50%,274043
+69,"NXTT","Next Technology Holding Inc","Technology","Software - Application","China",29.44,0.01,7.21,2.85%,60256
+70,"CYN","Cyngn Inc","Technology","Software - Application","USA",29.74,,3.73,-4.60%,113905
+71,"SAGT","Sagtec Global Ltd","Technology","Software - Application","Malaysia",29.87,2.99,2.38,0.00%,22243
+72,"INTZ","Intrusion Inc","Technology","Software - Infrastructure","USA",29.95,,1.49,-3.25%,69160
+73,"NOTE","FiscalNote Holdings Inc","Technology","Information Technology Services","USA",31.26,,1.99,-5.24%,255848
+74,"VVPR","VivoPower International PLC","Technology","Solar","United Kingdom",31.32,,2.50,-6.02%,170987
+75,"MCRP","Micropolis Holding Co","Technology","Software - Infrastructure","United Arab Emirates",32.70,,0.94,-16.30%,797047
+76,"MOBX","Mobix Labs Inc","Technology","Semiconductors","USA",32.97,,0.54,0.31%,597706
+77,"FOXX","Foxx Development Holdings Inc","Technology","Consumer Electronics","USA",33.83,,4.92,23.93%,224349
+78,"BMR","Beamr Imaging Ltd","Technology","Software - Application","Israel",35.38,,2.28,-6.17%,95305
+79,"BEEM","Beam Global","Technology","Solar","USA",36.16,,1.90,-4.04%,158968
+80,"BLBX","Blackboxstocks Inc","Technology","Software - Application","USA",36.37,,8.78,5.66%,143597
+81,"FATN","Fatpipe Inc","Technology","Software - Infrastructure","USA",37.18,86.13,2.67,-3.26%,18073
+82,"GMM","Global Mofy AI Ltd","Technology","Information Technology Services","China",39.15,0.74,1.34,5.10%,21857
+83,"NEON","Neonode Inc","Technology","Electronic Components","Sweden",39.27,4.37,2.34,-4.88%,229719
+84,"PHUN","Phunware Inc","Technology","Software - Application","USA",41.79,,2.07,-5.05%,103067
+85,"TAOX","TAO Synergies Inc","Technology","Software - Infrastructure","USA",42.70,,5.99,-10.19%,133662
+86,"HKIT","Hitek Global Inc","Technology","Software - Application","China",42.78,,1.46,-8.75%,768215
+87,"PXLW","Pixelworks Inc","Technology","Semiconductors","USA",43.49,,6.91,0.14%,48897
+88,"TDTH","Trident Digital Tech Holdings Ltd. ADR","Technology","Information Technology Services","Singapore",45.17,,0.60,8.82%,77681
+89,"UAVS","AgEagle Aerial Systems Inc","Technology","Computer Hardware","USA",50.49,,1.26,-7.35%,1826480
+90,"OPTX","Syntec Optics Holdings Inc","Technology","Electronic Components","USA",50.95,,1.38,-5.48%,90639
+91,"HOLO","MicroCloud Hologram Inc","Technology","Electronic Components","China",52.01,0.30,3.57,-4.03%,488745
+92,"LHSW","Lianhe Sowell International Group Ltd","Technology","Software - Infrastructure","China",52.52,16.16,1.01,17.07%,84749
+93,"CMBM","Cambium Networks Corp","Technology","Communication Equipment","USA",53.66,,1.90,9.83%,5324570
+94,"ICG","Intchains Group Ltd ADR","Technology","Semiconductors","China",55.18,8.77,1.84,-1.08%,182777
+95,"LPSN","Liveperson Inc","Technology","Software - Application","USA",58.46,,4.93,-4.09%,102567
+96,"CPSH","CPS Technologies Corporation","Technology","Electronic Components","USA",59.15,,3.29,-2.66%,62531
+97,"XBP","XBP Global Holdings Inc","Technology","Software - Infrastructure","USA",62.04,0.06,0.53,-20.26%,592320
+98,"MTC","Mmtec Inc","Technology","Software - Application","Hong Kong",62.72,,2.49,-6.39%,71754
+99,"UBXG","U-BX Technology Ltd","Technology","Software - Infrastructure","China",62.86,,2.08,1.26%,21148
+100,"HIT","Health In Tech Inc","Technology","Software - Application","USA",64.88,45.42,1.14,-10.24%,1307722
+101,"PSQH","PSQ Holdings Inc","Technology","Software - Application","USA",67.51,,1.46,-1.35%,615022
+102,"AMPG","Amplitech Group Inc","Technology","Communication Equipment","USA",68.52,,3.32,-4.05%,266197
+103,"RCT","RedCloud Holdings PLC","Technology","Software - Application","United Kingdom",70.76,,1.60,-3.61%,139399
+104,"ZEO","Zeo Energy Corp","Technology","Solar","USA",72.49,,1.26,-1.56%,109158
+105,"ATOM","Atomera Inc","Technology","Semiconductor Equipment & Materials","USA",78.89,,2.49,-0.80%,1204966
+106,"STEC","Santech Holdings Ltd. ADR","Technology","Software - Application","China",80.92,,0.96,-3.48%,25190
+107,"MLGO","MicroAlgo Inc","Technology","Software - Infrastructure","China",80.97,0.95,6.51,-5.65%,68237
+108,"GCTS","GCT Semiconductor Holding Inc","Technology","Semiconductors","USA",81.08,,1.42,-2.07%,150139
+109,"MIND","MIND Technology Inc","Technology","Scientific & Technical Instruments","USA",81.61,18.80,10.24,0.49%,150872
+110,"DHX","DHI Group Inc","Technology","Software - Application","USA",83.47,,1.77,1.72%,112235
+111,"ILLR","Triller Group Inc","Technology","Software - Application","USA",95.91,,0.55,-1.48%,517400
+112,"SPRU","Spruce Power Holding Corporation","Technology","Solar","USA",96.29,,5.30,4.13%,89636
+113,"CMTL","Comtech Telecommunications Corp","Technology","Communication Equipment","USA",96.30,,3.25,-1.22%,56584
+114,"TCGL","TechCreate Group Ltd","Technology","Software - Application","Singapore",96.49,,5.52,-1.60%,2817700
+115,"CTM","Castellum Inc","Technology","Information Technology Services","USA",98.40,,1.04,-0.95%,1155903
+116,"SQNS","Sequans Communications S.A ADR","Technology","Semiconductors","France",98.53,,6.32,-3.95%,67505
+117,"TYGO","Tigo Energy Inc","Technology","Solar","USA",104.82,,1.49,-6.29%,284193
+118,"NUKK","Nukkleus Inc","Technology","Software - Application","USA",107.53,0.34,6.46,-11.14%,1341799
+119,"MX","MagnaChip Semiconductor Corp","Technology","Semiconductors","South Korea",107.59,,2.99,-0.33%,559158
+120,"ZENA","ZenaTech Inc","Technology","Software - Infrastructure","Canada",112.01,,3.39,-3.14%,515988
+121,"VELO","Velo3D Inc","Technology","Computer Hardware","USA",116.48,,5.57,-12.15%,437132
+122,"LIDR","AEye Inc","Technology","Software - Infrastructure","USA",118.95,,2.64,-2.94%,1333401
+123,"QMCO","Quantum Corp","Technology","Computer Hardware","USA",119.65,,8.72,-0.23%,492089
+124,"AISP","Airship AI Holdings Inc","Technology","Software - Infrastructure","USA",126.79,,3.71,-4.87%,455424
+125,"ASYS","Amtech Systems Inc","Technology","Semiconductor Equipment & Materials","USA",127.54,,8.91,3.48%,77114
+126,"IDN","Intellicheck Inc","Technology","Software - Application","USA",128.91,644.44,6.38,-1.09%,130717
+127,"RDZN","Roadzen Inc","Technology","Software - Application","USA",130.67,,1.65,-1.79%,203110
+128,"ARAI","Arrive AI Inc","Technology","Software - Infrastructure","USA",131.38,,3.84,-2.78%,56672
+129,"SPWR","SunPower Inc","Technology","Solar","USA",132.97,,1.60,-0.62%,789918
+130,"MAPS","WM Technology Inc","Technology","Software - Application","USA",137.39,11.65,0.87,-3.63%,412054
+131,"WRAP","Wrap Technologies Inc","Technology","Scientific & Technical Instruments","USA",143.82,,2.79,2.57%,1002533
+132,"EXFY","Expensify Inc","Technology","Software - Application","USA",148.86,,1.60,-1.23%,326524
+133,"AMBR","Amber International Holding Ltd. ADR","Technology","Software - Infrastructure","Singapore",153.86,,1.78,-9.64%,353755
+134,"ARBE","Arbe Robotics Ltd","Technology","Scientific & Technical Instruments","Israel",159.85,,1.52,-6.17%,2294824
+135,"XTKG","X3 Holdings Co Ltd","Technology","Software - Application","Singapore",164.37,,1.69,2.42%,345917
+136,"OSS","One Stop Systems Inc","Technology","Computer Hardware","USA",171.12,,6.98,6.40%,921941
+137,"VLN","Valens Semiconductor Ltd","Technology","Semiconductors","Israel",171.97,,1.68,0.00%,413006
+138,"CURR","Currenc Group Inc","Technology","Software - Application","Singapore",172.34,,2.25,-4.26%,146625
+139,"TTEC","TTEC Holdings Inc","Technology","Information Technology Services","USA",173.81,,3.58,-4.79%,172925
+140,"ALTS","ALT5 Sigma Corp","Technology","Software - Application","USA",173.90,,1.43,-9.49%,3033661
+141,"CRNT","Ceragon Networks Ltd","Technology","Communication Equipment","Israel",176.79,130.92,1.99,0.51%,265981
+142,"KULR","KULR Technology Group Inc","Technology","Electronic Components","USA",179.50,,3.93,-0.51%,1359428
+143,"INSG","Inseego Corp","Technology","Communication Equipment","USA",179.79,,11.73,1.65%,175036
+144,"TONX","TON Strategy Co","Technology","Software - Application","USA",180.82,,3.06,-14.53%,459099
+145,"DFDV","DeFi Development Corp","Technology","Software - Infrastructure","USA",188.41,2.40,6.00,-14.04%,2562739
+146,"MRAM","Everspin Technologies Inc","Technology","Semiconductors","USA",198.17,,8.67,0.81%,142136
+147,"DUOT","Duos Technologies Group Inc","Technology","Software - Application","USA",199.46,,9.77,-3.27%,116540
+148,"UIS","Unisys Corp","Technology","Information Technology Services","USA",201.08,,2.82,0.36%,673066
+149,"ZEPP","Zepp Health Corporation ADR","Technology","Consumer Electronics","Netherlands",201.20,,28.58,-3.05%,121547
+150,"LTRX","Lantronix Inc","Technology","Communication Equipment","USA",218.44,,5.55,-1.25%,194068
+151,"IMMR","Immersion Corp","Technology","Software - Application","USA",220.94,2.61,6.82,0.15%,322757
+152,"VUZI","Vuzix Corporation","Technology","Consumer Electronics","USA",221.95,,2.77,0.36%,922109
+153,"NUAI","New Era Energy & Digital Inc","Technology","Software - Infrastructure","USA",230.90,,4.32,-2.37%,3604085
+154,"GSIT","GSI Technology Inc","Technology","Semiconductors","USA",237.88,,6.75,-5.59%,828360
+155,"PDYN","Palladyne AI Corp","Technology","Software - Infrastructure","USA",239.19,,5.69,-4.37%,2026129
+156,"REKR","Rekor Systems Inc","Technology","Software - Infrastructure","USA",239.44,,1.89,-2.07%,2072278
+157,"NRDY","Nerdy Inc","Technology","Software - Application","USA",247.28,,1.32,-2.94%,1608153
+158,"MEI","Methode Electronics, Inc","Technology","Electronic Components","USA",247.50,,6.99,-9.69%,591132
+159,"RXT","Rackspace Technology Inc","Technology","Software - Infrastructure","USA",248.46,,1.02,-0.97%,545272
+160,"TSSI","TSS Inc","Technology","Information Technology Services","USA",248.93,43.90,8.63,-8.77%,1676581
+161,"KLTR","Kaltura Inc","Technology","Software - Application","USA",256.39,,1.64,2.50%,260462
+162,"EGAN","eGain Corp","Technology","Software - Application","USA",272.68,8.13,10.08,-4.09%,285889
+163,"AZ","A2Z Cust2Mate Solutions Corp","Technology","Software - Application","Canada",277.09,,6.47,-3.58%,205760
+164,"DDD","3D Systems Corp","Technology","Computer Hardware","USA",278.07,,2.16,-4.00%,1290358
+165,"XPER","Xperi Inc","Technology","Software - Application","USA",278.94,39.95,6.02,2.56%,513577
+166,"MVIS","Microvision Inc","Technology","Scientific & Technical Instruments","USA",280.05,,0.92,-0.65%,2514671
+167,"TBCH","Turtle Beach Corp","Technology","Consumer Electronics","USA",281.17,16.88,14.56,1.32%,117673
+168,"EGHT","8X8 Inc","Technology","Software - Application","USA",281.44,,2.03,0.00%,368310
+169,"API","Agora Inc ADR","Technology","Software - Application","China",281.50,78.42,3.78,-1.05%,230261
+170,"III","Information Services Group Inc","Technology","Information Technology Services","USA",285.87,30.80,5.97,3.47%,342161
+171,"DAVA","Endava plc ADR","Technology","Software - Infrastructure","United Kingdom",287.53,33.77,6.74,4.01%,3813733
+172,"BLZE","Backblaze Inc","Technology","Software - Infrastructure","USA",287.92,,4.99,2.67%,725780
+173,"ALMU","Aeluma Inc","Technology","Semiconductors","USA",288.23,,16.14,-1.77%,233117
+174,"BZAI","Blaize Holdings Inc","Technology","Software - Application","USA",291.94,,2.41,-2.03%,1265417
+175,"PAYS","PaySign Inc","Technology","Software - Infrastructure","USA",293.38,40.53,5.33,0.00%,237525
+176,"GPRO","GoPro Inc","Technology","Consumer Electronics","USA",297.13,,1.83,-0.54%,3269039
+177,"CNDT","Conduent Inc","Technology","Information Technology Services","USA",298.13,,1.95,-1.52%,1350150
+178,"FEIM","Frequency Electronics, Inc","Technology","Communication Equipment","USA",305.35,13.71,31.32,4.71%,177668
+179,"HKD","AMTD Digital Inc ADR","Technology","Software - Application","France",305.38,,1.55,-4.32%,542530
+180,"LZMH","LZ Technology Holdings Ltd","Technology","Information Technology Services","China",312.26,,2.41,-4.37%,895997
+181,"USBC","USBC Inc","Technology","Scientific & Technical Instruments","USA",329.92,,0.85,-0.58%,466556
+182,"CHOW","ChowChow Cloud International Holdings Ltd","Technology","Software - Infrastructure","Hong Kong",332.75,218.94,9.48,-6.88%,527206
+183,"GRRR","Gorilla Technology Group Inc","Technology","Software - Infrastructure","United Kingdom",339.36,,14.97,-3.36%,531791
+184,"BGIN","Bgin Blockchain Ltd","Technology","Computer Hardware","Singapore",343.95,,3.04,-0.33%,19731
+185,"XRX","Xerox Holdings Corp","Technology","Information Technology Services","USA",344.43,,2.69,-3.58%,3464104
+186,"DOMO","Domo Inc","Technology","Software - Application","USA",364.28,,8.84,-23.64%,4635648
+187,"SMRT","SmartRent Inc","Technology","Software - Application","USA",372.73,,1.97,4.79%,2603463
+188,"CMRC","Commerce.com Inc","Technology","Software - Application","USA",377.06,,4.64,-1.28%,444996
+189,"RMNI","Rimini Street Inc","Technology","Software - Application","USA",381.69,9.06,4.16,2.21%,354612
+190,"TTGT","Techtarget Inc","Technology","Information Technology Services","USA",388.93,,5.39,0.00%,253000
+191,"UMAC","Unusual Machines Inc","Technology","Computer Hardware","USA",393.46,,10.67,-2.47%,1915712
+192,"NNDM","Nano Dimension Ltd ADR","Technology","Computer Hardware","Israel",394.81,,1.82,1.68%,2310516
+193,"LPTH","Lightpath Technologies, Inc","Technology","Electronic Components","USA",399.76,,8.80,-2.44%,752053
+194,"TLS","Telos Corp","Technology","Software - Infrastructure","USA",401.22,,5.44,-1.98%,643512
+195,"MITK","Mitek Systems Inc","Technology","Software - Application","USA",424.52,28.22,9.30,0.11%,291640
+196,"PUBM","PubMatic Inc","Technology","Software - Application","USA",426.09,,9.18,0.88%,464331
+197,"BKKT","Bakkt Holdings Inc","Technology","Software - Infrastructure","USA",436.98,,14.00,-10.26%,2205976
+198,"XNET","Xunlei Ltd ADR","Technology","Software - Infrastructure","China",450.20,0.36,7.17,-0.69%,110943
+199,"BAND","Bandwidth Inc","Technology","Software - Infrastructure","USA",453.55,,14.86,1.02%,197899
+200,"IMXI","International Money Express Inc","Technology","Software - Infrastructure","USA",457.67,12.07,15.40,0.33%,129290
+201,"ALLT","Allot Ltd","Technology","Software - Infrastructure","Israel",461.75,462.62,9.53,0.95%,261779
+202,"PRTH","Priority Technology Holdings Inc","Technology","Software - Infrastructure","USA",464.21,10.66,5.67,-1.05%,409829
+203,"OSPN","OneSpan Inc","Technology","Software - Infrastructure","USA",464.69,8.28,12.22,-0.89%,766128
+204,"ARQQ","Arqit Quantum Inc","Technology","Software - Infrastructure","United Kingdom",465.34,,30.43,-3.40%,342382
+205,"VERI","Veritone Inc","Technology","Software - Infrastructure","USA",478.31,,5.21,-5.10%,3101157
+206,"PSFE","Paysafe Limited","Technology","Software - Infrastructure","United Kingdom",483.72,,8.22,0.37%,314247
+207,"DVLT","Datavault AI Inc","Technology","Software - Infrastructure","USA",484.87,,1.70,-8.60%,32500229
+208,"KOPN","Kopin Corp","Technology","Electronic Components","USA",491.03,,2.69,-0.74%,1922277
+209,"IBTA","Ibotta Inc","Technology","Software - Application","USA",495.85,9.62,23.25,-2.64%,501064
+210,"CAN","Canaan Inc ADR","Technology","Computer Hardware","Singapore",504.99,,0.93,-4.59%,17162740
+211,"RBBN","Ribbon Communications Inc","Technology","Software - Application","USA",510.37,,2.89,4.33%,729529
+212,"HCKT","Hackett Group Inc","Technology","Information Technology Services","USA",527.15,50.35,19.43,1.62%,395894
+213,"SUPX","SuperX AI Technology Ltd","Technology","Software - Infrastructure","Singapore",530.34,,19.72,6.42%,590713
+214,"AXTI","AXT Inc","Technology","Semiconductor Equipment & Materials","USA",539.90,,11.58,-4.30%,3221251
+215,"GLOO","Gloo Holdings Inc","Technology","Software - Application","USA",561.86,,7.72,5.97%,178160
+216,"APPS","Digital Turbine Inc","Technology","Software - Application","USA",561.87,,5.01,-1.38%,1863260
+217,"CRNC","Cerence Inc","Technology","Software - Application","USA",568.03,,12.64,-2.39%,1266014
+218,"RPAY","Repay Holdings Corporation","Technology","Software - Infrastructure","USA",571.04,,3.50,0.57%,652076
+219,"WOLF","Wolfspeed Inc","Technology","Semiconductors","USA",571.45,,22.07,-2.99%,822794
+220,"ICHR","Ichor Holdings Ltd","Technology","Semiconductor Equipment & Materials","USA",605.51,,17.61,1.27%,563204
+221,"CINT","CI&T Inc","Technology","Software - Infrastructure","Brazil",614.40,27.31,4.61,-5.14%,188556
+222,"CEVA","Ceva Inc","Technology","Semiconductors","USA",621.41,,23.00,1.19%,335302
+223,"CGNT","Cognyte Software Ltd","Technology","Software - Infrastructure","Israel",622.42,,8.65,0.93%,258411
+224,"SMWB","Similarweb Ltd","Technology","Software - Application","Israel",627.02,,7.57,-2.57%,204910
+225,"SPT","Sprout Social Inc","Technology","Software - Application","USA",634.13,,10.71,1.90%,1355162
+226,"DJCO","Daily Journal Corporation","Technology","Software - Application","USA",634.79,6.56,460.85,4.63%,34949
+227,"AOSL","Alpha & Omega Semiconductor Ltd","Technology","Semiconductors","USA",638.51,,21.24,-1.12%,175943
+228,"SABR","Sabre Corp","Technology","Software - Infrastructure","USA",643.66,1.34,1.63,-1.21%,4670728
+229,"ADTN","ADTRAN Holdings Inc","Technology","Communication Equipment","USA",683.39,,8.53,-0.12%,862873
+230,"CRSR","Corsair Gaming Inc","Technology","Computer Hardware","USA",695.94,,6.53,-2.54%,1264686
+231,"DSP","Viant Technology Inc","Technology","Software - Application","USA",699.88,424.62,11.21,-0.36%,122495
+232,"AIOT","PowerFleet Inc","Technology","Software - Infrastructure","USA",703.92,,5.26,3.54%,1536131
+233,"VTEX","Vtex","Technology","Software - Application","United Kingdom",707.25,104.57,3.89,-2.75%,1739759
+234,"AEHR","Aehr Test Systems","Technology","Semiconductor Equipment & Materials","USA",742.36,,24.74,-2.98%,399055
+235,"WYFI","Whitefiber Inc","Technology","Software - Application","USA",743.39,,19.43,-7.83%,823599
+236,"IIIV","i3 Verticals Inc","Technology","Software - Infrastructure","USA",750.93,140.24,23.21,0.52%,210189
+237,"NTGR","Netgear Inc","Technology","Communication Equipment","USA",756.08,,26.62,-1.00%,335628
+238,"GILT","Gilat Satellite Networks","Technology","Communication Equipment","Israel",762.06,29.08,11.86,0.68%,303730
+239,"RSKD","Riskified Ltd","Technology","Software - Application","Israel",765.16,,4.91,2.08%,700534
+240,"AIP","Arteris Inc","Technology","Semiconductors","USA",766.65,,17.55,4.90%,882345
+241,"SSYS","Stratasys Ltd","Technology","Computer Hardware","USA",769.59,,9.05,-1.31%,389827
+242,"CTLP","Cantaloupe Inc","Technology","Software - Infrastructure","USA",780.45,13.29,10.59,0.19%,272738
+243,"POET","POET Technologies Inc","Technology","Semiconductors","Canada",797.21,,6.05,-5.02%,8477375
+244,"GDYN","Grid Dynamics Holdings Inc","Technology","Information Technology Services","USA",804.80,58.62,9.49,-1.76%,546966
+245,"BLND","Blend Labs Inc","Technology","Software - Application","USA",807.81,,3.11,-5.18%,2943126
+246,"DAKT","Daktronics Inc","Technology","Electronic Components","USA",849.76,3979.55,17.51,0.34%,364112
+247,"SKYT","SkyWater Technology Inc","Technology","Semiconductors","USA",872.17,6.98,17.98,-2.71%,1458277
+248,"AEVA","Aeva Technologies Inc","Technology","Software - Infrastructure","USA",883.17,,14.70,-7.43%,2489877
+249,"LAES","SEALSQ Corp","Technology","Semiconductors","Switzerland",898.61,,4.86,-4.33%,10074848
+250,"RZLV","Rezolve AI PLC","Technology","Software - Infrastructure","United Kingdom",898.87,,2.79,-4.78%,12991958
+251,"BTQ","BTQ Technologies Corp","Technology","Software - Infrastructure","Canada",915.80,,6.54,-8.02%,2414165
+252,"ALNT","Allient Inc","Technology","Electronic Components","USA",923.59,48.79,54.51,-0.58%,105097
+253,"YALA","Yalla Group Limited ADR","Technology","Software - Application","United Arab Emirates",953.38,8.81,7.15,0.85%,139404
+254,"MNTN","MNTN Inc","Technology","Software - Application","USA",955.57,,13.05,-3.26%,576250
+255,"PRCH","Porch Group Inc","Technology","Software - Application","USA",986.28,38.36,9.36,-2.90%,1129479
+256,"INDI","Indie Semiconductor Inc","Technology","Semiconductor Equipment & Materials","USA",1014.70,,4.62,0.22%,3670143
+257,"RPD","Rapid7 Inc","Technology","Software - Infrastructure","USA",1045.73,46.14,15.97,-0.93%,790608
+258,"CRCT","Cricut Inc","Technology","Computer Hardware","USA",1052.37,13.19,4.97,-2.17%,500373
+259,"HLIT","Harmonic, Inc","Technology","Communication Equipment","USA",1087.54,22.87,9.69,1.15%,751467
+260,"ALIT","Alight Inc","Technology","Software - Application","USA",1087.73,,2.04,-5.56%,19552443
+261,"UPBD","Upbound Group Inc","Technology","Software - Application","USA",1092.10,12.87,18.86,1.73%,592635
+262,"YEXT","Yext Inc","Technology","Software - Infrastructure","USA",1093.11,,8.87,0.00%,1075374
+263,"TASK","TaskUs Inc","Technology","Information Technology Services","USA",1117.56,14.13,12.36,1.81%,437603
+264,"PRO","Pros Holdings Inc","Technology","Software - Application","USA",1122.44,,23.24,0.04%,2596611
+265,"PD","Pagerduty Inc","Technology","Software - Application","USA",1127.02,7.67,12.28,2.25%,2200003
+266,"PENG","Penguin Solutions Inc","Technology","Information Technology Services","USA",1140.70,71933.33,21.58,-0.46%,829993
+267,"COHU","Cohu, Inc","Technology","Semiconductor Equipment & Materials","USA",1166.38,,24.98,-0.60%,392124
+268,"PDFS","PDF Solutions Inc","Technology","Software - Application","USA",1175.51,,29.75,2.76%,317089
+269,"UCTT","Ultra Clean Hldgs Inc","Technology","Semiconductor Equipment & Materials","USA",1190.96,,26.24,-0.34%,530977
+270,"ARRY","Array Technologies Inc","Technology","Solar","USA",1209.76,,7.92,-3.18%,4633799
+271,"DFIN","Donnelley Financial Solutions Inc","Technology","Software - Application","USA",1215.66,43.67,45.81,-3.64%,277874
+272,"JKS","JinkoSolar Holding Co. Ltd ADR","Technology","Solar","China",1217.30,,24.22,-2.34%,512552
+273,"TUYA","Tuya Inc ADR","Technology","Software - Infrastructure","China",1238.94,28.59,2.29,-3.78%,1203006
+274,"ATEN","A10 Networks Inc","Technology","Software - Infrastructure","USA",1274.58,26.04,17.77,1.02%,398635
+275,"CTS","CTS Corp","Technology","Electronic Components","USA",1291.67,22.60,44.46,0.29%,105087
+276,"SHLS","Shoals Technologies Group Inc","Technology","Solar","USA",1344.13,40.51,8.03,1.26%,3532269
+277,"ADEA","Adeia Inc","Technology","Software - Application","USA",1369.97,19.28,12.51,0.56%,573438
+278,"VYX","NCR Voyix Corp","Technology","Information Technology Services","USA",1373.90,,9.92,2.27%,3291652
+279,"PAR","Par Technology Corp","Technology","Software - Application","USA",1393.49,,34.33,-0.41%,322521
+280,"NABL","N-able Inc","Technology","Information Technology Services","USA",1397.47,,7.50,1.49%,799445
+281,"PLAB","Photronics, Inc","Technology","Semiconductor Equipment & Materials","USA",1424.96,13.68,24.15,0.54%,575334
+282,"AMPL","Amplitude Inc","Technology","Software - Application","USA",1475.21,,11.16,1.55%,1214666
+283,"GCT","GigaCloud Technology Inc","Technology","Software - Infrastructure","USA",1484.49,12.04,40.06,0.15%,424832
+284,"OUST","Ouster Inc","Technology","Electronic Components","USA",1486.93,,24.78,-4.66%,1637208
+285,"FSLY","Fastly Inc","Technology","Software - Application","USA",1571.69,,10.52,-8.68%,16637819
+286,"LSPD","Lightspeed Commerce Inc","Technology","Software - Application","Canada",1576.01,,11.59,2.20%,469361
+287,"HIMX","Himax Technologies ADR","Technology","Semiconductors","Taiwan",1581.81,25.22,9.07,10.21%,3344135
+288,"CSIQ","Canadian Solar Inc","Technology","Solar","Canada",1596.62,122.32,23.84,-3.60%,2193866
+289,"FIVN","Five9 Inc","Technology","Software - Infrastructure","USA",1615.16,58.01,20.65,-0.43%,1991536
+290,"MXL","MaxLinear Inc","Technology","Semiconductors","USA",1644.36,,18.82,2.79%,1518411
+291,"FLYW","Flywire Corp","Technology","Software - Infrastructure","USA",1662.15,,13.61,-1.16%,1180941
+292,"BHE","Benchmark Electronics Inc","Technology","Electronic Components","USA",1675.48,45.90,46.96,0.34%,236369
+293,"DGII","Digi International, Inc","Technology","Communication Equipment","USA",1678.82,41.60,45.09,3.16%,443284
+294,"JAMF","Jamf Holding Corp","Technology","Software - Application","USA",1727.90,,12.97,0.08%,1405006
+295,"SEDG","Solaredge Technologies Inc","Technology","Solar","Israel",1765.30,,29.52,-7.58%,3516938
+296,"SEMR","SEMrush Holdings Inc","Technology","Software - Application","USA",1767.08,,11.84,0.00%,1422856
+297,"EVCM","EverCommerce Inc","Technology","Software - Infrastructure","USA",1782.91,,9.94,2.58%,241578
+298,"AAOI","Applied Optoelectronics Inc","Technology","Communication Equipment","USA",1815.56,,26.59,1.33%,2879062
+299,"INOD","Innodata Inc","Technology","Information Technology Services","USA",1840.93,59.57,57.78,-0.98%,706804
+300,"LASR","nLIGHT Inc","Technology","Semiconductors","USA",1850.64,,36.44,0.28%,450786
+301,"PRGS","Progress Software Corp","Technology","Software - Infrastructure","USA",1868.20,39.62,43.54,0.48%,389792
+302,"RAMP","LiveRamp Holdings Inc","Technology","Software - Infrastructure","USA",1874.46,48.61,29.45,2.43%,531352
+303,"EVTC","Evertec Inc","Technology","Software - Infrastructure","USA",1893.28,13.12,29.59,-3.14%,877008
+304,"CXM","Sprinklr Inc","Technology","Software - Application","USA",1898.33,18.42,7.79,-1.39%,2001352
+305,"VECO","Veeco Instruments Inc","Technology","Semiconductor Equipment & Materials","USA",1928.21,38.66,32.05,1.78%,517610
+306,"ASGN","ASGN Inc","Technology","Information Technology Services","USA",1940.72,15.33,45.45,-0.81%,523469
+307,"NTCT","Netscout Systems Inc","Technology","Software - Infrastructure","USA",1942.01,21.89,26.90,-0.30%,341939
+308,"KN","Knowles Corp","Technology","Electronic Components","USA",1990.00,52.40,23.37,-0.17%,757906
+309,"PGY","Pagaya Technologies Ltd","Technology","Software - Infrastructure","USA",1996.23,,24.83,-0.20%,1727466
+310,"POWI","Power Integrations Inc","Technology","Semiconductors","USA",2020.32,116.31,36.51,-0.19%,1039275
+311,"PAYO","Payoneer Global Inc","Technology","Software - Infrastructure","USA",2024.58,29.94,5.68,-0.70%,1929439
+312,"MQ","Marqeta Inc","Technology","Software - Infrastructure","USA",2050.86,,4.66,-1.69%,2343367
+313,"VSH","Vishay Intertechnology, Inc","Technology","Semiconductors","USA",2060.95,,15.20,0.33%,1258382
+314,"AI","C3.ai Inc","Technology","Software - Infrastructure","USA",2078.77,,15.08,-1.57%,6723161
+315,"DQ","Daqo New Energy Corp ADR","Technology","Solar","China",2085.94,,31.25,-0.67%,423338
+316,"NN","NextNav Inc","Technology","Software - Infrastructure","USA",2142.43,,15.89,2.58%,1303943
+317,"NVTS","Navitas Semiconductor Corp","Technology","Semiconductors","USA",2185.10,,9.48,0.32%,12564262
+318,"CSGS","CSG Systems International Inc","Technology","Software - Infrastructure","USA",2196.34,26.13,77.01,-0.34%,419744
+319,"ALKT","Alkami Technology Inc","Technology","Software - Application","USA",2261.79,,21.54,1.27%,1187057
+320,"ACMR","ACM Research Inc","Technology","Semiconductor Equipment & Materials","USA",2277.16,20.52,35.10,1.39%,601220
+321,"SONO","Sonos Inc","Technology","Consumer Electronics","USA",2302.61,,19.15,2.08%,1122223
+322,"CNXC","Concentrix Corp","Technology","Information Technology Services","USA",2341.50,7.95,37.61,1.76%,1529103
+323,"PTRN","Pattern Group Inc","Technology","Software - Application","USA",2345.49,,13.31,-0.30%,749049
+324,"EXTR","Extreme Networks Inc","Technology","Communication Equipment","USA",2352.11,277.01,17.59,0.80%,721167
+325,"VNET","VNET Group Inc ADR","Technology","Information Technology Services","China",2359.27,,8.94,1.02%,1510079
+326,"CLVT","Clarivate Plc","Technology","Information Technology Services","United Kingdom",2394.39,,3.62,-3.72%,5691882
+327,"SPNS","Sapiens International Corp NV","Technology","Software - Application","Israel",2421.62,37.82,43.32,0.07%,392107
+328,"DIOD","Diodes, Inc","Technology","Semiconductors","USA",2438.94,38.06,52.58,1.72%,280153
+329,"DXC","DXC Technology Co","Technology","Information Technology Services","USA",2458.77,6.98,14.12,1.00%,2048717
+330,"GRND","Grindr Inc","Technology","Software - Application","USA",2492.06,,13.49,-1.03%,1293325
+331,"KLIC","Kulicke & Soffa Industries, Inc","Technology","Semiconductor Equipment & Materials","USA",2539.08,,48.49,1.93%,830062
+332,"BB","BlackBerry Ltd","Technology","Software - Infrastructure","Canada",2550.36,,4.32,1.65%,5118581
+333,"RNG","RingCentral Inc","Technology","Software - Application","USA",2570.12,209.82,29.69,1.43%,1264139
+334,"ALRM","Alarm.com Holdings Inc","Technology","Software - Application","USA",2598.73,22.05,52.10,0.35%,386224
+335,"VIA","Via Transportation Inc","Technology","Software - Application","USA",2615.19,,32.29,-2.51%,454918
+336,"NSIT","Insight Enterprises Inc","Technology","Electronics & Computer Distribution","USA",2666.10,20.07,86.06,0.07%,366041
+337,"NCNO","Ncino Inc","Technology","Software - Application","USA",2682.48,,23.39,-3.94%,3775021
+338,"NATL","NCR Atleos Corp","Technology","Software - Application","USA",2727.06,22.52,36.90,-0.73%,315423
+339,"BTDR","Bitdeer Technologies Group","Technology","Software - Application","Singapore",2744.71,,11.81,-6.64%,7884632
+340,"TDC","Teradata Corp","Technology","Software - Infrastructure","USA",2782.95,24.46,29.86,0.37%,2103213
+341,"DAVE","Dave Inc","Technology","Software - Application","USA",2795.48,20.51,207.01,-1.47%,322578
+342,"RELY","Remitly Global Inc","Technology","Software - Infrastructure","USA",2807.49,143.33,13.43,-0.15%,2831950
+343,"ACLS","Axcelis Technologies Inc","Technology","Semiconductor Equipment & Materials","USA",2815.34,21.47,90.82,1.93%,449056
+344,"QUBT","Quantum Computing Inc","Technology","Computer Hardware","USA",2877.74,,12.84,-5.45%,20717620
+345,"AVPT","AvePoint Inc","Technology","Software - Infrastructure","USA",2891.58,,13.40,1.59%,1771781
+346,"BBAI","BigBear.ai Holdings Inc","Technology","Information Technology Services","USA",2977.28,,6.82,-2.85%,113407624
+347,"APPN","Appian Corp","Technology","Software - Infrastructure","USA",3023.80,,40.96,3.99%,956607
+348,"SYNA","Synaptics Inc","Technology","Semiconductors","USA",3024.46,,77.57,2.15%,526161
+349,"BLKB","Blackbaud Inc","Technology","Software - Application","USA",3046.56,,63.69,1.14%,311701
+350,"WRD","WeRide Inc. ADR","Technology","Software - Application","China",3080.57,,9.51,1.60%,4913307
+351,"GTM","ZoomInfo Technologies Inc","Technology","Software - Application","USA",3097.23,31.38,9.94,0.30%,9085606
+352,"SIMO","Silicon Motion Technology Corp ADR","Technology","Semiconductors","Hong Kong",3133.30,31.81,92.21,1.31%,243600
+353,"GLOB","Globant S.A","Technology","Information Technology Services","Luxembourg",3136.48,32.32,71.21,1.35%,1303543
+354,"VERX","Vertex Inc","Technology","Software - Application","USA",3139.52,,19.68,1.18%,1379202
+355,"EEFT","Euronet Worldwide Inc","Technology","Software - Infrastructure","USA",3142.84,10.91,74.75,1.00%,940949
+356,"TENB","Tenable Holdings Inc","Technology","Software - Infrastructure","USA",3150.69,,26.40,-0.94%,1914497
+357,"SPSC","SPS Commerce Inc","Technology","Software - Application","USA",3156.25,37.48,83.70,0.08%,394247
+358,"AMBA","Ambarella Inc","Technology","Semiconductor Equipment & Materials","USA",3163.26,,74.10,4.28%,1038138
+359,"PAGS","PagSeguro Digital Ltd","Technology","Software - Infrastructure","Brazil",3230.16,7.66,9.80,-5.50%,6054644
+360,"ONDS","Ondas Holdings Inc","Technology","Communication Equipment","USA",3341.93,,9.07,-1.31%,82497060
+361,"ASAN","Asana Inc","Technology","Software - Application","USA",3362.08,,14.18,0.14%,4710999
+362,"BRZE","Braze Inc","Technology","Software - Application","USA",3367.86,,30.30,1.44%,2731597
+363,"VRRM","Verra Mobility Corp","Technology","Information Technology Services","USA",3411.49,66.90,21.38,-0.37%,1820623
+364,"BL","BlackLine Inc","Technology","Software - Application","USA",3449.63,52.95,57.99,-0.09%,349099
+365,"IPGP","IPG Photonics Corp","Technology","Semiconductor Equipment & Materials","USA",3450.84,136.33,81.92,-1.13%,220677
+366,"NAVN","Navan Inc","Technology","Software - Application","USA",3472.88,,13.99,-4.57%,1743139
+367,"KC","Kingsoft Cloud Holdings Ltd ADR","Technology","Software - Application","China",3508.43,,11.86,0.08%,764489
+368,"AGYS","Agilysys, Inc","Technology","Software - Application","USA",3533.92,146.65,126.02,-0.31%,100502
+369,"INTA","Intapp Inc","Technology","Software - Application","USA",3539.22,,43.20,-2.37%,467036
+370,"VRNS","Varonis Systems Inc","Technology","Software - Infrastructure","USA",3560.50,,30.20,-2.93%,3156495
+371,"CALX","Calix Inc","Technology","Software - Infrastructure","USA",3590.20,,54.17,0.97%,614098
+372,"FRSH","Freshworks Inc","Technology","Software - Application","USA",3620.52,,12.84,1.90%,2941586
+373,"DLO","DLocal Limited","Technology","Software - Infrastructure","USA",3916.93,26.18,13.29,-1.34%,1617623
+374,"STNE","StoneCo Ltd","Technology","Software - Infrastructure","Cayman Islands",3986.24,,14.68,-6.68%,14476301
+375,"AVT","Avnet Inc","Technology","Electronics & Computer Distribution","USA",4039.63,18.51,49.67,1.10%,760191
+376,"RUN","Sunrun Inc","Technology","Solar","USA",4079.30,,17.58,-4.20%,6814818
+377,"VIAV","Viavi Solutions Inc","Technology","Communication Equipment","USA",4089.00,278.84,18.32,4.69%,6065605
+378,"ENPH","Enphase Energy Inc","Technology","Solar","USA",4089.37,21.62,31.25,1.59%,10644423
+379,"NOVT","Novanta Inc","Technology","Scientific & Technical Instruments","USA",4147.77,79.26,115.94,-1.26%,255713
+380,"COMM","CommScope Holding Company Inc","Technology","Communication Equipment","USA",4247.09,,19.17,1.81%,2177540
+381,"VICR","Vicor Corp","Technology","Electronic Components","USA",4323.71,53.04,96.83,2.42%,245391
+382,"CLBT","Cellebrite DI Ltd","Technology","Software - Infrastructure","Israel",4377.51,59.76,18.28,0.44%,731957
+383,"PAY","Paymentus Holdings Inc","Technology","Software - Infrastructure","USA",4413.83,76.38,35.19,-3.59%,417228
+384,"DOCN","DigitalOcean Holdings Inc","Technology","Software - Infrastructure","USA",4419.07,19.60,48.30,4.43%,1856664
+385,"FORM","FormFactor Inc","Technology","Semiconductor Equipment & Materials","USA",4453.36,109.39,57.45,0.17%,587345
+386,"YOU","Clear Secure Inc","Technology","Software - Application","USA",4460.87,17.56,33.50,1.61%,858242
+387,"OS","OneStream Inc","Technology","Software - Infrastructure","USA",4476.38,,18.36,-1.98%,2092205
+388,"ITRI","Itron Inc","Technology","Scientific & Technical Instruments","USA",4482.58,17.60,97.87,-1.30%,457680
+389,"OSIS","OSI Systems, Inc","Technology","Electronic Components","USA",4516.11,30.15,266.00,-1.85%,188990
+390,"BOX","Box Inc","Technology","Software - Infrastructure","USA",4528.86,25.50,31.62,-0.60%,2287615
+391,"LPL","LG Display Co Ltd. ADR","Technology","Consumer Electronics","South Korea",4540.00,,4.54,2.25%,258041
+392,"ZETA","Zeta Global Holdings Corp","Technology","Software - Infrastructure","USA",4583.19,,19.05,2.70%,4025597
+393,"QTWO","Q2 Holdings Inc","Technology","Software - Application","USA",4597.21,151.78,73.52,1.20%,578337
+394,"SAIC","Science Applications International Corp","Technology","Information Technology Services","USA",4630.27,12.84,100.61,-1.16%,1195725
+395,"SLAB","Silicon Laboratories Inc","Technology","Semiconductors","USA",4649.35,,141.52,2.00%,324032
+396,"VSAT","Viasat, Inc","Technology","Communication Equipment","USA",4728.83,,34.96,-0.51%,962039
+397,"ACIW","ACI Worldwide Inc","Technology","Software - Infrastructure","USA",4732.77,18.57,45.91,-0.95%,853914
+398,"S","SentinelOne Inc","Technology","Software - Infrastructure","USA",4735.29,,14.52,-14.44%,36295272
+399,"BULL","Webull Corp","Technology","Software - Application","USA",4752.21,,9.47,-1.56%,12475418
+400,"CCC","CCC Intelligent Solutions Holdings Inc","Technology","Software - Application","USA",4754.57,,7.42,-1.20%,6741337
+401,"PI","Impinj Inc","Technology","Semiconductors","USA",4765.07,,158.26,0.94%,582474
+402,"BDC","Belden Inc","Technology","Communication Equipment","USA",4793.84,21.67,121.98,1.18%,232709
+403,"ST","Sensata Technologies Holding Plc","Technology","Scientific & Technical Instruments","USA",4887.52,,33.55,1.12%,1293123
+404,"PONY","Pony AI Inc. ADR","Technology","Information Technology Services","China",5004.79,,14.20,-2.74%,3683569
+405,"INGM","Ingram Micro Holding Corp","Technology","Information Technology Services","USA",5101.08,17.62,21.70,0.05%,245525
+406,"WK","Workiva Inc","Technology","Software - Application","USA",5184.55,,92.37,0.24%,459736
+407,"QLYS","Qualys Inc","Technology","Software - Infrastructure","USA",5238.18,28.30,146.08,-2.37%,436249
+408,"VNT","Vontier Corporation","Technology","Scientific & Technical Instruments","USA",5252.62,13.30,36.20,0.47%,960225
+409,"WEX","WEX Inc","Technology","Software - Infrastructure","USA",5273.58,19.98,153.80,1.67%,267800
+410,"CORZ","Core Scientific Inc","Technology","Software - Infrastructure","USA",5305.13,122.83,17.11,0.18%,7120306
+411,"BMI","Badger Meter Inc","Technology","Scientific & Technical Instruments","USA",5308.69,38.38,180.14,1.31%,237228
+412,"CVLT","Commvault Systems Inc","Technology","Software - Application","USA",5334.98,68.16,120.99,-0.29%,1201945
+413,"BILL","BILL Holdings Inc","Technology","Software - Application","USA",5353.37,,53.45,1.48%,2134503
+414,"CAMT","Camtek Ltd","Technology","Semiconductor Equipment & Materials","Israel",5357.86,132.46,117.07,-1.13%,315460
+415,"SOUN","SoundHound AI Inc","Technology","Software - Application","USA",5360.42,,12.76,-0.31%,18291369
+416,"ALGM","Allegro Microsystems Inc","Technology","Semiconductors","USA",5409.18,,29.22,1.39%,1644958
+417,"WIX","Wix.com Ltd","Technology","Software - Infrastructure","Israel",5580.87,43.43,100.22,-2.36%,875323
+418,"RAL","Ralliant Corp","Technology","Electronic Components","USA",5764.38,,51.10,-1.03%,2922260
+419,"OLED","Universal Display Corp","Technology","Electronic Components","USA",5766.87,26.10,121.30,-0.13%,693834
+420,"ARW","Arrow Electronics Inc","Technology","Electronics & Computer Distribution","USA",5794.00,12.42,112.48,1.05%,455849
+421,"KD","Kyndryl Holdings Inc","Technology","Information Technology Services","USA",5988.39,15.44,26.20,-0.27%,1596817
+422,"FOUR","Shift4 Payments Inc","Technology","Software - Infrastructure","USA",6104.09,32.33,68.88,-0.69%,1251058
+423,"LIF","Life360 Inc","Technology","Software - Application","USA",6115.24,221.78,78.00,3.28%,746144
+424,"GTLB","Gitlab Inc","Technology","Software - Infrastructure","USA",6289.03,,37.35,-0.43%,6338638
+425,"CRUS","Cirrus Logic, Inc","Technology","Semiconductors","USA",6318.58,17.60,123.82,1.59%,444374
+426,"CWAN","Clearwater Analytics Holdings Inc","Technology","Software - Application","USA",6353.66,14.19,21.71,-0.09%,3002558
+427,"CGNX","Cognex Corp","Technology","Scientific & Technical Instruments","USA",6439.12,59.34,38.42,-1.23%,1465903
+428,"EXLS","ExlService Holdings Inc","Technology","Information Technology Services","USA",6462.30,27.58,40.72,-0.49%,797885
+429,"NICE","NICE Ltd ADR","Technology","Software - Application","Israel",6556.79,11.96,106.20,-1.37%,1183995
+430,"SRAD","Sportradar Group AG","Technology","Software - Application","Switzerland",6983.97,67.57,22.46,-1.53%,1472304
+431,"BLSH","Bullish","Technology","Software - Infrastructure","Cayman Islands",6999.09,,46.45,-4.07%,1677599
+432,"GDS","GDS Holdings Limited ADR","Technology","Information Technology Services","China",7074.75,61.42,35.21,4.23%,1176139
+433,"PSN","Parsons Corp","Technology","Information Technology Services","USA",7097.46,18.97,66.65,-21.09%,11658858
+434,"DBX","Dropbox Inc","Technology","Software - Infrastructure","USA",7347.55,16.63,29.34,-1.48%,2397493
+435,"SMTC","Semtech Corp","Technology","Semiconductors","USA",7367.11,261.70,79.61,1.70%,1570274
+436,"TTMI","TTM Technologies Inc","Technology","Electronic Components","USA",7619.61,58.77,73.74,1.24%,2534154
+437,"FROG","JFrog Ltd","Technology","Software - Application","USA",7663.12,,64.77,4.27%,3237768
+438,"ONTO","Onto Innovation Inc","Technology","Semiconductor Equipment & Materials","USA",7714.36,44.37,157.40,-1.29%,649733
+439,"ESTC","Elastic N.V","Technology","Software - Application","USA",7868.19,,74.67,1.27%,1470099
+440,"PCTY","Paylocity Holding Corp","Technology","Software - Application","USA",7967.99,36.68,146.52,0.15%,433280
+441,"MNDY","Monday.Com Ltd","Technology","Software - Application","Israel",7968.37,128.00,156.94,1.41%,978175
+442,"DSGX","Descartes Systems Group Inc","Technology","Software - Application","Canada",7970.93,52.24,92.75,-2.23%,1089231
+443,"G","Genpact Ltd","Technology","Information Technology Services","Bermuda",7994.86,14.94,46.37,0.78%,1701601
+444,"NTSK","Netskope Inc","Technology","Software - Infrastructure","USA",8069.01,,20.73,5.34%,2972937
+445,"CFLT","Confluent Inc","Technology","Software - Infrastructure","USA",8094.89,,23.14,-0.90%,5564226
+446,"QRVO","Qorvo Inc","Technology","Semiconductors","USA",8312.80,38.85,89.96,1.11%,771075
+447,"OTEX","Open Text Corp","Technology","Software - Application","Canada",8447.38,17.57,33.52,-0.74%,801566
+448,"APPF","Appfolio Inc","Technology","Software - Application","USA",8456.21,42.26,235.41,-0.15%,172927
+449,"DOX","Amdocs Ltd","Technology","Software - Infrastructure","USA",8477.08,15.19,77.07,0.81%,818255
+450,"SANM","Sanmina Corp","Technology","Electronic Components","USA",8626.00,35.48,158.09,-1.66%,389222
+451,"AUR","Aurora Innovation Inc","Technology","Information Technology Services","USA",8631.75,,4.46,-2.41%,12149286
+452,"APLD","Applied Digital Corporation","Technology","Information Technology Services","USA",8696.03,,31.22,0.26%,27001639
+453,"KVYO","Klaviyo Inc","Technology","Software - Application","USA",8904.37,,29.49,-1.63%,1934380
+454,"CHYM","Chime Financial Inc","Technology","Software - Application","USA",9034.82,,24.12,1.47%,4478434
+455,"IDCC","Interdigital Inc","Technology","Software - Application","USA",9143.95,23.96,355.18,1.25%,205255
+456,"LYFT","Lyft Inc","Technology","Software - Application","USA",9173.15,63.68,22.97,2.00%,11901333
+457,"SITM","SiTime Corp","Technology","Semiconductors","USA",9188.73,,352.05,0.45%,474333
+458,"DUOL","Duolingo Inc","Technology","Software - Application","USA",9214.57,25.40,199.75,6.04%,2127158
+459,"RGTI","Rigetti Computing Inc","Technology","Computer Hardware","USA",9277.03,,28.11,-6.49%,51097788
+460,"PAYC","Paycom Software Inc","Technology","Software - Application","USA",9324.90,20.60,165.72,-0.25%,807844
+461,"QBTS","D-Wave Quantum Inc","Technology","Computer Hardware","USA",9453.29,,27.00,-6.02%,38125354
+462,"TTAN","ServiceTitan Inc","Technology","Software - Application","USA",9793.28,,105.60,10.47%,4686792
+463,"NVMI","Nova Ltd","Technology","Semiconductor Equipment & Materials","Israel",9902.89,42.59,324.45,1.22%,186747
+464,"PATH","UiPath Inc","Technology","Software - Infrastructure","USA",9914.17,43.92,18.67,1.03%,43510186
+465,"PEGA","Pegasystems Inc","Technology","Software - Application","USA",10202.04,40.73,60.11,5.46%,1775046
+466,"SWKS","Skyworks Solutions, Inc","Technology","Semiconductors","USA",10306.48,22.51,69.32,0.45%,2415749
+467,"AMKR","AMKOR Technology Inc","Technology","Semiconductor Equipment & Materials","USA",10686.17,34.84,43.23,0.12%,4110566
+468,"YMM","Full Truck Alliance Co Ltd ADR","Technology","Software - Application","China",10735.37,22.50,11.52,2.22%,7059699
+469,"LSCC","Lattice Semiconductor Corp","Technology","Semiconductors","USA",10785.61,400.05,78.85,3.98%,2643689
+470,"MANH","Manhattan Associates, Inc","Technology","Software - Application","USA",10827.80,51.04,179.69,0.61%,388759
+471,"RMBS","Rambus Inc","Technology","Semiconductors","USA",10937.25,48.22,101.60,2.82%,1343286
+472,"MKSI","MKS Inc","Technology","Scientific & Technical Instruments","USA",10944.60,39.63,162.94,-0.25%,809059
+473,"DAY","Dayforce Inc","Technology","Software - Application","USA",11053.62,,69.07,-0.06%,5955847
+474,"EPAM","EPAM Systems Inc","Technology","Information Technology Services","USA",11247.40,31.07,203.60,1.04%,975505
+475,"SAIL","Sailpoint Inc","Technology","Software - Infrastructure","USA",11266.30,,20.24,1.96%,2582708
+476,"KLAR","Klarna Group plc","Technology","Software - Infrastructure","United Kingdom",11823.02,,31.34,-3.57%,2363915
+477,"AKAM","Akamai Technologies Inc","Technology","Software - Infrastructure","USA",12011.31,24.48,83.49,-3.59%,3069367
+478,"PCOR","Procore Technologies Inc","Technology","Software - Application","USA",12059.80,,77.57,1.02%,1802788
+479,"SNX","TD Synnex Corp","Technology","Electronics & Computer Distribution","USA",12606.58,16.80,154.80,0.20%,683089
+480,"TSEM","Tower Semiconductor Ltd","Technology","Semiconductors","Israel",12741.37,66.08,114.01,-0.92%,1399638
+481,"NTNX","Nutanix Inc","Technology","Software - Infrastructure","USA",12813.57,63.19,47.32,0.45%,4902944
+482,"BSY","Bentley Systems Inc","Technology","Software - Application","USA",13110.63,52.17,43.19,1.70%,1849695
+483,"JKHY","Jack Henry & Associates, Inc","Technology","Information Technology Services","USA",13151.65,27.60,181.71,0.76%,813913
+484,"CACI","Caci International Inc","Technology","Information Technology Services","USA",13151.78,26.30,595.65,-1.64%,243863
+485,"DOCU","DocuSign Inc","Technology","Software - Application","USA",13206.51,45.96,65.67,-7.64%,8934810
+486,"DT","Dynatrace Inc","Technology","Software - Application","USA",13401.15,26.66,44.45,0.32%,2632240
+487,"ZBRA","Zebra Technologies Corp","Technology","Communication Equipment","USA",13415.34,26.70,264.81,0.67%,525076
+488,"NXT","Nextpower Inc","Technology","Solar","USA",13441.62,23.53,90.58,-0.07%,1854768
+489,"ENTG","Entegris Inc","Technology","Semiconductor Equipment & Materials","USA",13515.14,46.99,89.15,1.15%,2704755
+490,"MTSI","MACOM Technology Solutions Holdings Inc","Technology","Semiconductors","USA",13795.16,,184.10,-1.58%,1411301
+491,"FFIV","F5 Inc","Technology","Software - Infrastructure","USA",14413.19,21.02,248.12,1.97%,952210
+492,"KSPI","Kaspi.kz JSC ADR","Technology","Software - Infrastructure","Kazakhstan",14521.33,6.84,76.42,-0.93%,402869
+493,"OKTA","Okta Inc","Technology","Software - Infrastructure","USA",15222.31,78.86,85.89,-0.01%,2859649
+494,"IT","Gartner, Inc","Technology","Information Technology Services","USA",16561.17,20.14,229.77,-1.00%,656933
+495,"GEN","Gen Digital Inc","Technology","Software - Infrastructure","USA",16706.84,29.64,27.09,0.11%,4040479
+496,"RBRK","Rubrik Inc","Technology","Software - Infrastructure","USA",17034.76,,86.27,22.49%,17138715
+497,"FTV","Fortive Corp","Technology","Scientific & Technical Instruments","USA",17071.63,30.69,53.75,0.69%,2461547
+498,"FN","Fabrinet","Technology","Electronic Components","Cayman Islands",17141.53,49.32,478.45,1.41%,532013
+499,"Q","Qnity Electronics Inc","Technology","Semiconductor Equipment & Materials","USA",17184.36,,82.04,-1.70%,1980350
+500,"LOGI","Logitech International S.A","Technology","Computer Hardware","Switzerland",17303.35,26.75,117.79,-1.12%,379970
+501,"GDDY","Godaddy Inc","Technology","Software - Infrastructure","USA",17360.29,22.14,128.46,-1.38%,1183926
+502,"GWRE","Guidewire Software Inc","Technology","Software - Application","USA",17900.73,199.67,210.55,-0.25%,559581
+503,"IONQ","IonQ Inc","Technology","Computer Hardware","USA",18666.99,,52.69,-3.78%,17478708
+504,"GPN","Global Payments, Inc","Technology","Software - Infrastructure","USA",18667.24,11.06,78.85,-1.12%,2180867
+505,"FIG","Figma Inc","Technology","Software - Application","USA",18817.62,,37.97,-1.91%,5004804
+506,"CDW","CDW Corp","Technology","Information Technology Services","USA",19040.82,18.50,146.25,1.18%,1262405
+507,"TWLO","Twilio Inc","Technology","Software - Infrastructure","USA",19303.34,305.40,127.32,1.68%,2672460
+508,"U","Unity Software Inc","Technology","Software - Application","USA",19589.85,,45.78,3.69%,7431939
+509,"TRMB","Trimble Inc","Technology","Scientific & Technical Instruments","USA",19871.16,56.80,83.52,1.48%,1204224
+510,"HUBS","HubSpot Inc","Technology","Software - Application","USA",19898.65,,379.85,0.75%,588761
+511,"GIB","CGI Inc","Technology","Information Technology Services","Canada",20011.19,17.55,92.26,0.84%,488289
+512,"UMC","United Micro Electronics ADR","Technology","Semiconductors","Taiwan",20140.31,15.70,8.02,1.91%,10655639
+513,"TYL","Tyler Technologies, Inc","Technology","Software - Application","USA",20194.20,65.35,469.33,0.58%,289259
+514,"SMCI","Super Micro Computer Inc","Technology","Computer Hardware","USA",20708.93,27.80,34.69,1.34%,19415332
+515,"CHKP","Check Point Software Technologies Ltd","Technology","Software - Infrastructure","Israel",20725.90,21.16,193.06,-1.41%,1538366
+516,"PTC","PTC Inc","Technology","Software - Application","USA",20726.66,28.27,173.52,-2.79%,1367289
+517,"TOST","Toast Inc","Technology","Software - Infrastructure","USA",20973.96,81.81,35.67,1.34%,9800653
+518,"GRAB","Grab Holdings Limited","Technology","Software - Application","Singapore",21211.53,177.74,5.19,-2.08%,42094717
+519,"SSNC","SS&C Technologies Holdings Inc","Technology","Software - Application","USA",21552.50,26.29,88.32,0.57%,1253157
+520,"GFS","GlobalFoundries Inc","Technology","Semiconductors","USA",21643.80,,38.95,3.65%,3391951
+521,"CPAY","Corpay Inc","Technology","Software - Infrastructure","USA",21731.77,21.09,310.64,4.46%,711630
+522,"ON","ON Semiconductor Corp","Technology","Semiconductors","USA",22026.20,71.43,54.74,-0.09%,7168537
+523,"AFRM","Affirm Holdings Inc","Technology","Software - Infrastructure","USA",22442.57,100.76,67.99,-1.02%,3435163
+524,"FLEX","Flex Ltd","Technology","Electronic Components","USA",23078.61,27.54,62.41,1.99%,4751439
+525,"VRSN","Verisign Inc","Technology","Software - Infrastructure","USA",23132.36,29.07,249.54,0.36%,513915
+526,"PSTG","Pure Storage Inc","Technology","Computer Hardware","USA",23145.88,185.20,70.43,-2.45%,6675018
+527,"STM","ST Microelectronics","Technology","Semiconductors","Switzerland",23200.58,45.71,26.00,1.33%,6591199
+528,"NTAP","Netapp Inc","Technology","Software - Infrastructure","USA",23226.54,20.41,117.27,1.10%,1548735
+529,"LITE","Lumentum Holdings Inc","Technology","Communication Equipment","USA",23496.97,221.55,331.41,1.09%,3542575
+530,"JBL","Jabil Inc","Technology","Electronic Components","USA",23510.62,36.94,220.06,0.61%,764912
+531,"LDOS","Leidos Holdings Inc","Technology","Information Technology Services","USA",23885.90,17.43,186.82,-2.91%,917394
+532,"CYBR","CyberArk Software Ltd","Technology","Software - Infrastructure","Israel",24163.32,,478.70,1.59%,473830
+533,"HPQ","HP Inc","Technology","Computer Hardware","USA",24218.13,9.76,25.91,0.04%,10225377
+534,"NBIS","Nebius Group N.V","Technology","Software - Infrastructure","Netherlands",24420.88,,98.04,-4.63%,13041137
+535,"TDY","Teledyne Technologies Inc","Technology","Scientific & Technical Instruments","USA",24522.50,30.26,522.30,0.83%,335144
+536,"IOT","Samsara Inc","Technology","Software - Infrastructure","USA",25939.76,,45.22,11.08%,21626727
+537,"ZM","Zoom Communications Inc","Technology","Software - Application","USA",25953.25,17.03,87.65,1.24%,2255296
+538,"BR","Broadridge Financial Solutions, Inc","Technology","Information Technology Services","USA",27083.13,29.67,232.02,0.49%,748649
+539,"ASTS","AST SpaceMobile Inc","Technology","Communication Equipment","USA",27158.30,,73.92,1.75%,13620153
+540,"ALAB","Astera Labs Inc","Technology","Semiconductors","USA",27232.33,143.55,161.23,5.72%,4414063
+541,"FSLR","First Solar Inc","Technology","Solar","USA",27643.65,19.78,257.61,0.13%,1911217
+542,"CIEN","CIENA Corp","Technology","Communication Equipment","USA",28452.39,208.34,201.71,3.06%,2332252
+543,"COHR","Coherent Corp","Technology","Scientific & Technical Instruments","USA",28568.95,261.98,181.79,2.50%,5181663
+544,"ERIC","Telefonaktiebolaget L M Ericsson ADR","Technology","Communication Equipment","Sweden",29179.63,12.82,9.50,-0.21%,4477094
+545,"WIT","Wipro Ltd. ADR","Technology","Information Technology Services","India",29846.62,19.04,2.85,1.06%,6223178
+546,"HPE","Hewlett Packard Enterprise Co","Technology","Communication Equipment","USA",30782.77,,23.33,1.88%,47409060
+547,"TER","Teradyne, Inc","Technology","Semiconductor Equipment & Materials","USA",31442.25,73.07,200.77,1.08%,2656318
+548,"CRDO","Credo Technology Group Holding Ltd","Technology","Semiconductors","Cayman Islands",31798.41,153.67,176.04,-2.70%,5292226
+549,"ASX","ASE Technology Holding Co.Ltd ADR","Technology","Semiconductors","Taiwan",33182.14,30.28,15.21,0.33%,3854600
+550,"MDB","MongoDB Inc","Technology","Software - Infrastructure","USA",33339.69,,409.62,3.25%,2101169
+551,"SNDK","Sandisk Corp","Technology","Computer Hardware","USA",33483.00,,228.47,7.11%,8451321
+552,"NOK","Nokia Corp ADR","Technology","Communication Equipment","Finland",33879.77,34.69,6.07,-1.46%,17830369
+553,"FIS","Fidelity National Information Services, Inc","Technology","Information Technology Services","USA",34519.93,209.95,66.66,1.68%,2777117
+554,"MCHP","Microchip Technology, Inc","Technology","Semiconductors","USA",35566.81,,65.81,1.68%,11350296
+555,"FISV","Fiserv, Inc","Technology","Information Technology Services","USA",35648.82,10.25,66.28,0.33%,7187612
+556,"KEYS","Keysight Technologies Inc","Technology","Scientific & Technical Instruments","USA",36174.02,43.09,210.49,0.68%,1159985
+557,"XYZ","Block Inc","Technology","Software - Infrastructure","USA",37134.59,12.30,61.11,-1.74%,6670947
+558,"CLS","Celestica, Inc","Technology","Electronic Components","Canada",37398.35,52.76,325.09,0.71%,1395690
+559,"ZS","Zscaler Inc","Technology","Software - Infrastructure","USA",38700.47,,242.68,0.34%,1772589
+560,"CTSH","Cognizant Technology Solutions Corp","Technology","Information Technology Services","USA",38959.22,18.71,80.72,0.65%,3187351
+561,"GRMN","Garmin Ltd","Technology","Scientific & Technical Instruments","Switzerland",39157.44,25.09,203.59,0.74%,999827
+562,"PAYX","Paychex Inc","Technology","Software - Application","USA",40329.74,25.14,112.06,0.26%,2463840
+563,"TEAM","Atlassian Corporation","Technology","Software - Application","USA",42077.81,,159.33,1.78%,4031029
+564,"FICO","Fair Isaac Corp","Technology","Software - Application","USA",42641.43,67.75,1798.53,1.50%,137680
+565,"CRWV","CoreWeave Inc","Technology","Software - Infrastructure","USA",44001.44,,88.30,2.97%,20076811
+566,"MPWR","Monolithic Power System Inc","Technology","Semiconductors","USA",46147.62,24.60,963.28,1.11%,348120
+567,"ROP","Roper Technologies Inc","Technology","Software - Application","USA",48174.21,30.86,447.56,0.63%,802228
+568,"STRC","Strategy Inc. - VR PRF PERPETUAL USD 100 - Ser A","Technology","Software - Application","USA",51433.40,,98.19,-0.01%,561452
+569,"MSTR","Strategy Inc","Technology","Software - Application","USA",51433.40,8.32,178.99,-3.77%,20750666
+570,"DDOG","Datadog Inc","Technology","Software - Application","USA",53095.06,512.91,151.41,-1.04%,6441190
+571,"NXPI","NXP Semiconductors NV","Technology","Semiconductors","Netherlands",57369.19,28.20,227.95,0.79%,2208907
+572,"WDC","Western Digital Corp","Technology","Computer Hardware","USA",57743.37,24.62,168.89,4.90%,5815322
+573,"WDAY","Workday Inc","Technology","Software - Application","USA",57849.48,92.35,219.96,1.54%,2367241
+574,"STX","Seagate Technology Holdings Plc","Technology","Computer Hardware","USA",59537.87,35.79,278.79,4.95%,2863381
+575,"MSI","Motorola Solutions Inc","Technology","Communication Equipment","USA",62356.53,30.04,374.39,0.78%,1934857
+576,"FTNT","Fortinet Inc","Technology","Software - Infrastructure","USA",64637.89,35.79,86.92,2.04%,6172211
+577,"ADSK","Autodesk Inc","Technology","Software - Application","USA",65028.88,59.55,306.74,0.29%,1558849
+578,"TEL","TE Connectivity plc","Technology","Electronic Components","Ireland",68946.19,38.03,234.36,0.41%,1810438
+579,"NET","Cloudflare Inc","Technology","Software - Infrastructure","USA",70390.21,,200.95,-1.57%,1744565
+580,"GLW","Corning, Inc","Technology","Electronic Components","USA",73707.27,54.52,85.97,0.61%,5341123
+581,"INFY","Infosys Ltd ADR","Technology","Information Technology Services","India",75073.98,22.94,18.07,-1.20%,9198260
+582,"SNOW","Snowflake Inc","Technology","Software - Application","USA",77514.05,,228.79,-2.55%,11696734
+583,"MRVL","Marvell Technology Inc","Technology","Semiconductors","USA",83885.57,34.63,98.91,0.73%,22219899
+584,"SNPS","Synopsys, Inc","Technology","Software - Infrastructure","USA",86700.05,36.54,466.76,0.65%,1494414
+585,"CDNS","Cadence Design Systems, Inc","Technology","Software - Application","USA",91876.00,87.10,337.53,0.07%,1325631
+586,"DELL","Dell Technologies Inc","Technology","Computer Hardware","USA",93097.51,18.52,138.91,-0.06%,5001590
+587,"ADP","Automatic Data Processing Inc","Technology","Software - Application","USA",105815.93,25.80,261.63,0.86%,2756599
+588,"CRWD","Crowdstrike Holdings Inc","Technology","Software - Infrastructure","USA",129081.97,,512.03,-0.21%,2629448
+589,"ADI","Analog Devices Inc","Technology","Semiconductors","USA",137734.80,61.56,281.29,1.45%,3834290
+590,"PANW","Palo Alto Networks Inc","Technology","Software - Infrastructure","USA",138591.48,126.12,198.84,1.61%,4611842
+591,"ADBE","Adobe Inc","Technology","Software - Application","USA",144944.44,21.57,346.26,5.33%,7650368
+592,"ARM","Arm Holdings plc. ADR","Technology","Semiconductors","United Kingdom",149929.91,181.47,141.31,0.58%,2445167
+593,"KLAC","KLA Corp","Technology","Semiconductor Equipment & Materials","USA",159570.75,38.13,1214.46,0.53%,681928
+594,"ANET","Arista Networks Inc","Technology","Computer Hardware","USA",161931.47,48.94,128.59,0.03%,5166270
+595,"ACN","Accenture plc","Technology","Information Technology Services","Ireland",165322.82,21.94,266.59,-1.02%,3785500
+596,"TXN","Texas Instruments Inc","Technology","Semiconductors","USA",165860.03,33.30,182.54,1.34%,6584808
+597,"SONY","Sony Group Corporation ADR","Technology","Consumer Electronics","Japan",167539.24,21.59,28.03,-0.92%,3012750
+598,"APH","Amphenol Corp","Technology","Electronic Components","USA",170584.38,46.45,139.36,-0.07%,7437491
+599,"NOW","ServiceNow Inc","Technology","Software - Application","USA",177263.90,103.31,854.36,1.85%,1294574
+600,"QCOM","Qualcomm, Inc","Technology","Semiconductors","USA",187221.51,35.74,174.81,0.26%,8400077
+601,"INTU","Intuit Inc","Technology","Software - Application","USA",187453.75,46.13,673.63,1.59%,2356470
+602,"UBER","Uber Technologies Inc","Technology","Software - Application","USA",189747.46,11.72,91.32,0.36%,11154581
+603,"INTC","Intel Corp","Technology","Semiconductors","USA",197525.70,3906.60,41.41,2.25%,103042015
+604,"LRCX","Lam Research Corp","Technology","Semiconductor Equipment & Materials","USA",199331.96,34.97,158.70,1.02%,7834084
+605,"SHOP","Shopify Inc","Technology","Software - Application","Canada",209700.39,117.96,161.08,-0.76%,5440112
+606,"AMAT","Applied Materials Inc","Technology","Semiconductor Equipment & Materials","USA",213500.18,30.89,268.00,-0.53%,5373412
+607,"CRM","Salesforce Inc","Technology","Software - Application","USA",248062.65,34.77,260.57,5.30%,15852440
+608,"MU","Micron Technology Inc","Technology","Semiconductors","USA",266955.46,31.29,237.22,4.66%,21160980
+609,"SAP","Sap SE ADR","Technology","Software - Application","Germany",281527.76,37.03,247.26,0.73%,1407630
+610,"IBM","International Business Machines Corp","Technology","Information Technology Services","USA",287842.35,36.83,307.94,-0.02%,2344667
+611,"CSCO","Cisco Systems, Inc","Technology","Communication Equipment","USA",308066.84,29.40,77.97,0.27%,12579353
+612,"AMD","Advanced Micro Devices Inc","Technology","Semiconductors","USA",354864.21,107.72,217.97,0.92%,33292396
+613,"ASML","ASML Holding NV","Technology","Semiconductor Equipment & Materials","Netherlands",426154.56,41.17,1099.47,-0.96%,1054353
+614,"PLTR","Palantir Technologies Inc","Technology","Software - Infrastructure","USA",433213.67,425.07,181.76,2.16%,32079261
+615,"ORCL","Oracle Corp","Technology","Software - Infrastructure","USA",620275.43,50.37,217.58,1.52%,24208687
+616,"TSM","Taiwan Semiconductor Manufacturing ADR","Technology","Semiconductors","Taiwan",1528373.72,30.20,294.72,0.61%,10275297
+617,"AVGO","Broadcom Inc","Technology","Semiconductors","USA",1842855.76,99.70,390.24,2.42%,24779924
+618,"MSFT","Microsoft Corporation","Technology","Software - Infrastructure","USA",3591027.51,34.37,483.16,0.48%,22608710
+619,"AAPL","Apple Inc","Technology","Consumer Electronics","USA",4119351.54,37.37,278.78,-0.68%,47265845
+620,"NVDA","NVIDIA Corp","Technology","Semiconductors","USA",4432563.09,45.18,182.41,-0.53%,143971098

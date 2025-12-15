@@ -1,0 +1,90 @@
+"No.","Ticker","Company","Sector","Industry","Country","Market Cap","P/E","Price","Change","Volume"
+1,"HTOO","Fusion Fuel Green Ltd","Utilities","Utilities - Renewable","Ireland",7.50,,4.14,-0.24%,110223
+2,"CREG","Smart Powerr Corp","Utilities","Utilities - Renewable","China",23.72,,1.14,0.88%,31674
+3,"SUUN","PowerBank Corporation","Utilities","Utilities - Renewable","Canada",58.26,,1.59,-4.79%,234159
+4,"SAFX","XCF Global Inc","Utilities","Utilities - Renewable","USA",123.83,1.59,0.78,-9.33%,752767
+5,"STEM","Stem Inc","Utilities","Utilities - Renewable","USA",153.54,,18.30,-1.98%,218789
+6,"NXXT","NextNRG Inc","Utilities","Utilities - Renewable","USA",170.70,,1.27,3.25%,1299178
+7,"DGXX","Digi Power X Inc","Utilities","Utilities - Independent Power Producers","USA",236.82,,3.61,-4.50%,5028298
+8,"NKLR","Terra Innovatum Global N.V","Utilities","Utilities - Regulated Electric","Italy",414.77,59.54,5.90,-4.22%,977228
+9,"OPAL","OPAL Fuels Inc","Utilities","Utilities - Regulated Gas","USA",456.03,125.24,2.63,1.54%,123072
+10,"CDZI","Cadiz Inc","Utilities","Utilities - Regulated Water","USA",473.73,,5.70,-2.90%,473560
+11,"NRGV","Energy Vault Holdings Inc","Utilities","Utilities - Renewable","USA",714.79,,4.26,3.15%,2505852
+12,"EDN","Empresa Distribuidora y Comercial Norte S.A. ADR","Utilities","Utilities - Regulated Electric","Argentina",726.53,7.89,32.86,-3.92%,140833
+13,"IMSR","Terrestrial Energy Inc","Utilities","Utilities - Regulated Electric","USA",761.29,47.72,9.31,-13.72%,1863885
+14,"XIFR","XPLR Infrastructure LP","Utilities","Utilities - Renewable","USA",1676.66,,8.92,-1.00%,1069154
+15,"HTO","H2O America","Utilities","Utilities - Regulated Water","USA",1715.42,15.23,47.91,0.82%,585302
+16,"NWN","Northwest Natural Holding Co","Utilities","Utilities - Regulated Gas","USA",1919.29,18.40,46.24,0.06%,302812
+17,"HE","Hawaiian Electric Industries, Inc","Utilities","Utilities - Regulated Electric","USA",1941.98,14.82,11.25,-0.27%,1652137
+18,"CTRI","Centuri Holdings Inc","Utilities","Utilities - Regulated Gas","USA",2547.24,913.57,25.58,1.31%,1924882
+19,"CEPU","Central Puerto ADR","Utilities","Utilities - Regulated Electric","Argentina",2588.94,11.12,17.10,-0.52%,471380
+20,"CWT","California Water Service Group","Utilities","Utilities - Regulated Water","USA",2674.46,19.62,44.88,1.33%,379421
+21,"RNW","ReNew Energy Global plc","Utilities","Utilities - Renewable","India",2749.69,27.01,7.55,0.53%,400632
+22,"AWR","American States Water Co","Utilities","Utilities - Regulated Water","USA",2832.73,21.68,73.17,1.01%,269797
+23,"AVA","Avista Corp","Utilities","Utilities - Diversified","USA",3149.90,16.45,38.71,0.26%,524972
+24,"CIG","Cia Energetica DE Minas Gerais - Cemig ADR","Utilities","Utilities - Diversified","Brazil",3846.24,8.21,2.02,-5.16%,4892187
+25,"ALE","Allete, Inc","Utilities","Utilities - Diversified","USA",3928.03,23.69,67.61,0.01%,551575
+26,"MDU","MDU Resources Group Inc","Utilities","Utilities - Regulated Gas","USA",3936.41,23.34,19.26,-1.03%,2547516
+27,"NWE","NorthWestern Energy Group Inc","Utilities","Utilities - Regulated Electric","USA",4026.46,18.56,65.57,-0.15%,365528
+28,"TAC","Transalta Corp","Utilities","Utilities - Independent Power Producers","Canada",4171.60,,14.06,-1.40%,784913
+29,"ELP","Cia Paranaense De Energia Copel ADR","Utilities","Utilities - Regulated Electric","Brazil",4267.37,19.64,10.19,-6.86%,588773
+30,"FLNC","Fluence Energy Inc","Utilities","Utilities - Renewable","USA",4381.53,,23.96,2.66%,7800373
+31,"NJR","New Jersey Resources Corporation","Utilities","Utilities - Regulated Gas","USA",4541.53,13.54,45.08,0.13%,868175
+32,"AQN","Algonquin Power & Utilities Corp","Utilities","Utilities - Diversified","Canada",4636.73,,5.86,0.17%,3652446
+33,"OGS","ONE Gas Inc","Utilities","Utilities - Regulated Gas","USA",4724.92,18.36,78.75,0.00%,321939
+34,"SR","Spire Inc","Utilities","Utilities - Regulated Gas","USA",4866.51,18.72,82.43,0.07%,403651
+35,"PAM","Pampa Energia SA ADR","Utilities","Utilities - Independent Power Producers","Argentina",4919.21,14.20,90.46,-0.76%,204277
+36,"BKH","Black Hills Corporation","Utilities","Utilities - Regulated Gas","USA",5278.61,17.65,69.94,-0.14%,825311
+37,"ENIC","Enel Chile S.A. ADR","Utilities","Utilities - Regulated Electric","Chile",5325.82,78.09,3.85,-1.03%,564947
+38,"POR","Portland General Electric Co","Utilities","Utilities - Regulated Electric","USA",5463.59,17.62,48.57,-0.33%,640486
+39,"SWX","Southwest Gas Holdings Inc","Utilities","Utilities - Regulated Gas","USA",5708.30,12.32,79.08,0.08%,343683
+40,"BIPC","Brookfield Infrastructure Corp","Utilities","Utilities - Regulated Gas","USA",6188.33,,46.86,-0.32%,522143
+41,"TXNM","TXNM Energy Inc","Utilities","Utilities - Regulated Electric","USA",6342.49,34.03,58.23,0.17%,565724
+42,"ORA","Ormat Technologies Inc","Utilities","Utilities - Renewable","USA",6846.46,51.46,112.64,0.32%,924681
+43,"IDA","Idacorp, Inc","Utilities","Utilities - Regulated Electric","USA",6853.47,21.77,126.81,0.27%,445420
+44,"CWEN-A","Clearway Energy Inc","Utilities","Utilities - Renewable","USA",6853.85,13.59,31.80,-0.34%,191780
+45,"CWEN","Clearway Energy Inc","Utilities","Utilities - Renewable","USA",6853.85,14.54,34.01,-0.41%,767287
+46,"BEPC","Brookfield Renewable Corp","Utilities","Utilities - Renewable","USA",7133.86,,39.71,-0.87%,690013
+47,"UGI","UGI Corp","Utilities","Utilities - Regulated Gas","USA",8046.94,12.07,37.51,0.29%,3295000
+48,"BEP","Brookfield Renewable Partners LP","Utilities","Utilities - Renewable","Bermuda",8481.21,,28.37,0.00%,345860
+49,"OGE","Oge Energy Corp","Utilities","Utilities - Regulated Electric","USA",8913.36,17.39,43.38,-0.25%,794821
+50,"AES","AES Corp","Utilities","Utilities - Diversified","USA",9912.72,8.48,13.92,-0.07%,5815847
+51,"PNW","Pinnacle West Capital Corp","Utilities","Utilities - Regulated Electric","USA",10553.10,18.11,88.17,0.10%,1201695
+52,"WTRG","Essential Utilities Inc","Utilities","Utilities - Regulated Water","USA",10753.07,15.76,38.00,0.26%,1930863
+53,"TLN","Talen Energy Corp","Utilities","Utilities - Independent Power Producers","USA",16184.46,76.95,354.24,-3.72%,1361598
+54,"OKLO","Oklo Inc","Utilities","Utilities - Independent Power Producers","USA",16354.38,,104.67,-6.25%,14573818
+55,"BIP","Brookfield Infrastructure Partners L.P","Utilities","Utilities - Diversified","Bermuda",16448.00,55.87,35.60,-0.64%,616000
+56,"LNT","Alliant Energy Corp","Utilities","Utilities - Regulated Electric","USA",16837.01,20.61,65.50,-0.32%,1306677
+57,"EVRG","Evergy Inc","Utilities","Utilities - Regulated Electric","USA",16870.09,20.11,73.28,-0.72%,1766201
+58,"SBS","Companhia de Saneamento Basico do Estado de Sao Paulo. ADR","Utilities","Utilities - Regulated Water","Brazil",17128.76,13.46,25.06,-6.77%,3044948
+59,"NI","NiSource Inc","Utilities","Utilities - Regulated Gas","USA",20042.21,22.18,42.00,0.26%,2841118
+60,"CMS","CMS Energy Corporation","Utilities","Utilities - Regulated Electric","USA",21634.09,20.52,71.09,-0.85%,1882753
+61,"EIX","Edison International","Utilities","Utilities - Regulated Electric","USA",22352.28,7.61,58.09,0.94%,2855539
+62,"KEP","Korea Electric Power Corporation. ADR","Utilities","Utilities - Regulated Electric","South Korea",22494.45,3.84,17.52,2.16%,384614
+63,"AXIA","Axia Energia ADR","Utilities","Utilities - Renewable","Brazil",22800.04,,11.54,-7.53%,5239018
+64,"ES","Eversource Energy","Utilities","Utilities - Regulated Electric","USA",25040.12,18.34,66.74,-0.48%,2980012
+65,"PPL","PPL Corp","Utilities","Utilities - Regulated Electric","USA",25047.57,23.04,33.86,-0.88%,9133834
+66,"CNP","Centerpoint Energy Inc","Utilities","Utilities - Regulated Electric","USA",25089.73,24.26,38.43,-0.29%,4328715
+67,"AWK","American Water Works Co. Inc","Utilities","Utilities - Regulated Water","USA",25268.50,22.71,129.50,0.44%,1942764
+68,"FTS","Fortis Inc","Utilities","Utilities - Regulated Electric","Canada",25825.94,21.27,51.10,0.31%,538932
+69,"FE","Firstenergy Corp","Utilities","Utilities - Regulated Electric","USA",25942.96,19.51,44.91,-0.51%,4692832
+70,"AEE","Ameren Corp","Utilities","Utilities - Regulated Electric","USA",27011.62,19.21,99.86,-0.98%,2221751
+71,"DTE","DTE Energy Co","Utilities","Utilities - Regulated Electric","USA",27254.24,19.66,131.23,-0.70%,1579968
+72,"ATO","Atmos Energy Corp","Utilities","Utilities - Regulated Gas","USA",27696.45,22.94,171.29,0.20%,939141
+73,"NRG","NRG Energy Inc","Utilities","Utilities - Independent Power Producers","USA",31237.22,23.82,163.00,-3.76%,1864827
+74,"PCG","PG&E Corp","Utilities","Utilities - Regulated Electric","USA",33320.32,12.92,15.16,-1.11%,18867399
+75,"WEC","WEC Energy Group Inc","Utilities","Utilities - Regulated Electric","USA",34386.85,19.98,105.71,-0.54%,2530575
+76,"ED","Consolidated Edison, Inc","Utilities","Utilities - Regulated Electric","USA",34866.38,16.88,96.60,0.39%,1775844
+77,"PEG","Public Service Enterprise Group Inc","Utilities","Utilities - Regulated Electric","USA",39717.68,19.12,79.57,-1.49%,4567794
+78,"ETR","Entergy Corp","Utilities","Utilities - Regulated Electric","USA",42078.36,23.25,94.22,-0.25%,3317394
+79,"EXC","Exelon Corp","Utilities","Utilities - Regulated Electric","USA",44260.82,15.68,43.81,-0.23%,7619776
+80,"XEL","Xcel Energy, Inc","Utilities","Utilities - Regulated Electric","USA",45655.04,23.54,77.18,-0.76%,3563149
+81,"D","Dominion Energy Inc","Utilities","Utilities - Regulated Electric","USA",49945.39,19.90,58.49,-2.26%,7138364
+82,"VST","Vistra Corp","Utilities","Utilities - Independent Power Producers","USA",56641.46,59.72,167.17,-5.05%,4524250
+83,"SRE","Sempra","Utilities","Utilities - Diversified","USA",59172.11,27.92,90.66,0.66%,3395037
+84,"AEP","American Electric Power Company Inc","Utilities","Utilities - Regulated Electric","USA",62777.47,17.20,117.54,-0.42%,3166401
+85,"NGG","National Grid Plc ADR","Utilities","Utilities - Regulated Electric","United Kingdom",74830.10,20.05,75.41,-0.66%,433995
+86,"DUK","Duke Energy Corp","Utilities","Utilities - Regulated Electric","USA",90613.09,18.32,116.52,-1.23%,3983086
+87,"SO","Southern Company","Utilities","Utilities - Regulated Electric","USA",95003.33,21.45,86.28,-1.20%,7255576
+88,"CEG","Constellation Energy Corporation","Utilities","Utilities - Independent Power Producers","USA",112368.23,41.21,359.82,-2.39%,2018171
+89,"NEE","NextEra Energy Inc","Utilities","Utilities - Regulated Electric","USA",173127.33,26.40,83.13,-0.31%,8194564

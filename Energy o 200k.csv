@@ -1,0 +1,194 @@
+"No.","Ticker","Company","Sector","Industry","Country","Market Cap","P/E","Price","Change","Volume"
+1,"TPET","Trio Petroleum Corp","Energy","Oil & Gas E&P","USA",7.70,,0.91,1.42%,187127
+2,"SKYQ","Sky Quarry Inc","Energy","Oil & Gas Integrated","USA",9.64,,0.39,3.48%,79261
+3,"RBNE","Robin Energy Ltd","Energy","Oil & Gas Midstream","Cyprus",12.06,,0.86,2.88%,223403
+4,"DLXY","Delixy Holdings Ltd","Energy","Oil & Gas Refining & Marketing","Singapore",16.16,20.98,0.99,-4.06%,2988
+5,"VIVK","Vivakor Inc","Energy","Oil & Gas Integrated","USA",17.41,,0.10,-5.12%,13161617
+6,"NINE","Nine Energy Service Inc","Energy","Oil & Gas Equipment & Services","USA",21.03,,0.49,5.43%,1726174
+7,"EONR","EON Resources Inc","Energy","Oil & Gas E&P","USA",23.39,,0.47,1.34%,621458
+8,"USEG","U.S. Energy Corp","Energy","Oil & Gas E&P","USA",37.98,,1.06,4.95%,494995
+9,"INDO","Indonesia Energy Corp Ltd","Energy","Oil & Gas E&P","Indonesia",44.96,,3.00,4.90%,609031
+10,"HUSA","Houston American Energy Corp","Energy","Oil & Gas E&P","USA",74.81,,2.16,0.93%,388990
+11,"PROP","Prairie Operating Co","Energy","Oil & Gas E&P","USA",106.77,,1.79,-2.72%,707363
+12,"EPM","Evolution Petroleum Corporation","Energy","Oil & Gas E&P","USA",146.05,,4.21,0.48%,309347
+13,"GTE","Gran Tierra Energy Inc","Energy","Oil & Gas E&P","Canada",166.24,,4.71,0.21%,237218
+14,"GEOS","Geospace Technologies Corp","Energy","Oil & Gas Equipment & Services","USA",189.23,,14.76,-2.45%,182766
+15,"REI","Ring Energy Inc","Energy","Oil & Gas E&P","USA",194.91,,0.94,0.06%,1139049
+16,"IMPP","Imperial Petroleum Inc","Energy","Oil & Gas Midstream","Greece",204.04,4.25,4.57,-0.65%,558014
+17,"AMPY","Amplify Energy Corp","Energy","Oil & Gas E&P","USA",225.05,,5.56,-1.94%,665550
+18,"BRY","Berry Corp","Energy","Oil & Gas E&P","USA",266.19,,3.43,-0.29%,386236
+19,"WTI","W & T Offshore Inc","Energy","Oil & Gas E&P","USA",275.24,,1.85,2.78%,728409
+20,"SJT","San Juan Basin Royalty Trust","Energy","Oil & Gas E&P","USA",279.19,,5.99,1.87%,206426
+21,"EGY","VAALCO Energy, Inc","Energy","Oil & Gas E&P","USA",370.12,12.96,3.55,-0.28%,982374
+22,"OIS","Oil States International, Inc","Energy","Oil & Gas Equipment & Services","USA",406.27,18.14,6.80,-1.02%,484609
+23,"OBE","Obsidian Energy Ltd","Energy","Oil & Gas E&P","Canada",419.50,,6.25,1.46%,458525
+24,"GPRK","Geopark Limited","Energy","Oil & Gas E&P","Colombia",423.31,12.71,8.25,-1.90%,582113
+25,"NFE","New Fortress Energy Inc","Energy","Oil & Gas Midstream","USA",446.75,,1.57,12.14%,40894446
+26,"FTK","Flotek Industries Inc","Energy","Oil & Gas Equipment & Services","USA",492.35,18.34,16.38,2.31%,435570
+27,"CLNE","Clean Energy Fuels Corp","Energy","Oil & Gas Refining & Marketing","USA",502.20,,2.29,-2.55%,875811
+28,"CLCO","Cool Company Ltd","Energy","Oil & Gas Midstream","United Kingdom",517.42,5.36,9.77,0.31%,65470
+29,"URG","Ur-Energy Inc","Energy","Uranium","USA",519.17,,1.38,-4.17%,5605522
+30,"UROY","Uranium Royalty Corp","Energy","Uranium","Canada",522.53,,3.91,-3.46%,1616755
+31,"EU","enCore Energy Corp","Energy","Uranium","USA",533.66,,2.85,-6.25%,1799224
+32,"KOS","Kosmos Energy Ltd","Energy","Oil & Gas E&P","USA",550.08,,1.15,7.48%,22906746
+33,"SD","Sandridge Energy Inc","Energy","Oil & Gas E&P","USA",559.70,8.49,15.22,0.86%,337699
+34,"GRNT","Granite Ridge Resources Inc","Energy","Oil & Gas E&P","USA",711.38,18.90,5.42,1.69%,819441
+35,"HPK","HighPeak Energy Inc","Energy","Oil & Gas E&P","USA",724.64,16.12,5.77,-8.05%,662065
+36,"VTLE","Vital Energy Inc","Energy","Oil & Gas E&P","USA",733.95,,18.97,1.93%,365344
+37,"TEN","Tsakos Energy Navigation Limited","Energy","Oil & Gas Midstream","Greece",762.13,7.79,24.74,0.98%,167567
+38,"ACDC","ProFrac Holding Corp","Energy","Oil & Gas Equipment & Services","USA",766.89,,4.24,-2.30%,1189800
+39,"CLB","Core Laboratories Inc","Energy","Oil & Gas Equipment & Services","USA",783.66,24.80,16.83,2.06%,486246
+40,"NAT","Nordic American Tankers Ltd","Energy","Oil & Gas Midstream","Bermuda",791.95,415.56,3.74,0.00%,3534714
+41,"TK","Teekay Corporation Ltd","Energy","Oil & Gas Midstream","Bermuda",800.68,6.58,9.39,-1.98%,522193
+42,"SOC","Sable Offshore Corp","Energy","Oil & Gas Drilling","USA",817.58,,5.64,10.59%,5700822
+43,"VTS","Vitesse Energy Inc","Energy","Oil & Gas E&P","USA",832.64,45.01,21.53,-0.92%,353466
+44,"NBR","Nabors Industries Ltd","Energy","Oil & Gas Drilling","Bermuda",850.66,6.05,58.42,2.65%,456841
+45,"HNRG","Hallador Energy Co","Energy","Thermal Coal","USA",874.31,,19.95,1.68%,401286
+46,"INR","Infinity Natural Resources Inc","Energy","Oil & Gas E&P","USA",902.21,,14.82,3.78%,378110
+47,"WBI","WaterBridge Infrastructure LLC","Energy","Oil & Gas Equipment & Services","USA",982.87,,22.72,1.16%,300859
+48,"LPG","Dorian LPG Ltd","Energy","Oil & Gas Midstream","USA",1069.24,11.21,24.96,-0.24%,463286
+49,"HLX","Helix Energy Solutions Group Inc","Energy","Oil & Gas Equipment & Services","USA",1078.10,25.96,7.33,-2.40%,1470230
+50,"NPKI","NPK International Inc","Energy","Oil & Gas Equipment & Services","USA",1081.53,33.44,12.80,-1.08%,624979
+51,"PUMP","ProPetro Holding Corp","Energy","Oil & Gas Equipment & Services","USA",1134.45,,10.91,-1.80%,2393569
+52,"BORR","Borr Drilling Ltd","Energy","Oil & Gas Drilling","Bermuda",1157.78,16.22,4.05,7.71%,7615380
+53,"NVGS","Navigator Holdings Ltd","Energy","Oil & Gas Midstream","United Kingdom",1163.95,11.83,17.76,-1.06%,249853
+54,"DEC","Diversified Energy Co","Energy","Oil & Gas Integrated","USA",1207.60,,15.84,3.39%,558991
+55,"NGL","NGL Energy Partners LP","Energy","Oil & Gas Midstream","USA",1228.31,,9.77,-1.01%,145294
+56,"AESI","Atlas Energy Solutions Inc","Energy","Oil & Gas Equipment & Services","USA",1233.62,,9.95,-1.00%,2999130
+57,"RES","RPC, Inc","Energy","Oil & Gas Equipment & Services","USA",1288.15,26.53,5.84,0.86%,1393996
+58,"WKC","World Kinect Corp","Energy","Oil & Gas Refining & Marketing","USA",1345.08,,24.21,0.75%,807768
+59,"WTTR","Select Water Solutions Inc","Energy","Oil & Gas Equipment & Services","USA",1356.65,57.91,11.20,-0.27%,793800
+60,"FLNG","Flex Lng Ltd","Energy","Oil & Gas Midstream","Bermuda",1362.75,13.87,25.29,-2.09%,445648
+61,"VET","Vermilion Energy Inc","Energy","Oil & Gas E&P","Canada",1385.83,,9.04,-0.33%,1330600
+62,"NESR","National Energy Services Reunited Corp","Energy","Oil & Gas Equipment & Services","USA",1498.57,20.72,14.87,1.02%,635997
+63,"KRP","Kimbell Royalty Partners LP","Energy","Oil & Gas E&P","USA",1570.13,,12.83,0.79%,537728
+64,"FLOC","Flowco Holdings Inc","Energy","Oil & Gas Equipment & Services","USA",1613.79,34.96,18.00,-1.32%,404591
+65,"INVX","Innovex International Inc","Energy","Oil & Gas Equipment & Services","USA",1615.67,15.97,23.44,-0.68%,361383
+66,"NEXT","NextDecade Corporation","Energy","Oil & Gas Equipment & Services","USA",1628.53,,6.15,-1.28%,2196124
+67,"XPRO","Expro Group Holdings N.V","Energy","Oil & Gas Equipment & Services","USA",1688.64,25.16,14.87,0.13%,674199
+68,"EFXT","Enerflex Ltd","Energy","Oil & Gas Equipment & Services","Canada",1757.57,13.09,14.43,2.20%,381549
+69,"TNK","Teekay Tankers Ltd","Energy","Oil & Gas Midstream","Bermuda",1906.90,6.13,55.21,-0.47%,386525
+70,"GEL","Genesis Energy L.P","Energy","Oil & Gas Midstream","USA",1972.90,,16.11,-0.62%,254328
+71,"SDRL","Seadrill Ltd","Energy","Oil & Gas Drilling","Bermuda",1988.35,64.08,32.00,-1.69%,508847
+72,"TALO","Talos Energy Inc","Energy","Oil & Gas E&P","USA",2014.37,,11.85,0.59%,1764338
+73,"DHT","DHT Holdings Inc","Energy","Oil & Gas Midstream","Bermuda",2048.72,10.27,12.76,0.08%,1645158
+74,"MNR","Mach Natural Resources LP","Energy","Oil & Gas E&P","USA",2103.60,13.01,12.49,0.56%,287310
+75,"TRMD","Torm Plc","Energy","Oil & Gas Midstream","United Kingdom",2152.25,7.68,21.24,-0.14%,309785
+76,"TGS","Transportadora de Gas del Sur ADR","Energy","Oil & Gas Integrated","Argentina",2177.05,12.79,31.32,-1.14%,188596
+77,"DK","Delek US Holdings Inc","Energy","Oil & Gas Refining & Marketing","USA",2186.48,,36.41,-3.29%,1029685
+78,"PARR","Par Pacific Holdings Inc","Energy","Oil & Gas Refining & Marketing","USA",2197.72,9.19,43.70,-0.86%,670142
+79,"SUNC","SunocoCorp LLC","Energy","Oil & Gas Midstream","USA",2200.76,,51.24,-1.16%,526310
+80,"SM","SM Energy Co","Energy","Oil & Gas E&P","USA",2304.83,3.18,20.12,-0.59%,3363474
+81,"PTEN","Patterson-UTI Energy Inc","Energy","Oil & Gas Drilling","USA",2396.81,,6.32,-2.47%,4979063
+82,"NOG","Northern Oil and Gas Inc","Energy","Oil & Gas E&P","USA",2425.43,14.02,24.85,0.85%,3120373
+83,"DNN","Denison Mines Corp","Energy","Uranium","Canada",2458.57,,2.74,-3.52%,50637424
+84,"BTE","Baytex Energy Corp","Energy","Oil & Gas E&P","Canada",2496.97,16.34,3.25,1.56%,17644564
+85,"INSW","International Seaways Inc","Energy","Oil & Gas Midstream","USA",2525.54,11.64,51.13,-0.97%,519530
+86,"CRGY","Crescent Energy Co","Energy","Oil & Gas E&P","USA",2541.22,,9.98,2.15%,3070786
+87,"CIVI","Civitas Resources Inc","Energy","Oil & Gas E&P","USA",2592.36,4.42,30.39,-0.23%,1420914
+88,"OII","Oceaneering International, Inc","Energy","Oil & Gas Equipment & Services","USA",2687.94,11.78,26.94,-1.10%,1059300
+89,"BKV","BKV Corp","Energy","Oil & Gas E&P","USA",2783.13,56.01,29.00,1.12%,1227495
+90,"TDW","Tidewater Inc","Energy","Oil & Gas Equipment & Services","USA",2856.32,19.43,57.63,-3.14%,619890
+91,"STNG","Scorpio Tankers Inc","Energy","Oil & Gas Midstream","Monaco",2893.02,9.46,55.89,-0.09%,975466
+92,"HP","Helmerich & Payne, Inc","Energy","Oil & Gas Drilling","USA",2941.64,,29.88,-0.63%,1112940
+93,"USAC","USA Compression Partners LP","Energy","Oil & Gas Equipment & Services","USA",2977.58,30.28,24.27,-0.86%,284293
+94,"ARLP","Alliance Resource Partners, LP","Energy","Thermal Coal","USA",3114.38,12.82,24.25,1.93%,319147
+95,"BSM","Black Stone Minerals L.P","Energy","Oil & Gas E&P","USA",3120.73,12.83,14.73,1.45%,413455
+96,"CMBT","CMB.Tech NV","Energy","Oil & Gas Midstream","Belgium",3136.74,13.03,10.81,-1.10%,1338674
+97,"KGS","Kodiak Gas Services Inc","Energy","Oil & Gas Equipment & Services","USA",3148.88,46.51,36.75,1.02%,1504429
+98,"LBRT","Liberty Energy Inc","Energy","Oil & Gas Equipment & Services","USA",3158.36,17.33,19.50,-0.86%,2678345
+99,"EE","Excelerate Energy Inc","Energy","Oil & Gas Midstream","USA",3269.27,25.27,28.67,-0.66%,287920
+100,"CVI","CVR Energy Inc","Energy","Oil & Gas Refining & Marketing","USA",3371.80,20.43,33.54,-1.53%,658879
+101,"BTU","Peabody Energy Corp","Energy","Thermal Coal","USA",3528.83,,29.02,-1.66%,2491700
+102,"WHD","Cactus Inc","Energy","Oil & Gas Equipment & Services","USA",3674.58,18.30,46.02,0.13%,436600
+103,"UUUU","Energy Fuels Inc","Energy","Uranium","USA",3704.05,,15.61,-4.35%,11619202
+104,"SEI","Solaris Energy Infrastructure Inc","Energy","Oil & Gas Equipment & Services","USA",3789.80,60.80,55.36,0.40%,1992977
+105,"PBF","PBF Energy Inc","Energy","Oil & Gas Refining & Marketing","USA",3869.31,,33.40,0.06%,1863848
+106,"CRC","California Resources Corporation","Energy","Oil & Gas E&P","USA",3988.04,11.08,47.64,-0.21%,682101
+107,"GLNG","Golar Lng","Energy","Oil & Gas Midstream","Bermuda",4003.90,,38.27,-1.16%,830235
+108,"VAL","Valaris Ltd","Energy","Oil & Gas Equipment & Services","Bermuda",4169.77,10.69,59.93,0.55%,1098823
+109,"GPOR","Gulfport Energy Corp","Energy","Oil & Gas E&P","USA",4183.44,,216.57,-0.03%,246531
+110,"UGP","Ultrapar Participacoes S.A. ADR","Energy","Oil & Gas Refining & Marketing","Brazil",4263.16,8.47,3.99,-8.49%,3020425
+111,"CNR","Core Natural Resources Inc","Energy","Thermal Coal","USA",4266.71,,83.27,-0.92%,570453
+112,"AROC","Archrock Inc","Energy","Oil & Gas Equipment & Services","USA",4371.97,16.59,24.93,-0.84%,1846453
+113,"MGY","Magnolia Oil & Gas Corp","Energy","Oil & Gas E&P","USA",4450.87,13.12,23.59,0.77%,2017956
+114,"LB","Landbridge Company LLC","Energy","Oil & Gas Equipment & Services","USA",4553.80,73.85,59.58,0.39%,210679
+115,"MUR","Murphy Oil Corp","Energy","Oil & Gas E&P","USA",4674.70,33.38,32.75,0.77%,1434531
+116,"IEP","Icahn Enterprises L P","Energy","Oil & Gas Refining & Marketing","USA",4741.65,,7.90,-1.99%,884761
+117,"VIST","Vista Energy S.A.B. de C.V ADR","Energy","Oil & Gas E&P","Mexico",4843.78,7.46,50.88,-1.76%,1129717
+118,"LEU","Centrus Energy Corp","Energy","Uranium","USA",4848.59,40.46,266.23,-4.45%,1088678
+119,"CSAN","Cosan S.A ADR","Energy","Oil & Gas Refining & Marketing","Brazil",4879.71,,4.93,-9.54%,3403448
+120,"RIG","Transocean Ltd","Energy","Oil & Gas Drilling","Switzerland",4890.40,,4.44,0.23%,20598533
+121,"FRO","Frontline Plc","Energy","Oil & Gas Midstream","Cyprus",5204.92,23.89,23.38,0.60%,2082996
+122,"NE","Noble Corp Plc","Energy","Oil & Gas Drilling","USA",5211.76,23.52,32.81,0.86%,1326441
+123,"WFRD","Weatherford International plc","Energy","Oil & Gas Equipment & Services","USA",5482.33,13.80,76.43,-0.84%,551497
+124,"CNX","CNX Resources Corp","Energy","Oil & Gas E&P","USA",5514.66,28.56,40.90,1.26%,2533689
+125,"CHRD","Chord Energy Corp","Energy","Oil & Gas E&P","USA",5552.90,37.79,97.65,0.99%,618981
+126,"MTDR","Matador Resources Co","Energy","Oil & Gas E&P","USA",5619.52,7.23,45.22,1.32%,1388133
+127,"SOBO","South Bow Corp","Energy","Oil & Gas Midstream","Canada",5776.85,18.89,27.74,1.02%,557023
+128,"NOV","NOV Inc","Energy","Oil & Gas Equipment & Services","USA",5898.05,16.15,16.17,-0.80%,2355309
+129,"KNTK","Kinetik Holdings Inc","Energy","Oil & Gas Midstream","USA",5960.87,90.93,36.89,-0.30%,800704
+130,"NXE","NexGen Energy Ltd","Energy","Uranium","Canada",6159.41,,9.41,-4.95%,6741307
+131,"UEC","Uranium Energy Corp","Energy","Uranium","USA",6648.96,,13.76,-2.96%,9287582
+132,"HESM","Hess Midstream LP","Energy","Oil & Gas Midstream","USA",7106.66,12.16,34.22,0.15%,806148
+133,"NFG","National Fuel Gas Co","Energy","Oil & Gas Integrated","USA",7392.71,14.38,81.79,-0.51%,478562
+134,"CRK","Comstock Resources, Inc","Energy","Oil & Gas E&P","USA",8020.91,122.85,27.37,2.01%,2233583
+135,"SUN","Sunoco LP","Energy","Oil & Gas Refining & Marketing","USA",8329.09,18.55,54.43,-0.29%,413802
+136,"AM","Antero Midstream Corp","Energy","Oil & Gas Midstream","USA",8796.80,18.93,18.47,1.37%,2194567
+137,"DINO","HF Sinclair Corp","Energy","Oil & Gas Refining & Marketing","USA",9210.29,24.09,50.07,-0.64%,2680559
+138,"RRC","Range Resources Corp","Energy","Oil & Gas E&P","USA",9382.66,16.63,39.60,-0.20%,4951585
+139,"APA","APA Corporation","Energy","Oil & Gas E&P","USA",9611.54,6.52,27.10,1.46%,6263245
+140,"OVV","Ovintiv Inc","Energy","Oil & Gas E&P","USA",10707.77,46.33,42.28,0.00%,2944739
+141,"AR","Antero Resources Corp","Energy","Oil & Gas E&P","USA",11337.15,21.05,36.75,0.41%,5218315
+142,"DTM","DT Midstream Inc","Energy","Oil & Gas Midstream","USA",12359.48,30.82,121.56,0.02%,835475
+143,"PR","Permian Resources Corp","Energy","Oil & Gas E&P","USA",12384.99,13.63,14.92,0.47%,9406349
+144,"PAA","Plains All American Pipeline LP","Energy","Oil & Gas Midstream","USA",12508.47,14.38,17.73,-0.23%,2448244
+145,"YPF","YPF ADR","Energy","Oil & Gas Integrated","Argentina",14074.78,,35.79,-2.32%,1604241
+146,"PAGP","Plains GP Holdings LP","Energy","Oil & Gas Midstream","USA",14391.12,21.56,18.89,-0.05%,1641387
+147,"VNOM","Viper Energy Inc","Energy","Oil & Gas Midstream","USA",14614.05,16.83,40.65,1.57%,2691948
+148,"WES","Western Midstream Partners LP","Energy","Oil & Gas Midstream","USA",16315.75,11.83,39.99,-0.77%,1699910
+149,"VG","Venture Global Inc","Energy","Oil & Gas Midstream","USA",16696.11,8.02,6.82,-2.85%,10293057
+150,"FTI","TechnipFMC plc","Energy","Oil & Gas Equipment & Services","USA",18616.01,20.63,46.02,-1.05%,2161914
+151,"EC","Ecopetrol SA ADR","Energy","Oil & Gas Integrated","Colombia",20332.26,7.49,9.89,-1.69%,2846853
+152,"CTRA","Coterra Energy Inc","Energy","Oil & Gas E&P","USA",20854.13,12.64,27.39,0.18%,7182731
+153,"TS","Tenaris S.A. ADR","Energy","Oil & Gas Equipment & Services","Luxembourg",21249.02,10.96,40.88,-1.11%,777260
+154,"PBA","Pembina Pipeline Corporation","Energy","Oil & Gas Midstream","Canada",22986.34,19.80,39.56,0.79%,883029
+155,"DVN","Devon Energy Corp","Energy","Oil & Gas E&P","USA",23504.93,8.81,37.47,-0.64%,7670786
+156,"HAL","Halliburton Co","Energy","Oil & Gas Equipment & Services","USA",23944.28,18.84,28.45,2.23%,13609709
+157,"EXE","Expand Energy Corp","Energy","Oil & Gas E&P","USA",29261.53,34.92,122.86,0.63%,3725090
+158,"PBR-A","Petroleo Brasileiro S.A. Petrobras ADR","Energy","Oil & Gas Integrated","Brazil",31290.14,5.36,11.49,-6.43%,20813394
+159,"WDS","Woodside Energy Group Ltd ADR","Energy","Oil & Gas E&P","Australia",31452.76,10.76,16.58,-1.84%,551616
+160,"CVE","Cenovus Energy Inc","Energy","Oil & Gas Integrated","Canada",34975.21,14.87,18.31,-0.11%,7179027
+161,"EQT","EQT Corp","Energy","Oil & Gas E&P","USA",37868.39,20.70,60.68,1.02%,9006782
+162,"TRGP","Targa Resources Corp","Energy","Oil & Gas Midstream","USA",38797.39,24.30,180.74,0.40%,1494433
+163,"CCJ","Cameco Corp","Energy","Uranium","Canada",39739.87,105.36,91.27,-3.00%,4654509
+164,"OXY","Occidental Petroleum Corp","Energy","Oil & Gas E&P","USA",41802.48,30.88,42.43,-0.56%,10015025
+165,"LNG","Cheniere Energy Inc","Energy","Oil & Gas Midstream","USA",44271.64,11.44,205.69,-1.06%,2280430
+166,"PBR","Petroleo Brasileiro S.A. Petrobras ADR","Energy","Oil & Gas Integrated","Brazil",45137.06,5.66,12.13,-5.82%,41176600
+167,"FANG","Diamondback Energy Inc","Energy","Oil & Gas E&P","USA",45442.97,11.02,158.60,-0.57%,2048107
+168,"IMO","Imperial Oil Ltd","Energy","Oil & Gas Integrated","Canada",45909.86,16.58,92.40,-1.82%,574273
+169,"OKE","Oneok Inc","Energy","Oil & Gas Midstream","USA",48035.54,14.04,76.34,0.22%,3288201
+170,"BKR","Baker Hughes Co","Energy","Oil & Gas Equipment & Services","USA",48549.27,16.94,49.20,-2.79%,8762642
+171,"VLO","Valero Energy Corp","Energy","Oil & Gas Refining & Marketing","USA",53114.36,36.25,174.14,-0.46%,2202951
+172,"SU","Suncor Energy, Inc","Energy","Oil & Gas Integrated","Canada",53156.20,14.49,44.25,-1.16%,6441353
+173,"E","Eni Spa ADR","Energy","Oil & Gas Integrated","Italy",54766.42,18.97,37.21,-2.26%,228846
+174,"PSX","Phillips 66","Energy","Oil & Gas Refining & Marketing","USA",56151.09,38.08,139.36,-0.04%,2346077
+175,"TRP","TC Energy Corporation","Energy","Oil & Gas Midstream","Canada",56806.35,23.45,54.59,-0.40%,1155016
+176,"MPLX","MPLX LP","Energy","Oil & Gas Midstream","USA",56813.26,11.84,55.86,-0.04%,1161270
+177,"MPC","Marathon Petroleum Corp","Energy","Oil & Gas Refining & Marketing","USA",57273.79,20.32,190.53,0.20%,1441766
+178,"SLB","SLB Ltd","Energy","Oil & Gas Equipment & Services","USA",57456.30,14.86,38.46,0.89%,12579709
+179,"ET","Energy Transfer LP","Energy","Oil & Gas Midstream","USA",57680.89,13.45,16.80,0.00%,15588242
+180,"EQNR","Equinor ASA ADR","Energy","Oil & Gas Integrated","Norway",58277.58,10.92,22.99,-1.63%,3027787
+181,"EOG","EOG Resources, Inc","Energy","Oil & Gas E&P","USA",60863.27,11.17,112.17,0.01%,3128796
+182,"KMI","Kinder Morgan Inc","Energy","Oil & Gas Midstream","USA",61781.60,22.77,27.77,-0.25%,14290859
+183,"EPD","Enterprise Products Partners L P","Energy","Oil & Gas Midstream","USA",70545.90,12.34,32.61,0.00%,2439297
+184,"CNQ","Canadian Natural Resources Ltd","Energy","Oil & Gas E&P","Canada",72200.59,15.40,34.66,0.58%,4383916
+185,"WMB","Williams Cos Inc","Energy","Oil & Gas Midstream","USA",76704.76,32.50,62.81,-1.34%,7579057
+186,"BP","BP plc ADR","Energy","Oil & Gas Integrated","United Kingdom",91468.98,61.06,35.83,-3.76%,12361992
+187,"ENB","Enbridge Inc","Energy","Oil & Gas Midstream","Canada",104897.76,26.35,48.09,-0.10%,4736554
+188,"COP","Conoco Phillips","Energy","Oil & Gas E&P","USA",115774.45,13.25,93.69,0.61%,9873734
+189,"TTE","TotalEnergies SE ADR","Energy","Oil & Gas Integrated","France",140429.94,10.34,64.82,-2.94%,2162519
+190,"SHEL","Shell Plc ADR","Energy","Oil & Gas Integrated","United Kingdom",209040.05,14.97,73.01,-2.00%,4610019
+191,"CVX","Chevron Corp","Energy","Oil & Gas Integrated","USA",302028.24,21.18,150.00,-1.48%,12659762
+192,"XOM","Exxon Mobil Corp","Energy","Oil & Gas Integrated","USA",491468.47,16.93,116.54,-0.51%,12516864
+193,"STAK","Stak Inc","Energy","Oil & Gas Equipment & Services","USA",,,0.47,2.39%,31839
