@@ -49,8 +49,9 @@ if st.sidebar.button("⚡ Atualização Rápida (Gap)"):
             if latest:
                 # Update ETFs first (short period to cover gaps)
                 ds.update_sector_data(period="1mo")
-                # Update Constituents
-                ds.update_constituents_data(start_date=latest, progress_callback=update_progress)
+                # Update Constituents with a 7-day buffer to catch any lagging sectors
+                safe_start = latest - pd.Timedelta(days=7)
+                ds.update_constituents_data(start_date=safe_start, progress_callback=update_progress)
                 st.sidebar.success("Atualização concluída!")
                 st.cache_data.clear()
             else:
@@ -556,6 +557,25 @@ elif page == "Sector Dashboard":
             return "{:.2f}".format(x) if pd.notnull(x) else "-"
 
         # Styling
+        import matplotlib.colors as mcolors
+        import matplotlib.cm as cm
+        import numpy as np
+
+        def color_map(val, vmin, vmax, cmap_name='RdYlGn'):
+            if pd.isna(val):
+                return "" # No style for NaNs
+            
+            # Normalize
+            norm = mcolors.Normalize(vmin=vmin, vmax=vmax, clip=True)
+            cmap = cm.get_cmap(cmap_name)
+            rgba = cmap(norm(val))
+            color = mcolors.to_hex(rgba)
+            return f'background-color: {color}; color: black;' # Force black text for contrast if needed, or smart detection
+
+        # Apply specific styling
+        # Since style.map/applymap is slow or complex to pass args per column group easily in one go if ranges differ,
+        # we can use simple lambdas.
+        
         st.dataframe(
             df_view.style
             .format({
@@ -569,8 +589,10 @@ elif page == "Sector Dashboard":
                 '% > MA50': fmt_pct,
                 '% > MA200': fmt_pct,
             })
-            .background_gradient(subset=['Score', 'Score -5d', 'Score -20d', 'Score -50d'], cmap='RdYlGn', vmin=-10, vmax=10)
-            .background_gradient(subset=['% > MA5', '% > MA20', '% > MA20 -5d', '% > MA50', '% > MA200'], cmap='RdYlGn', vmin=0, vmax=100),
+            # Gradient for Scores (-10 to 10)
+            .map(lambda x: color_map(x, -3, 3, 'RdYlGn'), subset=['Score', 'Score -5d', 'Score -20d', 'Score -50d'])
+            # Gradient for Percentages (0 to 100)
+            .map(lambda x: color_map(x, 0, 100, 'RdYlGn'), subset=['% > MA5', '% > MA20', '% > MA20 -5d', '% > MA50', '% > MA200']),
             height=600,
             use_container_width=True,
             column_config={

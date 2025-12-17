@@ -437,138 +437,144 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
         total_sectors = len(sectors)
         
         for idx, sector in enumerate(sectors):
-            constituents = {c.ticker: c.id for c in sector.constituents}
-            if not constituents:
-                print(f"No constituents for {sector.name}, skipping.")
-                continue
-                
-            msg = f"Updating {sector.name} ({len(constituents)} tickers)..."
-            if start_date:
-                msg += f" [From {start_date}]"
-            print(msg)
-            
-            # Update Progress
-            if progress_callback:
-                progress_callback(msg, idx / total_sectors)
-            
-            ticker_list = list(constituents.keys())
-            batch_size = 50
-            
-            for i in range(0, len(ticker_list), batch_size):
-                batch = ticker_list[i:i+batch_size]
-                try:
-                    # Determine start date for yfinance
-                    # If start_date is provided (gap fill), use it.
-                    # Otherwise default to "10y" for full history or substantial logic.
-                    if start_date:
-                        # yf.download(start=...) expects string or datetime
-                        # We add a buffer? No, if we want specific range. 
-                        # But MAs need previous data! 
-                        # CRITICAL: To calculate MA200 for today, we need 200 days prior.
-                        # Ideally, we should fetch (start_date - 300 days) to calculate MAs correctly for the gap.
-                        
-                        fetch_start = pd.to_datetime(start_date) - pd.Timedelta(days=365) # Safe buffer
-                        data = yf.download(batch, start=fetch_start, auto_adjust=True, progress=False)['Close']
-                    else:
-                        data = yf.download(batch, period="10y", auto_adjust=True, progress=False)['Close']
-
-                    if data.empty:
-                        continue
-                        
-                    if isinstance(data, pd.Series):
-                        data = data.to_frame()
-                        
-                    # Process each ticker
-                    for ticker in data.columns:
-                        if ticker not in constituents: continue
-                        
-                        series = data[ticker].dropna()
-                        if series.empty: continue
-                        
-                        # Calculate MAs
-                        ma5 = series.rolling(window=5).mean()
-                        ma10 = series.rolling(window=10).mean()
-                        ma20 = series.rolling(window=20).mean()
-                        ma50 = series.rolling(window=50).mean()
-                        ma200 = series.rolling(window=200).mean()
-                        
-                        # Prepare data for insertion
-                        c_id = constituents[ticker]
-                        
-                        processed_df = pd.DataFrame({
-                            'close': series,
-                            'ma5': ma5,
-                            'ma10': ma10,
-                            'ma20': ma20,
-                            'ma50': ma50,
-                            'ma200': ma200
-                        })
-                        
-                        # If gap filling, we only want to store the NEW dates, 
-                        # BUT we needed the history to calculate the MAs.
-                        if start_date:
-                            processed_df = processed_df[processed_df.index.date > pd.to_datetime(start_date).date()]
-                        else:
-                            # If full update, store last 5 years
-                            processed_df = processed_df.tail(1260)
-                        
-                        if processed_df.empty:
-                            continue
-
-                        for dt, row in processed_df.iterrows():
-                            date_val = dt.date()
-                            
-                            # Valid MAs? (At start of history MAs are NaN)
-                            # Flags: 1 if Close > MA, 0 if Close <= MA, None if MA is NaN
-                            def get_flag(close, ma):
-                                return 1 if pd.notna(ma) and close > ma else (0 if pd.notna(ma) else None)
-                                
-                            f5 = get_flag(row['close'], row['ma5'])
-                            f10 = get_flag(row['close'], row['ma10'])
-                            f20 = get_flag(row['close'], row['ma20'])
-                            f50 = get_flag(row['close'], row['ma50'])
-                            f200 = get_flag(row['close'], row['ma200'])
-                            
-                            # DB Upsert
-                            existing = db.query(ConstituentPrice).filter_by(constituent_id=c_id, date=date_val).first()
-                            
-                            if not existing:
-                                db.add(ConstituentPrice(
-                                    constituent_id=c_id,
-                                    date=date_val,
-                                    close=row['close'],
-                                    ma5=row['ma5'],
-                                    ma10=row['ma10'],
-                                    ma20=row['ma20'],
-                                    ma50=row['ma50'],
-                                    ma200=row['ma200'],
-                                    above_ma5=f5,
-                                    above_ma10=f10,
-                                    above_ma20=f20,
-                                    above_ma50=f50,
-                                    above_ma200=f200
-                                ))
-                            else:
-                                existing.close = row['close']
-                                existing.ma5 = row['ma5']
-                                existing.ma10 = row['ma10']
-                                existing.ma20 = row['ma20']
-                                existing.ma50 = row['ma50']
-                                existing.ma200 = row['ma200']
-                                existing.above_ma5 = f5
-                                existing.above_ma10 = f10
-                                existing.above_ma20 = f20
-                                existing.above_ma50 = f50
-                                existing.above_ma200 = f200
-                                
-                except Exception as e:
-                    print(f"Error processing batch {i} for {sector.name}: {e}")
+            try:
+                constituents = {c.ticker: c.id for c in sector.constituents}
+                if not constituents:
+                    print(f"No constituents for {sector.name}, skipping.")
+                    continue
                     
-            db.commit()
-            print(f"Constituents updated for {sector.name}.")
-            
-            # After updating constituents, update Breadth Metrics
-            calculate_sector_breadth(sector.id, db)
+                msg = f"Updating {sector.name} ({len(constituents)} tickers)..."
+                if start_date:
+                    msg += f" [From {start_date}]"
+                print(msg)
+                
+                # Update Progress
+                if progress_callback:
+                    progress_callback(msg, idx / total_sectors)
+                
+                ticker_list = list(constituents.keys())
+                batch_size = 50
+                
+                for i in range(0, len(ticker_list), batch_size):
+                    batch = ticker_list[i:i+batch_size]
+                    try:
+                        # Determine start date for yfinance
+                        # If start_date is provided (gap fill), use it.
+                        # Otherwise default to "10y" for full history or substantial logic.
+                        if start_date:
+                            # yf.download(start=...) expects string or datetime
+                            # We add a buffer? No, if we want specific range. 
+                            # But MAs need previous data! 
+                            # CRITICAL: To calculate MA200 for today, we need 200 days prior.
+                            # Ideally, we should fetch (start_date - 300 days) to calculate MAs correctly for the gap.
+                            
+                            fetch_start = pd.to_datetime(start_date) - pd.Timedelta(days=365) # Safe buffer
+                            data = yf.download(batch, start=fetch_start, auto_adjust=True, progress=False)['Close']
+                        else:
+                            data = yf.download(batch, period="10y", auto_adjust=True, progress=False)['Close']
+
+                        if data.empty:
+                            continue
+                            
+                        if isinstance(data, pd.Series):
+                            data = data.to_frame()
+                            
+                        # Process each ticker
+                        for ticker in data.columns:
+                            if ticker not in constituents: continue
+                            
+                            series = data[ticker].dropna()
+                            if series.empty: continue
+                            
+                            # Calculate MAs
+                            ma5 = series.rolling(window=5).mean()
+                            ma10 = series.rolling(window=10).mean()
+                            ma20 = series.rolling(window=20).mean()
+                            ma50 = series.rolling(window=50).mean()
+                            ma200 = series.rolling(window=200).mean()
+                            
+                            # Prepare data for insertion
+                            c_id = constituents[ticker]
+                            
+                            processed_df = pd.DataFrame({
+                                'close': series,
+                                'ma5': ma5,
+                                'ma10': ma10,
+                                'ma20': ma20,
+                                'ma50': ma50,
+                                'ma200': ma200
+                            })
+                            
+                            # If gap filling, we only want to store the NEW dates, 
+                            # BUT we needed the history to calculate the MAs.
+                            if start_date:
+                                processed_df = processed_df[processed_df.index.date > pd.to_datetime(start_date).date()]
+                            else:
+                                # If full update, store last 5 years
+                                processed_df = processed_df.tail(1260)
+                            
+                            if processed_df.empty:
+                                continue
+
+                            for dt, row in processed_df.iterrows():
+                                date_val = dt.date()
+                                
+                                # Valid MAs? (At start of history MAs are NaN)
+                                # Flags: 1 if Close > MA, 0 if Close <= MA, None if MA is NaN
+                                def get_flag(close, ma):
+                                    return 1 if pd.notna(ma) and close > ma else (0 if pd.notna(ma) else None)
+                                    
+                                f5 = get_flag(row['close'], row['ma5'])
+                                f10 = get_flag(row['close'], row['ma10'])
+                                f20 = get_flag(row['close'], row['ma20'])
+                                f50 = get_flag(row['close'], row['ma50'])
+                                f200 = get_flag(row['close'], row['ma200'])
+                                
+                                # DB Upsert
+                                existing = db.query(ConstituentPrice).filter_by(constituent_id=c_id, date=date_val).first()
+                                
+                                if not existing:
+                                    db.add(ConstituentPrice(
+                                        constituent_id=c_id,
+                                        date=date_val,
+                                        close=row['close'],
+                                        ma5=row['ma5'],
+                                        ma10=row['ma10'],
+                                        ma20=row['ma20'],
+                                        ma50=row['ma50'],
+                                        ma200=row['ma200'],
+                                        above_ma5=f5,
+                                        above_ma10=f10,
+                                        above_ma20=f20,
+                                        above_ma50=f50,
+                                        above_ma200=f200
+                                    ))
+                                else:
+                                    existing.close = row['close']
+                                    existing.ma5 = row['ma5']
+                                    existing.ma10 = row['ma10']
+                                    existing.ma20 = row['ma20']
+                                    existing.ma50 = row['ma50']
+                                    existing.ma200 = row['ma200']
+                                    existing.above_ma5 = f5
+                                    existing.above_ma10 = f10
+                                    existing.above_ma20 = f20
+                                    existing.above_ma50 = f50
+                                    existing.above_ma200 = f200
+                                    
+                    except Exception as e:
+                        print(f"Error processing batch {i} for {sector.name}: {e}")
+                        
+                db.commit()
+                print(f"Constituents updated for {sector.name}.")
+                
+                # After updating constituents, update Breadth Metrics
+                calculate_sector_breadth(sector.id, db)
+
+            except Exception as e:
+                print(f"CRITICAL ERROR updating sector {sector.name}: {e}")
+                db.rollback()
+                continue
             
         # Finish progress
         if progress_callback:
