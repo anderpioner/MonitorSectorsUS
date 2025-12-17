@@ -821,3 +821,109 @@ def get_dashboard_data(weight_type='cap'):
         return df_mom
     finally:
         db.close()
+
+def get_sector_high_low_data(sector_name, days=252):
+    """
+    Returns DataFrame with New Highs and New Lows for a specific sector.
+    Columns: Date, New Highs, New Lows, Net
+    """
+    db = next(get_db())
+    try:
+        # Calculate start date
+        start_date = date.today() - pd.Timedelta(days=days)
+        
+        # Query metrics for the sector
+        # We need sector_id from name
+        # Fix: Filter by type='cap' to avoid MultipleResultsFound if both Cap and Equal exist with same name
+        sector_id = db.query(Sector.id).filter(Sector.name == sector_name, Sector.type == 'cap').scalar()
+        
+        if not sector_id:
+            return pd.DataFrame()
+            
+        results = db.query(BreadthMetric.date, BreadthMetric.metric, BreadthMetric.value)\
+            .filter(BreadthMetric.sector_id == sector_id)\
+            .filter(BreadthMetric.date >= start_date)\
+            .filter(BreadthMetric.metric.in_(['new_highs_252', 'new_lows_252']))\
+            .all()
+            
+        if not results:
+            return pd.DataFrame()
+            
+        # Convert to DF
+        df = pd.DataFrame(results, columns=['Date', 'Metric', 'Value'])
+        df['Date'] = pd.to_datetime(df['Date'])
+        
+        # Pivot
+        df_pivot = df.pivot(index='Date', columns='Metric', values='Value').fillna(0)
+        
+        # Ensure cols exist
+        if 'new_highs_252' not in df_pivot.columns: df_pivot['new_highs_252'] = 0
+        if 'new_lows_252' not in df_pivot.columns: df_pivot['new_lows_252'] = 0
+        
+        # Calculate Net
+        df_pivot['Net'] = df_pivot['new_highs_252'] - df_pivot['new_lows_252']
+        
+        return df_pivot.sort_index()
+        
+    finally:
+        db.close()
+
+def get_sector_constituent_count(sector_name):
+    """Returns the number of constituents in the sector."""
+    db = next(get_db())
+    try:
+        # We need sector_id from name (cap)
+        sector_id = db.query(Sector.id).filter(Sector.name == sector_name, Sector.type == 'cap').scalar()
+        if not sector_id:
+            return 0
+        return db.query(Constituent).filter(Constituent.sector_id == sector_id).count()
+    finally:
+        db.close()
+
+def get_breadth_history(sector_name, metric, days=30):
+    """
+    Returns DataFrame with Date and Value for a specific breadth metric.
+    """
+    db = next(get_db())
+    try:
+        start_date = date.today() - pd.Timedelta(days=days)
+        
+        sector_id = db.query(Sector.id).filter(Sector.name == sector_name, Sector.type == 'cap').scalar()
+        if not sector_id:
+            return pd.DataFrame()
+            
+        results = db.query(BreadthMetric.date, BreadthMetric.value)\
+            .filter(BreadthMetric.sector_id == sector_id)\
+            .filter(BreadthMetric.metric == metric)\
+            .filter(BreadthMetric.date >= start_date)\
+            .order_by(BreadthMetric.date)\
+            .all()
+            
+        if not results:
+            return pd.DataFrame()
+            
+        df = pd.DataFrame(results, columns=['Date', 'Value'])
+        df['Date'] = pd.to_datetime(df['Date'])
+        df.set_index('Date', inplace=True)
+        return df
+    finally:
+        db.close()
+
+def get_sector_constituents(sector_name):
+    """
+    Returns a list of ticker symbols for the constituents of a sector.
+    """
+    db = next(get_db())
+    try:
+        sector_id = db.query(Sector.id).filter(Sector.name == sector_name, Sector.type == 'cap').scalar()
+        if not sector_id:
+            return []
+            
+        tickers = db.query(Constituent.ticker)\
+            .filter(Constituent.sector_id == sector_id)\
+            .order_by(Constituent.ticker)\
+            .all()
+            
+        return [t[0] for t in tickers]
+    finally:
+        db.close()

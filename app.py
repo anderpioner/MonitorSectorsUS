@@ -91,7 +91,7 @@ def load_matrix(w_type):
     return df_matrix
 
 # Navigation
-page = st.sidebar.radio("View", ["Overview", "Performance Matrix", "Momentum Ranking", "Market Breadth", "Sector Dashboard"])
+page = st.sidebar.radio("View", ["Overview", "Performance Matrix", "Momentum Ranking", "Market Breadth", "Sector Dashboard", "New Highs / Lows", "Sector Charts", "Sector Stocks"])
 
 if page == "Overview":
     try:
@@ -579,3 +579,241 @@ elif page == "Sector Dashboard":
         )
     else:
         st.info("No data available.")
+
+elif page == "New Highs / Lows":
+    st.header("New Highs / New Lows (252 Days)")
+    st.markdown("Number of stocks making new 52-week Highs and Lows per sector.")
+    
+    # Sector Selection
+    # Get sector names
+    sector_map = ds.get_sector_tickers(weight_type='cap')
+    sector_names = list(sector_map.keys())
+    
+    selected_sector_hl = st.selectbox("Select Sector", sector_names, key='hl_sector')
+    
+    # Days History
+    days_hl = st.slider("History (Days)", 30, 1825, 365, key='hl_days')
+    
+    # Fetch Data
+    df_hl = ds.get_sector_high_low_data(selected_sector_hl, days=days_hl)
+    
+    # Get total constituents
+    total_constituents = ds.get_sector_constituent_count(selected_sector_hl)
+    
+    if not df_hl.empty:
+        # Display Total Count Above Chart (Boxed)
+        with st.container(border=True):
+            st.metric("Total Stocks in Sector", total_constituents)
+
+        import plotly.graph_objects as go
+        from plotly.subplots import make_subplots
+        
+        # ... (Chart code remains mostly same, just ensuring indent/context) ...
+        # Calculate Percentages
+        if total_constituents > 0:
+            df_hl['pct_high'] = (df_hl['new_highs_252'] / total_constituents)
+            df_hl['pct_low'] = (df_hl['new_lows_252'] / total_constituents)
+            df_hl['pct_net'] = (df_hl['Net'] / total_constituents)
+        else:
+             df_hl['pct_high'] = 0; df_hl['pct_low'] = 0; df_hl['pct_net'] = 0
+
+        # Create Subplots: 3 Rows with Secondary Y Axis
+        fig = make_subplots(rows=3, cols=1, shared_xaxes=True, 
+                            vertical_spacing=0.15, 
+                            subplot_titles=("New Highs", "New Lows", "Net (Highs - Lows)"),
+                            row_heights=[0.28, 0.28, 0.44], 
+                            specs=[[{"secondary_y": True}], [{"secondary_y": True}], [{"secondary_y": True}]])
+                            
+        # 1. New Highs (Row 1)
+        max_h = df_hl['new_highs_252'].max()
+        if max_h == 0: max_h = 10 # Default buffer
+        r_h = [0, max_h * 1.1] # 10% buffer
+        r_h_pct = [0, r_h[1] / total_constituents] if total_constituents else [0, 1]
+
+        fig.add_trace(go.Bar(x=df_hl.index, y=df_hl['new_highs_252'], name='New Highs', marker_color='green'), row=1, col=1, secondary_y=False)
+        fig.add_trace(go.Scatter(x=df_hl.index, y=df_hl['pct_high'], name='% Highs', mode='lines', line=dict(width=0), opacity=0), row=1, col=1, secondary_y=True)
+        
+        fig.update_yaxes(range=r_h, row=1, col=1, secondary_y=False)
+        fig.update_yaxes(range=r_h_pct, row=1, col=1, secondary_y=True)
+
+        # 2. New Lows (Row 2)
+        max_l = df_hl['new_lows_252'].max()
+        if max_l == 0: max_l = 10
+        r_l = [0, max_l * 1.1]
+        r_l_pct = [0, r_l[1] / total_constituents] if total_constituents else [0, 1]
+
+        fig.add_trace(go.Bar(x=df_hl.index, y=df_hl['new_lows_252'], name='New Lows', marker_color='red'), row=2, col=1, secondary_y=False)
+        fig.add_trace(go.Scatter(x=df_hl.index, y=df_hl['pct_low'], name='% Lows', mode='lines', line=dict(width=0), opacity=0), row=2, col=1, secondary_y=True)
+        
+        fig.update_yaxes(range=r_l, row=2, col=1, secondary_y=False)
+        fig.update_yaxes(range=r_l_pct, row=2, col=1, secondary_y=True)
+        
+        # 3. Net Chart (Row 3)
+        min_n, max_n = df_hl['Net'].min(), df_hl['Net'].max()
+        if min_n == 0 and max_n == 0: min_n, max_n = -10, 10
+        
+        # Add buffer
+        span = max_n - min_n
+        if span == 0: span = 10
+        r_n = [min_n - (span*0.1), max_n + (span*0.1)]
+        # Force 0 to be included if desired, or just let it float? User wants 0 aligned.
+        # If we scale strictly by / Total, 0 aligns with 0 automatically.
+        r_n_pct = [r_n[0] / total_constituents, r_n[1] / total_constituents] if total_constituents else [-1, 1]
+        
+        net_colors = ['green' if x >= 0 else 'red' for x in df_hl['Net']]
+        fig.add_trace(go.Bar(x=df_hl.index, y=df_hl['Net'], name='Net', marker_color=net_colors), row=3, col=1, secondary_y=False)
+        fig.add_trace(go.Scatter(x=df_hl.index, y=df_hl['pct_net'], name='% Net', mode='lines', line=dict(width=0), opacity=0), row=3, col=1, secondary_y=True)
+        
+        fig.update_yaxes(range=r_n, row=3, col=1, secondary_y=False)
+        fig.update_yaxes(range=r_n_pct, row=3, col=1, secondary_y=True)
+        
+        # Configure Axes
+        # Remove Gaps
+        dt_all = pd.date_range(start=df_hl.index.min(), end=df_hl.index.max())
+        dt_breaks = dt_all.difference(df_hl.index)
+        fig.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
+        
+        # Format Right Axis as Percentage and Remove Grid
+        fig.update_yaxes(tickformat=".1%", showgrid=False, secondary_y=True)
+        
+        fig.update_layout(height=900, hovermode="x unified", barmode='group', showlegend=False)
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # Display Stats (Boxed)
+        with st.container(border=True):
+            st.write("###### Latest Readings")
+            latest = df_hl.iloc[-1]
+            c1, c2, c3, c4 = st.columns(4)
+            c1.metric("New Highs", int(latest['new_highs_252']))
+            c2.metric("New Lows", int(latest['new_lows_252']))
+            c3.metric("Net", int(latest['Net']), delta=int(latest['Net']))
+            c4.metric("Total Stocks", total_constituents)
+        
+    else:
+        st.info("No New Highs/Lows data available. Please ensure backfill is complete.")
+
+elif page == "Sector Charts":
+    st.header("Sector Charts (Last 60 Days)")
+    
+    # Get all sectors
+    sector_opts = ds.get_sector_tickers(weight_type='cap') # {Name: Ticker}
+    
+    # Iterate over all sectors
+    for s_name in sorted(sector_opts.keys()):
+        s_ticker = sector_opts[s_name]
+        
+        st.subheader(f"{s_name} ({s_ticker})")
+        
+        # Create 4 columns for charts
+        c1, c2, c3, c4 = st.columns(4)
+        
+        # 1. Net New Highs/Lows (60 Days)
+        df_net = ds.get_sector_high_low_data(s_name, days=60)
+        
+        with c1:
+            if not df_net.empty:
+                import plotly.graph_objects as go
+                fig1 = go.Figure()
+                colors = ['green' if x >= 0 else 'red' for x in df_net['Net']]
+                fig1.add_trace(go.Bar(x=df_net.index, y=df_net['Net'], marker_color=colors))
+                fig1.update_layout(title="Net New Highs/Lows", height=300, margin=dict(l=20, r=20, t=40, b=20), showlegend=False)
+                # Remove gaps
+                dt_all = pd.date_range(start=df_net.index.min(), end=df_net.index.max())
+                dt_breaks = dt_all.difference(df_net.index)
+                fig1.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
+                st.plotly_chart(fig1, use_container_width=True)
+            else:
+                st.caption("No High/Low Data")
+                
+        # 2. % > MA20 (60 Days)
+        df_ma20 = ds.get_breadth_history(s_name, 'pct_above_ma20', days=60)
+        
+        with c2:
+            if not df_ma20.empty:
+                fig2 = go.Figure()
+                fig2.add_trace(go.Scatter(x=df_ma20.index, y=df_ma20['Value'], mode='lines', line=dict(color='blue')))
+                fig2.update_layout(title="% > MA20", height=300, yaxis=dict(range=[0, 100]), margin=dict(l=20, r=20, t=40, b=20), showlegend=False)
+                # Remove gaps
+                dt_all = pd.date_range(start=df_ma20.index.min(), end=df_ma20.index.max())
+                dt_breaks = dt_all.difference(df_ma20.index)
+                fig2.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
+                
+                fig2.add_hline(y=50, line_dash="dot", line_color="gray", annotation_text="50%")
+                st.plotly_chart(fig2, use_container_width=True)
+            else:
+                st.caption("No Breadth Data")
+
+        # 3. % > MA50 (60 Days) - NEW
+        df_ma50 = ds.get_breadth_history(s_name, 'pct_above_ma50', days=60)
+        
+        with c3:
+            if not df_ma50.empty:
+                fig3 = go.Figure()
+                fig3.add_trace(go.Scatter(x=df_ma50.index, y=df_ma50['Value'], mode='lines', line=dict(color='purple'))) # Diff color
+                fig3.update_layout(title="% > MA50", height=300, yaxis=dict(range=[0, 100]), margin=dict(l=20, r=20, t=40, b=20), showlegend=False)
+                # Remove gaps
+                dt_all = pd.date_range(start=df_ma50.index.min(), end=df_ma50.index.max())
+                dt_breaks = dt_all.difference(df_ma50.index)
+                fig3.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
+                
+                fig3.add_hline(y=50, line_dash="dot", line_color="gray", annotation_text="50%")
+                st.plotly_chart(fig3, use_container_width=True)
+            else:
+                st.caption("No Breadth Data")
+
+        # 4. Momentum Score (60 Days)
+        df_mom = ds.get_momentum_history(s_ticker, period_days=60)
+        
+        with c4:
+            if not df_mom.empty:
+                fig4 = go.Figure()
+                # Colored background zones
+                min_y = min(df_mom['Score'].min(), -2)
+                max_y = max(df_mom['Score'].max(), 2)
+                
+                # Green Zone (>1)
+                fig4.add_shape(type="rect", x0=df_mom.index.min(), x1=df_mom.index.max(), y0=1, y1=max_y, fillcolor="green", opacity=0.1, layer="below", line_width=0)
+                # Red Zone (<1)
+                fig4.add_shape(type="rect", x0=df_mom.index.min(), x1=df_mom.index.max(), y0=min_y, y1=1, fillcolor="red", opacity=0.1, layer="below", line_width=0)
+                
+                fig4.add_trace(go.Scatter(x=df_mom.index, y=df_mom['Score'], mode='lines', line=dict(color='black')))
+                fig4.update_layout(title="Momentum Score", height=300, margin=dict(l=20, r=20, t=40, b=20), showlegend=False)
+                # Remove gaps
+                dt_all = pd.date_range(start=df_mom.index.min(), end=df_mom.index.max())
+                dt_breaks = dt_all.difference(df_mom.index)
+                fig4.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
+                st.plotly_chart(fig4, use_container_width=True)
+            else:
+                st.caption("No Momentum Data")
+        
+        st.divider()
+
+elif page == "Sector Stocks":
+    st.header("Sector Constituents")
+    st.markdown("View the list of stocks (tickers) belonging to each sector.")
+    
+    # Sector Selection
+    sector_opts = ds.get_sector_tickers(weight_type='cap')
+    sector_names = sorted(list(sector_opts.keys()))
+    
+    selected_sector_stocks = st.selectbox("Select Sector", sector_names, key='stocks_sector')
+    
+    # Get constituents
+    tickers = ds.get_sector_constituents(selected_sector_stocks)
+    count = len(tickers)
+    
+    st.subheader(f"{selected_sector_stocks}")
+    st.markdown(f"**Total Stocks:** {count}")
+    
+    if count > 0:
+        # Display as a clean list or dataframe?
+        with st.expander("View Ticker List", expanded=True):
+            st.code(", ".join(tickers), language=None)
+            
+        # Also a table for easy reading
+        import pandas as pd
+        df_tickers = pd.DataFrame(tickers, columns=["Ticker"])
+        st.dataframe(df_tickers, height=400, use_container_width=False)
+        
+    else:
+        st.info("No constituents found for this sector.")
