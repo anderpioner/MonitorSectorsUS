@@ -974,8 +974,19 @@ elif page == "Sector Stocks":
         tickers = ds.get_sector_constituents(s_name)
         count = len(tickers)
         
-        st.subheader(f"{s_name} ({count})")
+        st.subheader(f"{s_name} (Current: {count})")
         
+        # Plot Active Count History
+        df_active = ds.get_active_constituent_history(s_name)
+        if not df_active.empty:
+            import plotly.express as px
+            fig = px.area(df_active, x=df_active.index, y='Count', title="Active Stocks Over Time")
+            fig.update_layout(height=250, margin=dict(l=20, r=20, t=30, b=20), showlegend=False)
+            dt_all = pd.date_range(start=df_active.index.min(), end=df_active.index.max())
+            dt_breaks = dt_all.difference(df_active.index)
+            fig.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
+            st.plotly_chart(fig, use_container_width=True)
+            
         if count > 0:
             st.code(", ".join(tickers), language=None)
         else:
