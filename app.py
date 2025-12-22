@@ -472,13 +472,34 @@ elif page == "Momentum Score charts":
         if all_scores:
             val_min = min(all_scores)
             val_max = max(all_scores)
+            
+            # Ensure 1 is in range for context
+            val_min = min(val_min, 0.95)
+            val_max = max(val_max, 1.05)
+            
             # Add 5% buffer
-            padding = (val_max - val_min) * 0.05 if val_max != val_min else 1.0
+            padding = (val_max - val_min) * 0.05
             y_min = val_min - padding
             y_max = val_max + padding
         
         col1, col2 = st.columns(2)
         
+        def add_background_regions(figure, y_upper, y_lower):
+            # Green (Above 1)
+            figure.add_hrect(
+                y0=1, y1=y_upper,
+                fillcolor="rgba(0, 255, 0, 0.05)",
+                line_width=0,
+                layer="below"
+            )
+            # Red (Below 1)
+            figure.add_hrect(
+                y0=y_lower, y1=1,
+                fillcolor="rgba(255, 0, 0, 0.05)",
+                line_width=0,
+                layer="below"
+            )
+
         # 1. Cap Weighted (Left)
         with col1:
             st.markdown("**Cap Weighted**")
@@ -489,6 +510,7 @@ elif page == "Momentum Score charts":
                     fig.update_layout(height=300, margin=dict(l=20, r=20, t=30, b=20))
                     if all_scores:
                         fig.update_yaxes(range=[y_min, y_max])
+                        add_background_regions(fig, y_max, y_min)
                     st.plotly_chart(fig, use_container_width=True)
                 else:
                     st.info(f"No data for {ticker_cap}")
@@ -505,6 +527,7 @@ elif page == "Momentum Score charts":
                     fig.update_layout(height=300, margin=dict(l=20, r=20, t=30, b=20))
                     if all_scores:
                         fig.update_yaxes(range=[y_min, y_max])
+                        add_background_regions(fig, y_max, y_min)
                     st.plotly_chart(fig, use_container_width=True)
                 else:
                     st.info(f"No data for {ticker_equal}")
