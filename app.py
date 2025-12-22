@@ -82,15 +82,38 @@ def load_matrix(w_type):
 
 # Navigation
 # Navigation
-page = st.sidebar.radio("View", [
-    "Overview", "Performance Matrix", "Momentum Ranking", "Momentum Score charts", 
-    "--- Stock Analysis ---", 
-    "Sector Charts", "Market Breadth", "New Highs / Lows", "Sector Stocks"
-])
+if "current_view" not in st.session_state:
+    st.session_state.current_view = "Overview"
 
-if page == "--- Stock Analysis ---":
-    st.info("Please select a page from the menu.")
-    st.stop()
+opts_etf = ["Overview", "Performance Matrix", "Momentum Ranking", "Momentum Score charts"]
+opts_stock = ["Sector Charts", "Market Breadth", "New Highs / Lows", "Sector Stocks"]
+
+# Determine indices based on current state
+idx_etf = opts_etf.index(st.session_state.current_view) if st.session_state.current_view in opts_etf else None
+idx_stock = opts_stock.index(st.session_state.current_view) if st.session_state.current_view in opts_stock else None
+
+st.sidebar.subheader("ETF Analysis")
+sel_etf = st.sidebar.radio("ETF Analysis", opts_etf, index=idx_etf, key="radio_etf", label_visibility="collapsed")
+
+st.sidebar.markdown("---")
+st.sidebar.subheader("Stock Analysis")
+sel_stock = st.sidebar.radio("Stock Analysis", opts_stock, index=idx_stock, key="radio_stock", label_visibility="collapsed")
+
+# Logic to update state
+new_view = st.session_state.current_view
+# Check if ETF radio triggered a change (and is a valid selection)
+if sel_etf and sel_etf != st.session_state.current_view and sel_etf in opts_etf:
+    new_view = sel_etf
+
+# Check if Stock radio triggered a change
+if sel_stock and sel_stock != st.session_state.current_view and sel_stock in opts_stock:
+    new_view = sel_stock
+
+if new_view != st.session_state.current_view:
+    st.session_state.current_view = new_view
+    st.rerun()
+
+page = st.session_state.current_view
 
 if page == "Overview":
     try:
