@@ -582,6 +582,9 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                 # Update Stocks > 25%, 50%, 100% Metrics
                 calculate_sector_up_metrics(sector.id, db, start_date=start_date, lookback_window=84, thresholds=[0.25, 0.50, 1.00])
 
+                # Update Active Constituent Count
+                calculate_active_count(sector.id, db, start_date=start_date)
+
                 # Update Progress
                 if progress_callback:
                     progress_callback(msg, (idx + 1) / total_sectors)
@@ -1101,6 +1104,7 @@ def get_sector_constituents(sector_name):
 def get_active_constituent_history(sector_name,  days=3650):
     """
     Returns the count of constituents with data for each day.
+    Retrieves from BreadthMetric for speed.
     """
     db = next(get_db())
     try:
@@ -1110,16 +1114,11 @@ def get_active_constituent_history(sector_name,  days=3650):
         if not sector_id:
             return pd.DataFrame()
 
-        # Count constituents with price data per day
-        # JOIN ConstituentPrice -> Constituent -> Sector check is implicit if we filter by constituent.sector_id? 
-        # Actually ConstituentPrice has constituent_id. Constituent has sector_id.
-        
-        results = db.query(ConstituentPrice.date, func.count(ConstituentPrice.constituent_id))\
-            .join(Constituent, ConstituentPrice.constituent_id == Constituent.id)\
-            .filter(Constituent.sector_id == sector_id)\
-            .filter(ConstituentPrice.date >= start_date)\
-            .group_by(ConstituentPrice.date)\
-            .order_by(ConstituentPrice.date)\
+        results = db.query(BreadthMetric.date, BreadthMetric.value)\
+            .filter(BreadthMetric.sector_id == sector_id)\
+            .filter(BreadthMetric.metric == 'active_count')\
+            .filter(BreadthMetric.date >= start_date)\
+            .order_by(BreadthMetric.date)\
             .all()
             
         if not results:
@@ -1259,5 +1258,60 @@ def calculate_sector_up_metrics(sector_id, db_session, start_date=None, lookback
         
     except Exception as e:
         print(f"Error calculating up metrics: {e}")
+        db_session.rollback()
+
+
+def calculate_active_count(sector_id, db_session, start_date=None):
+    """
+    Calculates the number of active constituents (with price data) per day and stores it.
+    Metric Name: 'active_count'
+    """
+    try:
+        # Determine fetch start date
+        if start_date:
+            fetch_start = pd.to_datetime(start_date)
+        else:
+            fetch_start = date.today() - pd.Timedelta(days=3650 + 20)
+            
+        # Helper to get constituent IDs (optional filter if needed, but we join anyway)
+        # Actually simplest query is grouping by date on ConstituentPrice joined with Sector
+        
+        # We need to filter by sector.
+        # Query: Count(distinct constituent_id) group by date where sector_id = X
+        
+        results = db_session.query(ConstituentPrice.date, func.count(ConstituentPrice.constituent_id))\
+            .join(Constituent, ConstituentPrice.constituent_id == Constituent.id)\
+            .filter(Constituent.sector_id == sector_id)\
+            .filter(ConstituentPrice.date >= fetch_start)\
+            .group_by(ConstituentPrice.date)\
+            .all()
+            
+        metrics_to_upsert = []
+        for row in results:
+            dt = row[0] # date object
+            count = row[1]
+            
+            metrics_to_upsert.append({
+                'sector_id': sector_id,
+                'date': dt,
+                'metric': 'active_count',
+                'value': float(count)
+            })
+            
+        # Bulk Upsert
+        if metrics_to_upsert:
+            from sqlalchemy.dialects.sqlite import insert as sqlite_insert
+            stmt = insert(BreadthMetric).values(metrics_to_upsert)
+            stmt = stmt.on_conflict_do_update(
+                index_elements=['sector_id', 'date', 'metric'],
+                set_={'value': stmt.excluded.value}
+            )
+            db_session.execute(stmt)
+            db_session.commit()
+            
+        print(f"  > Calculate 'active_count': Updated {len(metrics_to_upsert)} records.")
+        
+    except Exception as e:
+        print(f"Error calculating active count: {e}")
         db_session.rollback()
 
