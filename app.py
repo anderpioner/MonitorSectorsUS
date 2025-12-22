@@ -95,56 +95,44 @@ page = st.sidebar.radio("View", ["Overview", "Performance Matrix", "Momentum Ran
 
 if page == "Overview":
     try:
-        # Local Weight Type Selection
-        col_ov_1, col_ov_2 = st.columns([1, 4])
-        with col_ov_1:
-             weight_type_ov = st.radio("Weight Type:", ["Cap Weighted", "Equal Weighted"], index=0, key='ov_weight')
-        
-        weight_type = "cap" if weight_type_ov == "Cap Weighted" else "equal"
-
         with st.spinner('Loading data from database...'):
-            df_prices, sector_map = load_data(days, weight_type)
+            # Define types to show
+            overview_types = [("Cap Weighted", "cap"), ("Equal Weighted", "equal")]
             
-            if df_prices.empty:
-                st.warning("No data found in database. Please click 'Update Database' in the sidebar.")
-            else:
-                # Performance over the selected period
-                perf = (df_prices.iloc[-1] / df_prices.iloc[0] - 1) * 100
-                perf = perf.sort_values(ascending=False)
+            for label, w_t in overview_types:
+                df_prices, sector_map = load_data(days, w_t)
                 
-                # Create a DataFrame for the chart
-                perf_df = pd.DataFrame({'Ticker': perf.index, 'Return (%)': perf.values})
-                
-                # Map Ticker to Name
-                ticker_to_name = {v: k for k, v in sector_map.items()}
-                perf_df['Sector'] = perf_df['Ticker'].map(ticker_to_name)
-                
-                st.header(f"Sector Performance ({selected_period_label})")
-                
-                fig = px.bar(
-                    perf_df, 
-                    x='Return (%)', 
-                    y='Sector', 
-                    orientation='h', 
-                    text='Return (%)',
-                    color='Return (%)',
-                    color_continuous_scale='RdYlGn',
-                    title=f"Relative Performance (Last {days} days)"
-                )
-                fig.update_traces(texttemplate='%{text:.2f}%', textposition='outside')
-                fig.update_layout(yaxis={'categoryorder':'total ascending'})
-                st.plotly_chart(fig, use_container_width=True)
+                if df_prices.empty:
+                    st.warning(f"No data found for {label}. Please click 'Update Database' in the sidebar.")
+                else:
+                    # Performance over the selected period
+                    perf = (df_prices.iloc[-1] / df_prices.iloc[0] - 1) * 100
+                    perf = perf.sort_values(ascending=False)
+                    
+                    # Create a DataFrame for the chart
+                    perf_df = pd.DataFrame({'Ticker': perf.index, 'Return (%)': perf.values})
+                    
+                    # Map Ticker to Name
+                    ticker_to_name = {v: k for k, v in sector_map.items()}
+                    perf_df['Sector'] = perf_df['Ticker'].map(ticker_to_name)
+                    
+                    st.header(f"Sector Performance ({selected_period_label}) - {label}")
+                    
+                    fig = px.bar(
+                        perf_df, 
+                        x='Return (%)', 
+                        y='Sector', 
+                        orientation='h', 
+                        text='Return (%)',
+                        color='Return (%)',
+                        color_continuous_scale='RdYlGn',
+                        title=f"Relative Performance ({label})"
+                    )
+                    fig.update_traces(texttemplate='%{text:.2f}%', textposition='outside')
+                    fig.update_layout(yaxis={'categoryorder':'total ascending'})
+                    st.plotly_chart(fig, use_container_width=True)
 
                 st.divider()
-
-                st.subheader("Sector Details")
-                selected_sector_name = st.selectbox("Select Sector", list(sector_map.keys()))
-                selected_ticker = sector_map[selected_sector_name]
-                
-                if selected_ticker in df_prices.columns:
-                    st.line_chart(df_prices[selected_ticker])
-                else:
-                    st.info("No data for this sector in the selected range.")
             
     except Exception as e:
         st.error(f"Error processing data: {e}")
