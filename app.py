@@ -8,17 +8,7 @@ st.set_page_config(page_title="US Market Sector Monitor", layout="wide")
 st.title("US Market Sector Monitor")
 
 # Sidebar
-st.sidebar.header("Settings")
-period_map = {
-    "1mo": 30,
-    "3mo": 90,
-    "6mo": 180,
-    "1y": 365,
-    "ytd": 365, # Approx, handle better if needed
-    "5y": 1825
-}
-selected_period_label = st.sidebar.selectbox("Select Time Period", list(period_map.keys()), index=3)
-days = period_map[selected_period_label]
+
 
 
 
@@ -108,7 +98,7 @@ if page == "Overview":
             selected_period_key = st.radio(
                 "Select Period:", 
                 options=list(period_options.keys()), 
-                index=4, # Default to 365
+                index=0, # Default to 30 Days
                 horizontal=True,
                 key="overview_period_selector"
             )
