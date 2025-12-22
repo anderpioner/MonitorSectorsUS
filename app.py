@@ -86,7 +86,7 @@ if "current_view" not in st.session_state:
     st.session_state.current_view = "Overview"
 
 opts_etf = ["Overview", "Performance Matrix", "Momentum Ranking", "Momentum Score charts"]
-opts_stock = ["Sector Charts", "Market Breadth", "New Highs / Lows", "Sector Stocks"]
+opts_stock = ["Sector Charts", "Market Breadth", "New Highs / Lows", "Sector Stocks", "Stocks > 25% (84d)"]
 
 # Determine indices based on current state
 idx_etf = opts_etf.index(st.session_state.current_view) if st.session_state.current_view in opts_etf else None
@@ -982,3 +982,35 @@ elif page == "Sector Stocks":
             st.info("No constituents found.")
         
         st.divider()
+
+elif page == "Stocks > 25% (84d)":
+    st.header("Stocks > 25% Increase (Last 84 Days)")
+    st.markdown("Number of stocks in each sector that have risen by 25% or more over a rolling 84-day period.")
+    
+    # Get all sectors
+    sector_opts = ds.get_sector_tickers(weight_type='cap')
+    sector_names = sorted(list(sector_opts.keys()))
+    
+    import plotly.express as px
+    
+    with st.spinner("Calculating historical data..."):
+        for s_name in sector_names:
+            # Calculate history
+            # Default to 365 days history for the chart
+            df_up = ds.get_stocks_up_history(s_name, lookback_window=84, threshold=0.25, days_history=365)
+            
+            if not df_up.empty:
+                # Plot
+                fig = px.bar(df_up, x=df_up.index, y='Count', title=f"{s_name}")
+                fig.update_layout(height=300, margin=dict(l=20, r=20, t=40, b=20))
+                
+                # Remove gaps
+                dt_all = pd.date_range(start=df_up.index.min(), end=df_up.index.max())
+                dt_breaks = dt_all.difference(df_up.index)
+                fig.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
+                
+                st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.info(f"No data available for {s_name}")
+            
+            st.divider()
