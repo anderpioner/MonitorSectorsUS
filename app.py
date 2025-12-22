@@ -909,57 +909,55 @@ elif page == "Sector Charts":
         # Row 2: Momentum (2 Cols)
         c4, c5 = st.columns(2)
 
-        # 4. Momentum Score (60 Days)
-        # Get slightly more history to calculate change comfortably
-        df_mom = ds.get_momentum_history(s_ticker, period_days=70)
+        # Get Tickers for both weights
+        tickers = ds.SECTORS_CONFIG[s_name]
+        s_ticker_cap = tickers['cap']
+        s_ticker_equal = tickers['equal']
         
-        if not df_mom.empty:
-            # Prepare data
-            df_mom['Diff'] = df_mom['Score'].diff()
-            df_mom['MA5_Diff'] = df_mom['Diff'].rolling(window=5).mean()
-            
-            # Slice to last 60 days for display
-            df_mom_disp = df_mom.tail(60)
-            
-            # Chart 4: Absolute Score
-            with c4:
-                fig4 = go.Figure()
-                # Colored background zones
-                min_y = min(df_mom_disp['Score'].min(), -2)
-                max_y = max(df_mom_disp['Score'].max(), 2)
-                
-                # Green Zone (>1)
-                fig4.add_shape(type="rect", x0=df_mom_disp.index.min(), x1=df_mom_disp.index.max(), y0=1, y1=max_y, fillcolor="green", opacity=0.1, layer="below", line_width=0)
-                # Red Zone (<1)
-                fig4.add_shape(type="rect", x0=df_mom_disp.index.min(), x1=df_mom_disp.index.max(), y0=min_y, y1=1, fillcolor="red", opacity=0.1, layer="below", line_width=0)
-                
-                fig4.add_trace(go.Scatter(x=df_mom_disp.index, y=df_mom_disp['Score'], mode='lines', line=dict(color='black')))
-                fig4.update_layout(title="Momentum Score", height=300, margin=dict(l=20, r=20, t=40, b=20), showlegend=False)
-                # Remove gaps
-                dt_all = pd.date_range(start=df_mom_disp.index.min(), end=df_mom_disp.index.max())
-                dt_breaks = dt_all.difference(df_mom_disp.index)
-                fig4.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
-                st.plotly_chart(fig4, use_container_width=True)
-                
-            # Chart 5: Momentum Change
-            with c5:
-                fig5 = go.Figure()
-                colors_diff = ['green' if x >= 0 else 'red' for x in df_mom_disp['Diff']]
-                
-                # Bar
-                fig5.add_trace(go.Bar(x=df_mom_disp.index, y=df_mom_disp['Diff'], name='Change', marker_color=colors_diff, opacity=0.6))
-                # Line
-                fig5.add_trace(go.Scatter(x=df_mom_disp.index, y=df_mom_disp['MA5_Diff'], name='MA5', line=dict(color='blue', width=2)))
-                
-                fig5.update_layout(title="Momentum Change", height=300, margin=dict(l=20, r=20, t=40, b=20), showlegend=True,
-                                   legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1))
-                # Remove gaps
-                fig5.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
-                st.plotly_chart(fig5, use_container_width=True)
-        else:
-            with c4: st.caption("No Momentum Data")
-            with c5: st.caption("No Momentum Data")
-        
+        # Helper to plot momentum
+        def plot_momentum_chart(col_obj, ticker, title_suffix):
+             df_mom = ds.get_momentum_history(ticker, period_days=60)
+             
+             with col_obj:
+                 if not df_mom.empty:
+                    fig = go.Figure()
+                    
+                    # Colored background zones
+                    min_y = min(df_mom['Score'].min(), -2)
+                    max_y = max(df_mom['Score'].max(), 2)
+                    
+                    # Ensure 1 is in range
+                    min_y = min(min_y, 0.95)
+                    max_y = max(max_y, 1.05)
+                    
+                    # Green Zone (>1)
+                    fig.add_shape(type="rect", x0=df_mom.index.min(), x1=df_mom.index.max(), y0=1, y1=max_y, fillcolor="green", opacity=0.1, layer="below", line_width=0)
+                    # Red Zone (<1)
+                    fig.add_shape(type="rect", x0=df_mom.index.min(), x1=df_mom.index.max(), y0=min_y, y1=1, fillcolor="red", opacity=0.1, layer="below", line_width=0)
+                    
+                    fig.add_trace(go.Scatter(x=df_mom.index, y=df_mom['Score'], mode='lines', line=dict(color='black')))
+                    fig.update_layout(
+                        title=f"Momentum Score {title_suffix}", 
+                        height=300, 
+                        margin=dict(l=20, r=20, t=40, b=20), 
+                        showlegend=False
+                    )
+                    
+                    # Remove gaps
+                    dt_all = pd.date_range(start=df_mom.index.min(), end=df_mom.index.max())
+                    dt_breaks = dt_all.difference(df_mom.index)
+                    fig.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
+                    
+                    st.plotly_chart(fig, use_container_width=True)
+                 else:
+                    st.caption(f"No Momentum Data for {ticker}")
+
+        # 4. Momentum Score (Cap Weighted)
+        plot_momentum_chart(c4, s_ticker_cap, f"({s_ticker_cap})")
+
+        # 5. Momentum Score (Equal Weighted)
+        plot_momentum_chart(c5, s_ticker_equal, f"({s_ticker_equal})")
+
         st.divider()
 
 elif page == "Sector Stocks":
