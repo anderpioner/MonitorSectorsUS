@@ -448,20 +448,47 @@ elif page == "Momentum Score charts":
     for s_name in sector_names:
         st.subheader(s_name)
         
+        # Fetch data for both first to calculate scale
+        ticker_cap = cap_sectors.get(s_name)
+        df_cap = pd.DataFrame()
+        if ticker_cap:
+            df_cap = ds.get_momentum_history(ticker_cap, period_days=60)
+            
+        ticker_equal = equal_sectors.get(s_name)
+        df_equal = pd.DataFrame()
+        if ticker_equal:
+            df_equal = ds.get_momentum_history(ticker_equal, period_days=60)
+            
+        # Calculate common y-axis range
+        y_min = 0
+        y_max = 0
+        
+        all_scores = []
+        if not df_cap.empty:
+            all_scores.extend(df_cap['Score'].tolist())
+        if not df_equal.empty:
+            all_scores.extend(df_equal['Score'].tolist())
+            
+        if all_scores:
+            val_min = min(all_scores)
+            val_max = max(all_scores)
+            # Add 5% buffer
+            padding = (val_max - val_min) * 0.05 if val_max != val_min else 1.0
+            y_min = val_min - padding
+            y_max = val_max + padding
+        
         col1, col2 = st.columns(2)
         
         # 1. Cap Weighted (Left)
         with col1:
             st.markdown("**Cap Weighted**")
-            ticker_cap = cap_sectors.get(s_name)
             if ticker_cap:
-                df_cap = ds.get_momentum_history(ticker_cap, period_days=60)
                 if not df_cap.empty:
                     # Plot
                     fig = px.line(df_cap, x=df_cap.index, y='Score', title=f"{ticker_cap} Score")
                     fig.update_layout(height=300, margin=dict(l=20, r=20, t=30, b=20))
-                    # Add reference line at 0? Scores are % now? 
-                    # Previous logic: 'Score' in df is * 100.
+                    if all_scores:
+                        fig.update_yaxes(range=[y_min, y_max])
                     st.plotly_chart(fig, use_container_width=True)
                 else:
                     st.info(f"No data for {ticker_cap}")
@@ -471,13 +498,13 @@ elif page == "Momentum Score charts":
         # 2. Equal Weighted (Right)
         with col2:
             st.markdown("**Equal Weighted**")
-            ticker_equal = equal_sectors.get(s_name)
             if ticker_equal:
-                df_equal = ds.get_momentum_history(ticker_equal, period_days=60)
                 if not df_equal.empty:
                     # Plot
                     fig = px.line(df_equal, x=df_equal.index, y='Score', title=f"{ticker_equal} Score")
                     fig.update_layout(height=300, margin=dict(l=20, r=20, t=30, b=20))
+                    if all_scores:
+                        fig.update_yaxes(range=[y_min, y_max])
                     st.plotly_chart(fig, use_container_width=True)
                 else:
                     st.info(f"No data for {ticker_equal}")
