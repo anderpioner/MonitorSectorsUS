@@ -442,8 +442,23 @@ elif page == "Momentum Score charts":
     cap_sectors = ds.get_sector_tickers('cap')
     equal_sectors = ds.get_sector_tickers('equal')
     
-    # Sorted list of sector names
-    sector_names = sorted(list(cap_sectors.keys()))
+    # Sorted list of sector names based on Momentum Ranking (Cap Weighted)
+    # Using Cap Weighted as the primary sort key
+    df_rank = ds.get_momentum_ranking('cap')
+    
+    if not df_rank.empty:
+        # Create map Ticker -> Name
+        ticker_to_name = {v: k for k, v in cap_sectors.items()}
+        
+        # Get sorted names from ranking
+        sorted_names = [ticker_to_name.get(t) for t in df_rank.index if t in ticker_to_name]
+        
+        # Add any missing sectors (e.g. no data for ranking but exists in config)
+        remaining = [s for s in cap_sectors.keys() if s not in sorted_names]
+        sector_names = sorted_names + sorted(remaining)
+    else:
+        # Fallback to alpha if no ranking data
+        sector_names = sorted(list(cap_sectors.keys()))
     
     for s_name in sector_names:
         st.subheader(s_name)
