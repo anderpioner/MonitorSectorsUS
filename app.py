@@ -20,8 +20,7 @@ period_map = {
 selected_period_label = st.sidebar.selectbox("Select Time Period", list(period_map.keys()), index=3)
 days = period_map[selected_period_label]
 
-weight_type_label = st.sidebar.radio("ETF Weighting", ["Cap Weighted", "Equal Weighted"], index=0)
-weight_type = "cap" if weight_type_label == "Cap Weighted" else "equal"
+
 
 # Update Section
 st.sidebar.markdown("---")
@@ -96,6 +95,13 @@ page = st.sidebar.radio("View", ["Overview", "Performance Matrix", "Momentum Ran
 
 if page == "Overview":
     try:
+        # Local Weight Type Selection
+        col_ov_1, col_ov_2 = st.columns([1, 4])
+        with col_ov_1:
+             weight_type_ov = st.radio("Weight Type:", ["Cap Weighted", "Equal Weighted"], index=0, key='ov_weight')
+        
+        weight_type = "cap" if weight_type_ov == "Cap Weighted" else "equal"
+
         with st.spinner('Loading data from database...'):
             df_prices, sector_map = load_data(days, weight_type)
             
@@ -145,33 +151,39 @@ if page == "Overview":
 
 elif page == "Performance Matrix":
     st.header("Performance Matrix (Returns %)")
-    st.write(f"Showing returns for **{weight_type_label}** ETFs.")
     
-    try:
-        df_matrix = load_matrix(weight_type)
-        if df_matrix.empty:
-             st.warning("Not enough data to calculate matrix. Try updating the database (needs > 252 days history).")
-        else:
-            # Add Sector Name column for clarity
-            sectors = ds.get_sector_tickers(weight_type=weight_type)
-            ticker_to_name = {v: k for k, v in sectors.items()}
-            
-            df_matrix['Sector'] = df_matrix.index.map(ticker_to_name)
-            
-            # Reorder columns: Sector first, then Last Price, Date, then periods
-            cols = ['Sector', 'Last Price', 'Date'] + [c for c in df_matrix.columns if c not in ['Sector', 'Last Price', 'Date']]
-            df_display = df_matrix[cols]
-            
-            # Apply styling
-            st.dataframe(
-                df_display.style.background_gradient(cmap='RdYlGn', subset=['5d', '10d', '20d', '40d', '252d'])
-                                .format("{:.2f}%", subset=['5d', '10d', '20d', '40d', '252d'])
-                                .format("{:.2f}", subset=['Last Price']),
-                use_container_width=True,
-                height=500
-            )
-    except Exception as e:
-        st.error(f"Error calculating matrix: {e}")
+    types_to_show = [("Cap Weighted", "cap"), ("Equal Weighted", "equal")]
+    
+    for label, w_t in types_to_show:
+        st.subheader(f"{label}")
+        try:
+            df_matrix = load_matrix(w_t)
+            if df_matrix.empty:
+                st.warning(f"Not enough data to calculate matrix for {label}.")
+            else:
+                # Add Sector Name column for clarity
+                sectors = ds.get_sector_tickers(weight_type=w_t)
+                ticker_to_name = {v: k for k, v in sectors.items()}
+                
+                df_matrix['Sector'] = df_matrix.index.map(ticker_to_name)
+                
+                # Reorder columns: Sector first, then Last Price, Date, then periods
+                cols = ['Sector', 'Last Price', 'Date'] + [c for c in df_matrix.columns if c not in ['Sector', 'Last Price', 'Date']]
+                df_display = df_matrix[cols]
+                
+                # Apply styling
+                st.dataframe(
+                    df_display.style.background_gradient(cmap='RdYlGn', subset=['5d', '10d', '20d', '40d', '252d'])
+                                    .format("{:.2f}%", subset=['5d', '10d', '20d', '40d', '252d'])
+                                    .format("{:.2f}", subset=['Last Price']),
+                    use_container_width=True,
+                    height=400,
+                    key=f"perf_matrix_{w_t}"
+                )
+        except Exception as e:
+            st.error(f"Error calculating matrix for {label}: {e}")
+        
+        st.divider()
 
 elif page == "Momentum Ranking":
     st.header("Momentum Ranking")
@@ -179,46 +191,54 @@ elif page == "Momentum Ranking":
     **Formula:**
     `Score = 0.3 * Return(5d-1d) + 0.3 * Return(10d-5d) + 0.2 * Return(20d-10d) + 0.2 * Return(40d-20d)`
     """)
-    st.write(f"Ranking for **{weight_type_label}** ETFs.")
     
+    types_to_show = [("Cap Weighted", "cap"), ("Equal Weighted", "equal")]
+    
+    for label, w_t in types_to_show:
+        st.subheader(f"{label}")
+        try:
+            df_mom = ds.get_momentum_ranking(weight_type=w_t)
+            if df_mom.empty:
+                st.warning(f"Not enough data to calculate momentum for {label}.")
+            else:
+                # Add Sector Name
+                sectors = ds.get_sector_tickers(weight_type=w_t)
+                ticker_to_name = {v: k for k, v in sectors.items()}
+                
+                df_mom['Sector'] = df_mom.index.map(ticker_to_name)
+                
+                # Define formatters
+                fmt_score = "{:.2f}"
+                fmt_pct = "{:.2f}%"
+
+                # Reorder
+                cols = ['Sector', 'Last Price', 'Date', 'Score', 'Score -5d', 'Score -20d', 'Score -50d', 'Score Chg (5d)', 'R(5-1)', 'R(10-5)', 'R(20-10)', 'R(40-20)']
+                df_display = df_mom[cols]
+                
+                st.dataframe(
+                    df_display.style
+                    .format({
+                        'Score': fmt_score,
+                        'Score Chg (5d)': fmt_score,
+                        'Score -5d': fmt_score,
+                        'Score -20d': fmt_score,
+                        'Score -50d': fmt_score,
+                        'R(5-1)': fmt_pct,
+                        'R(10-5)': fmt_pct,
+                        'R(20-10)': fmt_pct,
+                        'R(40-20)': fmt_pct,
+                        'Last Price': "{:.2f}"
+                    })
+                    .background_gradient(cmap='RdYlGn', subset=['Score', 'Score -5d', 'Score -20d', 'Score -50d']),
+                    use_container_width=True,
+                    height=500,
+                    key=f"mom_rank_{w_t}"
+                )
+        except Exception as e:
+            st.error(f"Error calculating momentum for {label}: {e}")
+        st.divider()
+
     try:
-        df_mom = ds.get_momentum_ranking(weight_type=weight_type)
-        if df_mom.empty:
-            st.warning("Not enough data to calculate momentum. Try updating the database.")
-        else:
-            # Add Sector Name
-            sectors = ds.get_sector_tickers(weight_type=weight_type)
-            ticker_to_name = {v: k for k, v in sectors.items()}
-            
-            df_mom['Sector'] = df_mom.index.map(ticker_to_name)
-            
-            # Define formatters
-            fmt_score = "{:.2f}"
-            fmt_pct = "{:.2f}%"
-
-            # Reorder
-            cols = ['Sector', 'Last Price', 'Date', 'Score', 'Score -5d', 'Score -20d', 'Score -50d', 'Score Chg (5d)', 'R(5-1)', 'R(10-5)', 'R(20-10)', 'R(40-20)']
-            df_display = df_mom[cols]
-            
-            st.dataframe(
-                df_display.style
-                .format({
-                    'Score': fmt_score,
-                    'Score Chg (5d)': fmt_score,
-                    'Score -5d': fmt_score,
-                    'Score -20d': fmt_score,
-                    'Score -50d': fmt_score,
-                    'R(5-1)': fmt_pct,
-                    'R(10-5)': fmt_pct,
-                    'R(20-10)': fmt_pct,
-                    'R(40-20)': fmt_pct,
-                    'Last Price': "{:.2f}"
-                })
-                .background_gradient(cmap='RdYlGn', subset=['Score', 'Score -5d', 'Score -20d', 'Score -50d']),
-                use_container_width=True,
-                height=600
-            )
-
             # --- Momentum History Chart ---
             st.divider()
             st.subheader("Momentum History Chart")
@@ -249,16 +269,31 @@ elif page == "Momentum Ranking":
             # actually we can just look up by ticker if we have it.
             # Let's find the tickers of the current view's top 3.
             # But df_display only has Sector Name "Energy". 
-            # We know the current mode (weight_type).
-            current_top_sectors = df_display['Sector'].head(3).tolist() # ["Energy", "Tech"]
-            
             # Build list of default names to check
             default_chk_names = []
-            for s_name in current_top_sectors:
-                # Find matching option in all_opts
-                match = next((o for o in all_opts if o['sector'] == s_name and o['type'] == weight_type), None)
-                if match:
-                    default_chk_names.append(match['name'])
+            
+            # Since we maintain consistency with previous logic, let's just pick one type for defaulting
+            # or maybe default to 'cap' for auto-selection logic's sake if needed. 
+            # But the user might want empty or persistent.
+            # Let's just assume we want Cap Weighted leaders by default if we have to pick.
+            chk_default_type = 'cap' 
+            try:
+                # Recalculate ranking for default check just in case
+                df_mom_def = ds.get_momentum_ranking(weight_type=chk_default_type)
+                if not df_mom_def.empty:
+                    # Get top sector name
+                    sectors_def = ds.get_sector_tickers(weight_type=chk_default_type)
+                    t2n_def = {v: k for k, v in sectors_def.items()}
+                    df_mom_def['Sector'] = df_mom_def.index.map(t2n_def)
+                    current_top_sectors = df_mom_def['Sector'].head(3).tolist()
+                    
+                    for s_name in current_top_sectors:
+                        match = next((o for o in all_opts if o['sector'] == s_name and o['type'] == chk_default_type), None)
+                        if match:
+                            default_chk_names.append(match['name'])
+            except:
+                pass # Fallback to empty if error
+
             
             selected_sectors_chart = []
             
@@ -401,6 +436,9 @@ elif page == "Momentum Change":
     col_mom_1, col_mom_2 = st.columns(2)
     with col_mom_1:
         history_days_mom = st.slider("History (Days)", 30, 750, 120, step=10, key='mom_change_days')
+    with col_mom_2:
+        weight_type_mom = st.radio("Weight Type:", ["Cap Weighted", "Equal Weighted"], index=0, key='mom_change_weight')
+        weight_type = "cap" if weight_type_mom == "Cap Weighted" else "equal"
     
     # Get all sectors for current weight type
     all_opts = ds.get_all_sector_options()
