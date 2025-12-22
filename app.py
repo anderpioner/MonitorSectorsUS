@@ -1009,36 +1009,46 @@ elif page == "Stocks > 25% (84d)":
     
     with st.spinner("Calculating historical data..."):
         for s_name in sector_names:
-            # Calculate history
-            df_up = ds.get_stocks_up_history(s_name, lookback_window=84, threshold=0.25, days_history=history_days)
+            st.markdown(f"### {s_name}")
             
-            if not df_up.empty:
-                # Calculate 10th percentile
-                quantile_10 = df_up['Percent'].quantile(0.10)
+            # Metric Definitions: (Threshold Label, Metric Name, Plot Color Logic)
+            # Logic: Red if <= 10th percentile, else Blue
+            metrics = [
+                ("> 25%", "pct_up_25_84d"),
+                ("> 50%", "pct_up_50_84d"),
+                ("> 100%", "pct_up_100_84d")
+            ]
+            
+            for label, metric_key in metrics:
+                # 3. Get Data (now cached)
+                # Using updated signature: get_stocks_up_history(sector_name, metric_name, days_history)
+                df_up = ds.get_stocks_up_history(s_name, metric_name=metric_key, days_history=history_days)
                 
-                # Assign colors
-                # We use a explicit column for color
-                df_up['Condition'] = df_up['Percent'].apply(lambda x: 'Low (<=10%)' if x <= quantile_10 else 'Normal')
-                
-                # Plot
-                # The DataFrame now contains 'Percent' calculated dynamically based on active tickers per day
-                fig = px.bar(
-                    df_up, 
-                    x=df_up.index, 
-                    y='Percent', 
-                    title=f"{s_name} (% of Active Stocks)",
-                    color='Condition',
-                    color_discrete_map={'Low (<=10%)': 'red', 'Normal': '#1f77b4'}
-                )
-                fig.update_layout(height=300, margin=dict(l=20, r=20, t=40, b=20), yaxis_title="% Active Stocks", showlegend=True)
-                
-                # Remove gaps
-                dt_all = pd.date_range(start=df_up.index.min(), end=df_up.index.max())
-                dt_breaks = dt_all.difference(df_up.index)
-                fig.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
-                
-                st.plotly_chart(fig, use_container_width=True)
-            else:
-                st.info(f"No data available for {s_name}")
+                if not df_up.empty:
+                    # Calculate 10th percentile
+                    quantile_10 = df_up['Percent'].quantile(0.10)
+                    
+                    # Assign colors
+                    df_up['Condition'] = df_up['Percent'].apply(lambda x: 'Low (<=10%)' if x <= quantile_10 else 'Normal')
+                    
+                    # Plot
+                    fig = px.bar(
+                        df_up, 
+                        x=df_up.index, 
+                        y='Percent', 
+                        title=f"{s_name} - Stocks {label}",
+                        color='Condition',
+                        color_discrete_map={'Low (<=10%)': 'red', 'Normal': '#1f77b4'}
+                    )
+                    fig.update_layout(height=250, margin=dict(l=20, r=20, t=30, b=20), yaxis_title="% Stocks", showlegend=True)
+                    
+                    # Remove gaps
+                    dt_all = pd.date_range(start=df_up.index.min(), end=df_up.index.max())
+                    dt_breaks = dt_all.difference(df_up.index)
+                    fig.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
+                    
+                    st.plotly_chart(fig, use_container_width=True)
+                else:
+                    st.info(f"No data available for {s_name} ({label})")
             
             st.divider()

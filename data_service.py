@@ -579,8 +579,8 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                 # Pass start_date to optimize: only write what we need
                 calculate_sector_high_low(sector.id, db, start_date=start_date)
 
-                # Update Stocks > 25% Metric
-                calculate_sector_up_metric(sector.id, db, start_date=start_date, lookback_window=84, threshold=0.25)
+                # Update Stocks > 25%, 50%, 100% Metrics
+                calculate_sector_up_metrics(sector.id, db, start_date=start_date, lookback_window=84, thresholds=[0.25, 0.50, 1.00])
 
                 # Update Progress
                 if progress_callback:
@@ -1133,10 +1133,10 @@ def get_active_constituent_history(sector_name,  days=3650):
         db.close()
 
 
-def get_stocks_up_history(sector_name, lookback_window=84, threshold=0.25, days_history=365):
+def get_stocks_up_history(sector_name, metric_name='pct_up_25_84d', days_history=365):
     """
-    Calculates the percentage of stocks in a sector that are up >= threshold over the lookback_window.
-    Now retrieves pre-calculated 'pct_up_25_84d' from BreadthMetric table.
+    Retrieves the pre-calculated percentage of stocks exceeding a threshold.
+    Metric names: 'pct_up_25_84d', 'pct_up_50_84d', 'pct_up_100_84d'.
     Returns a DataFrame: Index=Date, Columns=['Percent'].
     """
     db = next(get_db())
@@ -1151,7 +1151,7 @@ def get_stocks_up_history(sector_name, lookback_window=84, threshold=0.25, days_
         
         results = db.query(BreadthMetric.date, BreadthMetric.value)\
             .filter(BreadthMetric.sector_id == sector_id)\
-            .filter(BreadthMetric.metric == 'pct_up_25_84d')\
+            .filter(BreadthMetric.metric == metric_name)\
             .filter(BreadthMetric.date >= start_date)\
             .order_by(BreadthMetric.date)\
             .all()
@@ -1173,10 +1173,13 @@ def get_stocks_up_history(sector_name, lookback_window=84, threshold=0.25, days_
         db.close()
 
 
-def calculate_sector_up_metric(sector_id, db_session, start_date=None, lookback_window=84, threshold=0.25):
+
+
+
+def calculate_sector_up_metrics(sector_id, db_session, start_date=None, lookback_window=84, thresholds=[0.25, 0.50, 1.00]):
     """
-    Calculates the 'Stocks > 25% in 84d' metric and stores it in BreadthMetric table.
-    Metric Name: 'pct_up_25_84d'
+    Calculates the 'Stocks > X% in 84d' metrics and stores them in BreadthMetric table.
+    Metric Names: 'pct_up_25_84d', 'pct_up_50_84d', 'pct_up_100_84d'
     """
     try:
         # Get Constituents
@@ -1187,11 +1190,10 @@ def calculate_sector_up_metric(sector_id, db_session, start_date=None, lookback_
         c_ids = [c.id for c in constituents]
         
         # Determine fetch start date
-        # We need lookback_window prior history
         if start_date:
             fetch_start = pd.to_datetime(start_date) - pd.Timedelta(days=lookback_window + 20)
         else:
-            fetch_start = date.today() - pd.Timedelta(days=3650 + lookback_window + 20) # 10 years + buffer
+            fetch_start = date.today() - pd.Timedelta(days=3650 + lookback_window + 20)
             
         # Fetch Prices
         prices_q = db_session.query(ConstituentPrice.date, ConstituentPrice.constituent_id, ConstituentPrice.close)\
@@ -1212,37 +1214,39 @@ def calculate_sector_up_metric(sector_id, db_session, start_date=None, lookback_
         # Calculate Pct Change
         df_pct = df_pivot.pct_change(periods=lookback_window)
         
-        # Calculate Daily Stats
-        daily_counts = (df_pct >= threshold).sum(axis=1)
-        valid_counts = df_pct.notna().sum(axis=1)
+        valid_counts = df_pct.notna().sum(axis=1) # Common denominator
         
-        # Filter dates to process (if start_date provided)
+        # Filter dates if start_date provided
         if start_date:
-             # Ensure we cover the requested start_date
              process_mask = df_pct.index >= pd.to_datetime(start_date)
-             daily_counts = daily_counts[process_mask]
              valid_counts = valid_counts[process_mask]
-        
-        # Prepare Upsert
+             df_process_pct = df_pct[process_mask]
+        else:
+             df_process_pct = df_pct
+
         metrics_to_upsert = []
         
-        from sqlalchemy.dialects.sqlite import insert as sqlite_insert
-        # Note: If reusing mysql/postgres logic, adjust import. Using standard list for now.
-        
-        for dt, count in daily_counts.items():
-            total = valid_counts.loc[dt]
-            if total > 0:
-                val = (count / total) * 100
-                metrics_to_upsert.append({
-                    'sector_id': sector_id,
-                    'date': dt.date(),
-                    'metric': 'pct_up_25_84d',
-                    'value': float(val)
-                })
-                
+        # Iterate over thresholds
+        for threshold in thresholds:
+            t_label = int(threshold * 100)
+            metric_name = f'pct_up_{t_label}_84d'
+            
+            daily_counts = (df_process_pct >= threshold).sum(axis=1)
+            
+            for dt, count in daily_counts.items():
+                total = valid_counts.loc[dt]
+                if total > 0:
+                    val = (count / total) * 100
+                    metrics_to_upsert.append({
+                        'sector_id': sector_id,
+                        'date': dt.date(),
+                        'metric': metric_name,
+                        'value': float(val)
+                    })
+
         # Bulk Upsert
         if metrics_to_upsert:
-            # We use core sqlalchemy insert with ON CONFLICT DO UPDATE
+            from sqlalchemy.dialects.sqlite import insert as sqlite_insert
             stmt = insert(BreadthMetric).values(metrics_to_upsert)
             stmt = stmt.on_conflict_do_update(
                 index_elements=['sector_id', 'date', 'metric'],
@@ -1251,9 +1255,9 @@ def calculate_sector_up_metric(sector_id, db_session, start_date=None, lookback_
             db_session.execute(stmt)
             db_session.commit()
             
-        print(f"  > Calculate 'pct_up_25_84d': Updated {len(metrics_to_upsert)} records.")
+        print(f"  > Metrics updated for thresholds {thresholds}. Total records: {len(metrics_to_upsert)}.")
         
     except Exception as e:
-        print(f"Error calculating up metric: {e}")
+        print(f"Error calculating up metrics: {e}")
         db_session.rollback()
 
