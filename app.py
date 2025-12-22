@@ -81,7 +81,16 @@ def load_matrix(w_type):
     return df_matrix
 
 # Navigation
-page = st.sidebar.radio("View", ["Overview", "Performance Matrix", "Momentum Ranking", "Momentum Score charts", "Sector Charts", "Market Breadth", "New Highs / Lows", "Sector Stocks"])
+# Navigation
+page = st.sidebar.radio("View", [
+    "Overview", "Performance Matrix", "Momentum Ranking", "Momentum Score charts", 
+    "--- Stock Analysis ---", 
+    "Sector Charts", "Market Breadth", "New Highs / Lows", "Sector Stocks"
+])
+
+if page == "--- Stock Analysis ---":
+    st.info("Please select a page from the menu.")
+    st.stop()
 
 if page == "Overview":
     try:
