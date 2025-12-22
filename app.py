@@ -99,40 +99,48 @@ if page == "Overview":
             # Define types to show
             overview_types = [("Cap Weighted", "cap"), ("Equal Weighted", "equal")]
             
-            for label, w_t in overview_types:
-                df_prices, sector_map = load_data(days, w_t)
-                
-                if df_prices.empty:
-                    st.warning(f"No data found for {label}. Please click 'Update Database' in the sidebar.")
-                else:
-                    # Performance over the selected period
-                    perf = (df_prices.iloc[-1] / df_prices.iloc[0] - 1) * 100
-                    perf = perf.sort_values(ascending=False)
+            # Create columns for side-by-side display
+            col1, col2 = st.columns(2)
+            cols = [col1, col2]
+            
+            for idx, (label, w_t) in enumerate(overview_types):
+                with cols[idx]:
+                    df_prices, sector_map = load_data(days, w_t)
                     
-                    # Create a DataFrame for the chart
-                    perf_df = pd.DataFrame({'Ticker': perf.index, 'Return (%)': perf.values})
-                    
-                    # Map Ticker to Name
-                    ticker_to_name = {v: k for k, v in sector_map.items()}
-                    perf_df['Sector'] = perf_df['Ticker'].map(ticker_to_name)
-                    
-                    st.header(f"Sector Performance ({selected_period_label}) - {label}")
-                    
-                    fig = px.bar(
-                        perf_df, 
-                        x='Return (%)', 
-                        y='Sector', 
-                        orientation='h', 
-                        text='Return (%)',
-                        color='Return (%)',
-                        color_continuous_scale='RdYlGn',
-                        title=f"Relative Performance ({label})"
-                    )
-                    fig.update_traces(texttemplate='%{text:.2f}%', textposition='outside')
-                    fig.update_layout(yaxis={'categoryorder':'total ascending'})
-                    st.plotly_chart(fig, use_container_width=True)
+                    if df_prices.empty:
+                        st.warning(f"No data found for {label}. Please click 'Update Database' in the sidebar.")
+                    else:
+                        # Performance over the selected period
+                        perf = (df_prices.iloc[-1] / df_prices.iloc[0] - 1) * 100
+                        perf = perf.sort_values(ascending=False)
+                        
+                        # Create a DataFrame for the chart
+                        perf_df = pd.DataFrame({'Ticker': perf.index, 'Return (%)': perf.values})
+                        
+                        # Map Ticker to Name
+                        ticker_to_name = {v: k for k, v in sector_map.items()}
+                        perf_df['Sector'] = perf_df['Ticker'].map(ticker_to_name)
+                        
+                        st.subheader(f"{label}")
+                        
+                        fig = px.bar(
+                            perf_df, 
+                            x='Sector', 
+                            y='Return (%)', 
+                            text='Return (%)',
+                            color='Return (%)',
+                            color_continuous_scale='RdYlGn',
+                            title=f"Relative Performance (Last {days} days)"
+                        )
+                        fig.update_traces(texttemplate='%{text:.2f}%', textposition='outside')
+                        # For vertical bars, we want the highest return on the left typically, or just sorted.
+                        # Since we sorted `perf` descending, the DF is sorted. 
+                        # Plotly defaults to plotting in order of data or categorical. 
+                        # 'total descending' ensures visual sort if index didn't match.
+                        fig.update_layout(xaxis={'categoryorder':'total descending'}, height=500)
+                        st.plotly_chart(fig, use_container_width=True)
 
-                st.divider()
+            st.divider()
             
     except Exception as e:
         st.error(f"Error processing data: {e}")
