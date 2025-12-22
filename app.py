@@ -1013,10 +1013,24 @@ elif page == "Stocks > 25% (84d)":
             df_up = ds.get_stocks_up_history(s_name, lookback_window=84, threshold=0.25, days_history=history_days)
             
             if not df_up.empty:
+                # Calculate 10th percentile
+                quantile_10 = df_up['Percent'].quantile(0.10)
+                
+                # Assign colors
+                # We use a explicit column for color
+                df_up['Condition'] = df_up['Percent'].apply(lambda x: 'Low (<=10%)' if x <= quantile_10 else 'Normal')
+                
                 # Plot
                 # The DataFrame now contains 'Percent' calculated dynamically based on active tickers per day
-                fig = px.bar(df_up, x=df_up.index, y='Percent', title=f"{s_name} (% of Active Stocks)")
-                fig.update_layout(height=300, margin=dict(l=20, r=20, t=40, b=20), yaxis_title="% Active Stocks")
+                fig = px.bar(
+                    df_up, 
+                    x=df_up.index, 
+                    y='Percent', 
+                    title=f"{s_name} (% of Active Stocks)",
+                    color='Condition',
+                    color_discrete_map={'Low (<=10%)': 'red', 'Normal': '#1f77b4'}
+                )
+                fig.update_layout(height=300, margin=dict(l=20, r=20, t=40, b=20), yaxis_title="% Active Stocks", showlegend=True)
                 
                 # Remove gaps
                 dt_all = pd.date_range(start=df_up.index.min(), end=df_up.index.max())
