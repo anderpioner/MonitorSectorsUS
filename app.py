@@ -988,7 +988,7 @@ elif page == "Stocks > 25% (84d)":
     st.markdown("Number of stocks in each sector that have risen by 25% or more over a rolling 84-day period.")
     
     # History Slider
-    history_days = st.slider("History (Days)", min_value=90, max_value=1825, value=365, step=30, key='up25_slider')
+    history_days = st.slider("History (Days)", min_value=90, max_value=3650, value=365, step=30, key='up25_slider')
     
     # Get all sectors
     sector_opts = ds.get_sector_tickers(weight_type='cap')

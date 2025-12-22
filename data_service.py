@@ -46,7 +46,7 @@ def initialize_sectors_in_db():
     finally:
         db.close()
 
-def update_sector_data(period="1y"):
+def update_sector_data(period="10y"):
     """
     Fetches latest data from yfinance and updates the database.
     """
@@ -514,8 +514,8 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                             if start_date:
                                 processed_df = processed_df[processed_df.index.date > pd.to_datetime(start_date).date()]
                             else:
-                                # If full update, store last 5 years
-                                processed_df = processed_df.tail(1260)
+                                # If full update, store last 10 years (approx 2520 trading days)
+                                processed_df = processed_df.tail(2520)
                             
                             if processed_df.empty:
                                 continue
