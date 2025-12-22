@@ -81,7 +81,7 @@ def load_matrix(w_type):
     return df_matrix
 
 # Navigation
-page = st.sidebar.radio("View", ["Overview", "Performance Matrix", "Momentum Ranking", "Momentum Score charts", "Market Breadth", "Sector Dashboard", "New Highs / Lows", "Sector Charts", "Sector Stocks"])
+page = st.sidebar.radio("View", ["Overview", "Performance Matrix", "Momentum Ranking", "Momentum Score charts", "Market Breadth", "New Highs / Lows", "Sector Charts", "Sector Stocks"])
 
 if page == "Overview":
     try:
@@ -691,97 +691,7 @@ elif page == "Market Breadth":
         else:
             st.warning(f"No data for {label}. Try updating the database.")
 
-elif page == "Sector Dashboard":
-    st.header("Sector Dashboard")
-    st.markdown("Consolidated view of **Momentum Scores** and **Market Breadth** (% Stocks > MA).")
-    
-    # Weight Type Selection
-    col_dash_1, col_dash_2 = st.columns([1, 4])
-    with col_dash_1:
-         weight_type_dash = st.radio("Weight Type:", ['Cap Weighted', 'Equal Weighted'], index=0, key='dash_weight')
-    
-    w_type = 'cap' if weight_type_dash == 'Cap Weighted' else 'equal'
-    
-    # 1. Fetch Consolidated Data
-    df_dash = ds.get_dashboard_data(weight_type=w_type)
-    
-    if not df_dash.empty:
-        # Prep DataFrame for Display
-        # Columns in df_dash: [Score, R(5-1)..., Last Price, Date, Score -5d, -20d, -50d, Score Chg (5d), pct_above_ma5...]
-        
-        # Select Cols
-        cols_to_show = [
-            'Sector', 'Date',
-            'Score', 'Score -5d', 'Score -20d', 'Score -50d', 
-            'pct_above_ma5', 'pct_above_ma20', 'pct_above_ma20_5d', 'pct_above_ma50', 'pct_above_ma200'
-        ]
-        
-        # Filter existing cols
-        display_cols = [c for c in cols_to_show if c in df_dash.columns]
-        df_view = df_dash[display_cols].copy()
-        
-        # Rename Breadth Cols for compact view
-        rename_map = {
-            'pct_above_ma5': '% > MA5',
-            'pct_above_ma20': '% > MA20',
-            'pct_above_ma20_5d': '% > MA20 -5d',
-            'pct_above_ma50': '% > MA50',
-            'pct_above_ma200': '% > MA200'
-        }
-        df_view.rename(columns=rename_map, inplace=True)
-        
-        # Custom formatters to handle None/NaN safely
-        def fmt_pct(x):
-            return "{:.1f}%".format(x) if pd.notnull(x) else "-"
-            
-        def fmt_score(x):
-            return "{:.2f}".format(x) if pd.notnull(x) else "-"
 
-        # Styling
-        import matplotlib.colors as mcolors
-        import matplotlib.cm as cm
-        import numpy as np
-
-        def color_map(val, vmin, vmax, cmap_name='RdYlGn'):
-            if pd.isna(val):
-                return "" # No style for NaNs
-            
-            # Normalize
-            norm = mcolors.Normalize(vmin=vmin, vmax=vmax, clip=True)
-            cmap = cm.get_cmap(cmap_name)
-            rgba = cmap(norm(val))
-            color = mcolors.to_hex(rgba)
-            return f'background-color: {color}; color: black;' # Force black text for contrast if needed, or smart detection
-
-        # Apply specific styling
-        # Since style.map/applymap is slow or complex to pass args per column group easily in one go if ranges differ,
-        # we can use simple lambdas.
-        
-        st.dataframe(
-            df_view.style
-            .format({
-                'Score': fmt_score,
-                'Score -5d': fmt_score,
-                'Score -20d': fmt_score,
-                'Score -50d': fmt_score,
-                '% > MA5': fmt_pct,
-                '% > MA20': fmt_pct,
-                '% > MA20 -5d': fmt_pct,
-                '% > MA50': fmt_pct,
-                '% > MA200': fmt_pct,
-            })
-            # Gradient for Scores (-10 to 10)
-            .map(lambda x: color_map(x, -3, 3, 'RdYlGn'), subset=['Score', 'Score -5d', 'Score -20d', 'Score -50d'])
-            # Gradient for Percentages (0 to 100)
-            .map(lambda x: color_map(x, 0, 100, 'RdYlGn'), subset=['% > MA5', '% > MA20', '% > MA20 -5d', '% > MA50', '% > MA200']),
-            height=600,
-            use_container_width=True,
-            column_config={
-                "Sector": st.column_config.TextColumn("Sector", width="medium"),
-            }
-        )
-    else:
-        st.info("No data available.")
 
 elif page == "New Highs / Lows":
     st.header("New Highs / New Lows (252 Days)")
