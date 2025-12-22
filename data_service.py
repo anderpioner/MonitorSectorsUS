@@ -128,7 +128,7 @@ def update_sector_data(period="1y"):
                         r_20_10 = (p_10 / p_20) - 1
                         r_40_20 = (p_20 / p_40) - 1
                         
-                        score = (0.3 * r_5_1) + (0.3 * r_10_5) + (0.2 * r_20_10) + (0.2 * r_40_20)
+                        score = (0.25 * r_5_1) + (0.25 * r_10_5) + (0.25 * r_20_10) + (0.25 * r_40_20)
                         
                         # Update latest row in DB
                         # Need to re-fetch or use existing object if session is consistent
@@ -315,7 +315,7 @@ def get_momentum_ranking(weight_type='cap'):
             r_40_20 = (p_20 / p_40) - 1
             
             # Score
-            score = (0.3 * r_5_1) + (0.3 * r_10_5) + (0.2 * r_20_10) + (0.2 * r_40_20)
+            score = (0.25 * r_5_1) + (0.25 * r_10_5) + (0.25 * r_20_10) + (0.25 * r_40_20)
             return score, r_5_1, r_10_5, r_20_10, r_40_20
         except IndexError:
             return None, None, None, None, None

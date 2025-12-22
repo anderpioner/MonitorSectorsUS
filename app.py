@@ -194,7 +194,7 @@ elif page == "Momentum Ranking":
     st.header("Momentum Ranking")
     st.markdown("""
     **Formula:**
-    `Score = 0.3 * Return(5d-1d) + 0.3 * Return(10d-5d) + 0.2 * Return(20d-10d) + 0.2 * Return(40d-20d)`
+    `Score = 0.25 * Return(5d-1d) + 0.25 * Return(10d-5d) + 0.25 * Return(20d-10d) + 0.25 * Return(40d-20d)`
     """)
     
     types_to_show = [("Cap Weighted", "cap"), ("Equal Weighted", "equal")]
