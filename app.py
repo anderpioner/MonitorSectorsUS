@@ -964,28 +964,21 @@ elif page == "Sector Stocks":
     st.header("Sector Constituents")
     st.markdown("View the list of stocks (tickers) belonging to each sector.")
     
-    # Sector Selection
+    # Get all sector names
     sector_opts = ds.get_sector_tickers(weight_type='cap')
     sector_names = sorted(list(sector_opts.keys()))
     
-    selected_sector_stocks = st.selectbox("Select Sector", sector_names, key='stocks_sector')
-    
-    # Get constituents
-    tickers = ds.get_sector_constituents(selected_sector_stocks)
-    count = len(tickers)
-    
-    st.subheader(f"{selected_sector_stocks}")
-    st.markdown(f"**Total Stocks:** {count}")
-    
-    if count > 0:
-        # Display as a clean list or dataframe?
-        with st.expander("View Ticker List", expanded=True):
-            st.code(", ".join(tickers), language=None)
-            
-        # Also a table for easy reading
-        import pandas as pd
-        df_tickers = pd.DataFrame(tickers, columns=["Ticker"])
-        st.dataframe(df_tickers, height=400, use_container_width=False)
+    # Iterate through all sectors
+    for s_name in sector_names:
+        # Get constituents
+        tickers = ds.get_sector_constituents(s_name)
+        count = len(tickers)
         
-    else:
-        st.info("No constituents found for this sector.")
+        st.subheader(f"{s_name} ({count})")
+        
+        if count > 0:
+            st.code(", ".join(tickers), language=None)
+        else:
+            st.info("No constituents found.")
+        
+        st.divider()
