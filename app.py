@@ -1013,24 +1013,17 @@ elif page == "Stocks > 25% (84d)":
             df_up = ds.get_stocks_up_history(s_name, lookback_window=84, threshold=0.25, days_history=history_days)
             
             if not df_up.empty:
-                # Get Total Count for percentage calculation
-                total_count = ds.get_sector_constituent_count(s_name)
+                # Plot
+                # The DataFrame now contains 'Percent' calculated dynamically based on active tickers per day
+                fig = px.bar(df_up, x=df_up.index, y='Percent', title=f"{s_name} (% of Active Stocks)")
+                fig.update_layout(height=300, margin=dict(l=20, r=20, t=40, b=20), yaxis_title="% Active Stocks")
                 
-                if total_count > 0:
-                    df_up['Percent'] = (df_up['Count'] / total_count) * 100
-                    
-                    # Plot
-                    fig = px.bar(df_up, x=df_up.index, y='Percent', title=f"{s_name} (% of Stocks)")
-                    fig.update_layout(height=300, margin=dict(l=20, r=20, t=40, b=20), yaxis_title="% Stocks")
-                    
-                    # Remove gaps
-                    dt_all = pd.date_range(start=df_up.index.min(), end=df_up.index.max())
-                    dt_breaks = dt_all.difference(df_up.index)
-                    fig.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
-                    
-                    st.plotly_chart(fig, use_container_width=True)
-                else:
-                    st.warning(f"No constituent count found for {s_name}")
+                # Remove gaps
+                dt_all = pd.date_range(start=df_up.index.min(), end=df_up.index.max())
+                dt_breaks = dt_all.difference(df_up.index)
+                fig.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
+                
+                st.plotly_chart(fig, use_container_width=True)
             else:
                 st.info(f"No data available for {s_name}")
             
