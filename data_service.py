@@ -579,6 +579,9 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                 # Pass start_date to optimize: only write what we need
                 calculate_sector_high_low(sector.id, db, start_date=start_date)
 
+                # Update Stocks > 25% Metric
+                calculate_sector_up_metric(sector.id, db, start_date=start_date, lookback_window=84, threshold=0.25)
+
                 # Update Progress
                 if progress_callback:
                     progress_callback(msg, (idx + 1) / total_sectors)
@@ -1132,8 +1135,9 @@ def get_active_constituent_history(sector_name,  days=3650):
 
 def get_stocks_up_history(sector_name, lookback_window=84, threshold=0.25, days_history=365):
     """
-    Calculates the number and percentage of stocks in a sector that are up >= threshold over the lookback_window.
-    Returns a DataFrame: Index=Date, Columns=['Count', 'Total', 'Percent'].
+    Calculates the percentage of stocks in a sector that are up >= threshold over the lookback_window.
+    Now retrieves pre-calculated 'pct_up_25_84d' from BreadthMetric table.
+    Returns a DataFrame: Index=Date, Columns=['Percent'].
     """
     db = next(get_db())
     try:
@@ -1142,57 +1146,22 @@ def get_stocks_up_history(sector_name, lookback_window=84, threshold=0.25, days_
         if not sector_id:
             return pd.DataFrame()
 
-        # 2. Get Constituents
-        constituents = db.query(Constituent.id, Constituent.ticker).filter(Constituent.sector_id == sector_id).all()
-        if not constituents:
-            return pd.DataFrame()
-            
-        c_ids = [c.id for c in constituents]
-        c_map = {c.id: c.ticker for c in constituents}
+        # 2. Query BreadthMetric
+        start_date = date.today() - timedelta(days=days_history + 20)
         
-        # 3. Fetch Prices
-        # We need data for days_history + lookback_window
-        start_date = date.today() - timedelta(days=days_history + lookback_window + 20) # Buffer
-        
-        results = db.query(ConstituentPrice.date, ConstituentPrice.constituent_id, ConstituentPrice.close)\
-            .filter(ConstituentPrice.constituent_id.in_(c_ids))\
-            .filter(ConstituentPrice.date >= start_date)\
+        results = db.query(BreadthMetric.date, BreadthMetric.value)\
+            .filter(BreadthMetric.sector_id == sector_id)\
+            .filter(BreadthMetric.metric == 'pct_up_25_84d')\
+            .filter(BreadthMetric.date >= start_date)\
+            .order_by(BreadthMetric.date)\
             .all()
             
         if not results:
             return pd.DataFrame()
             
-        # 4. Load into DataFrame
-        df = pd.DataFrame(results, columns=['Date', 'ConstituentID', 'Close'])
-        df['Date'] = pd.to_datetime(df['Date'])
-        
-        # Map IDs to Tickers (optional, but good for debugging)
-        df['Ticker'] = df['ConstituentID'].map(c_map)
-        
-        # 5. Pivot
-        df_pivot = df.pivot(index='Date', columns='Ticker', values='Close')
-        
-        # 6. Calculate Pct Change
-        # pct_change(periods=N) calculates (Price_t / Price_{t-N}) - 1
-        df_pct = df_pivot.pct_change(periods=lookback_window)
-        
-        # 7. Count Matches and Valid Data Points
-        # Sum boolean (True=1) row-wise
-        daily_counts = (df_pct >= threshold).sum(axis=1)
-        
-        # Count non-NaN values row-wise to get the dynamic denominator
-        valid_counts = df_pct.notna().sum(axis=1)
-        
-        # 8. Trim to requested history
-        result_df = pd.DataFrame({
-            'Count': daily_counts,
-            'Total': valid_counts
-        })
-        
-        # Calculate Percent (Handle division by zero)
-        result_df['Percent'] = 0.0
-        mask = result_df['Total'] > 0
-        result_df.loc[mask, 'Percent'] = (result_df.loc[mask, 'Count'] / result_df.loc[mask, 'Total']) * 100
+        result_df = pd.DataFrame(results, columns=['Date', 'Percent'])
+        result_df['Date'] = pd.to_datetime(result_df['Date'])
+        result_df.set_index('Date', inplace=True)
         
         # Filter for last days_history
         disp_start = pd.Timestamp(date.today() - timedelta(days=days_history))
@@ -1202,4 +1171,89 @@ def get_stocks_up_history(sector_name, lookback_window=84, threshold=0.25, days_
         
     finally:
         db.close()
+
+
+def calculate_sector_up_metric(sector_id, db_session, start_date=None, lookback_window=84, threshold=0.25):
+    """
+    Calculates the 'Stocks > 25% in 84d' metric and stores it in BreadthMetric table.
+    Metric Name: 'pct_up_25_84d'
+    """
+    try:
+        # Get Constituents
+        constituents = db_session.query(Constituent.id).filter(Constituent.sector_id == sector_id).all()
+        if not constituents:
+            return
+            
+        c_ids = [c.id for c in constituents]
+        
+        # Determine fetch start date
+        # We need lookback_window prior history
+        if start_date:
+            fetch_start = pd.to_datetime(start_date) - pd.Timedelta(days=lookback_window + 20)
+        else:
+            fetch_start = date.today() - pd.Timedelta(days=3650 + lookback_window + 20) # 10 years + buffer
+            
+        # Fetch Prices
+        prices_q = db_session.query(ConstituentPrice.date, ConstituentPrice.constituent_id, ConstituentPrice.close)\
+            .filter(ConstituentPrice.constituent_id.in_(c_ids))\
+            .filter(ConstituentPrice.date >= fetch_start)\
+            .order_by(ConstituentPrice.date)
+            
+        df = pd.read_sql(prices_q.statement, db_session.bind)
+        
+        if df.empty:
+            return
+            
+        df['date'] = pd.to_datetime(df['date'])
+        
+        # Pivot
+        df_pivot = df.pivot(index='date', columns='constituent_id', values='close')
+        
+        # Calculate Pct Change
+        df_pct = df_pivot.pct_change(periods=lookback_window)
+        
+        # Calculate Daily Stats
+        daily_counts = (df_pct >= threshold).sum(axis=1)
+        valid_counts = df_pct.notna().sum(axis=1)
+        
+        # Filter dates to process (if start_date provided)
+        if start_date:
+             # Ensure we cover the requested start_date
+             process_mask = df_pct.index >= pd.to_datetime(start_date)
+             daily_counts = daily_counts[process_mask]
+             valid_counts = valid_counts[process_mask]
+        
+        # Prepare Upsert
+        metrics_to_upsert = []
+        
+        from sqlalchemy.dialects.sqlite import insert as sqlite_insert
+        # Note: If reusing mysql/postgres logic, adjust import. Using standard list for now.
+        
+        for dt, count in daily_counts.items():
+            total = valid_counts.loc[dt]
+            if total > 0:
+                val = (count / total) * 100
+                metrics_to_upsert.append({
+                    'sector_id': sector_id,
+                    'date': dt.date(),
+                    'metric': 'pct_up_25_84d',
+                    'value': float(val)
+                })
+                
+        # Bulk Upsert
+        if metrics_to_upsert:
+            # We use core sqlalchemy insert with ON CONFLICT DO UPDATE
+            stmt = insert(BreadthMetric).values(metrics_to_upsert)
+            stmt = stmt.on_conflict_do_update(
+                index_elements=['sector_id', 'date', 'metric'],
+                set_={'value': stmt.excluded.value}
+            )
+            db_session.execute(stmt)
+            db_session.commit()
+            
+        print(f"  > Calculate 'pct_up_25_84d': Updated {len(metrics_to_upsert)} records.")
+        
+    except Exception as e:
+        print(f"Error calculating up metric: {e}")
+        db_session.rollback()
 
