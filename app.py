@@ -81,7 +81,7 @@ def load_matrix(w_type):
     return df_matrix
 
 # Navigation
-page = st.sidebar.radio("View", ["Overview", "Performance Matrix", "Momentum Ranking", "Momentum Change", "Market Breadth", "Sector Dashboard", "New Highs / Lows", "Sector Charts", "Sector Stocks"])
+page = st.sidebar.radio("View", ["Overview", "Performance Matrix", "Momentum Ranking", "Market Breadth", "Sector Dashboard", "New Highs / Lows", "Sector Charts", "Sector Stocks"])
 
 if page == "Overview":
     try:
@@ -426,126 +426,7 @@ elif page == "Momentum Ranking":
     except Exception as e:
         st.error(f"Error calculating momentum: {e}")
 
-elif page == "Momentum Change":
-    st.header("Momentum Change Analysis")
-    st.markdown("""
-    **Indicator:** Daily variation of the Momentum Score (`Score Today - Score Yesterday`).
-    - **Green Bars (+):** Momentum is improving.
-    - **Red Bars (-):** Momentum is deteriorating.
-    - **Blue Line:** 5-Day Moving Average of the change (Trend).
-    
-    Use this to identify sectors with **negative momentum** (low score) but **positive change** (recovering).
-    """)
-    
-    # Settings
-    col_mom_1, col_mom_2 = st.columns(2)
-    with col_mom_1:
-        history_days_mom = st.slider("History (Days)", 30, 750, 120, step=10, key='mom_change_days')
-    with col_mom_2:
-        weight_type_mom = st.radio("Weight Type:", ["Cap Weighted", "Equal Weighted"], index=0, key='mom_change_weight')
-        weight_type = "cap" if weight_type_mom == "Cap Weighted" else "equal"
-    
-    # Get all sectors for current weight type
-    all_opts = ds.get_all_sector_options()
-    current_opts = [o for o in all_opts if o['type'] == weight_type]
-    # Sort alphabetically
-    current_opts.sort(key=lambda x: x['name'])
-    
-    import plotly.graph_objects as go
-    from plotly.subplots import make_subplots
-    
-    # Name to ticker map
-    name_to_ticker = {o['name']: o['ticker'] for o in all_opts}
-    
-    # Display in Single Column
-    for idx, opt in enumerate(current_opts):
-        s_name = opt['name']
-        ticker = opt['ticker']
-        
-        # Container for each chart
-        with st.container():
-            # Fetch History
-            df_hist = ds.get_momentum_history(ticker, period_days=history_days_mom + 10) 
-            
-            if not df_hist.empty:
-                # Calculate Indicators
-                df_hist['Diff'] = df_hist['Score'].diff()
-                df_hist['MA5_Diff'] = df_hist['Diff'].rolling(window=5).mean()
-                
-                # Filter to requested days
-                df_plot = df_hist.tail(history_days_mom)
-                
-                if df_plot.empty:
-                    st.warning(f"No recent data for {s_name}")
-                    continue
 
-                # Current Score
-                curr_score = df_plot['Score'].iloc[-1]
-                
-                # Chart
-                fig = make_subplots(specs=[[{"secondary_y": True}]])
-                
-                # 1. Daily Change (Bars)
-                colors = ['green' if x >= 0 else 'red' for x in df_plot['Diff']]
-                
-                fig.add_trace(
-                    go.Bar(
-                        x=df_plot.index, 
-                        y=df_plot['Diff'], 
-                        name='Daily Change',
-                        marker_color=colors,
-                        opacity=0.6,
-                        showlegend=False
-                    ),
-                    secondary_y=False
-                )
-                
-                # 2. MA5 of Change (Line)
-                fig.add_trace(
-                    go.Scatter(
-                        x=df_plot.index,
-                        y=df_plot['MA5_Diff'],
-                        name='5d MA',
-                        line=dict(color='blue', width=2),
-                        showlegend=True
-                    ),
-                    secondary_y=False
-                )
-                
-                # 3. Momentum Score (Context - Right Axis)
-                fig.add_trace(
-                    go.Scatter(
-                        x=df_plot.index,
-                        y=df_plot['Score'],
-                        name='Mom Score',
-                        line=dict(color='gray', width=1, dash='dot'),
-                        opacity=0.5,
-                        showlegend=True
-                    ),
-                    secondary_y=True
-                )
-                
-                # Layout
-                fig.update_layout(
-                    title=f"<b>{s_name}</b> (Score: {curr_score:.2f})",
-                    height=350,
-                    margin=dict(l=20, r=20, t=40, b=20),
-                    hovermode="x unified",
-                    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
-                )
-                
-                fig.update_yaxes(title_text="Change", secondary_y=False)
-                fig.update_yaxes(secondary_y=True, showgrid=False)
-                
-                # Remove gaps
-                dt_all = pd.date_range(start=df_plot.index.min(), end=df_plot.index.max())
-                dt_breaks = dt_all.difference(df_plot.index)
-                fig.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
-                
-                st.plotly_chart(fig, use_container_width=True)
-                st.divider()
-            else:
-                st.warning(f"No data for {s_name}")
 
 elif page == "Market Breadth":
     st.header("Market Breadth Analysis")
