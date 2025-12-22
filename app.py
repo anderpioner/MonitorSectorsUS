@@ -96,6 +96,25 @@ page = st.sidebar.radio("View", ["Overview", "Performance Matrix", "Momentum Ran
 if page == "Overview":
     try:
         with st.spinner('Loading data from database...'):
+            # Period Selector
+            st.write("### Settings")
+            period_options = {
+                "30 Days": 30,
+                "60 Days": 60,
+                "120 Days": 120,
+                "240 Days": 240,
+                "365 Days (1Y)": 365
+            }
+            selected_period_key = st.radio(
+                "Select Period:", 
+                options=list(period_options.keys()), 
+                index=4, # Default to 365
+                horizontal=True,
+                key="overview_period_selector"
+            )
+            days = period_options[selected_period_key]
+            selected_period_label = selected_period_key # For chart titles
+
             # Define types to show
             overview_types = [("Cap Weighted", "cap"), ("Equal Weighted", "equal")]
             
