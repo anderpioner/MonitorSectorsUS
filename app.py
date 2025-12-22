@@ -92,7 +92,7 @@ def load_matrix(w_type):
     return df_matrix
 
 # Navigation
-page = st.sidebar.radio("View", ["Overview", "Performance Matrix", "Momentum Ranking", "Market Breadth", "Sector Dashboard", "New Highs / Lows", "Sector Charts", "Sector Stocks"])
+page = st.sidebar.radio("View", ["Overview", "Performance Matrix", "Momentum Ranking", "Momentum Change", "Market Breadth", "Sector Dashboard", "New Highs / Lows", "Sector Charts", "Sector Stocks"])
 
 if page == "Overview":
     try:
@@ -192,17 +192,33 @@ elif page == "Momentum Ranking":
             
             df_mom['Sector'] = df_mom.index.map(ticker_to_name)
             
+            # Define formatters
+            fmt_score = "{:.2f}"
+            fmt_pct = "{:.2f}%"
+
             # Reorder
             cols = ['Sector', 'Last Price', 'Date', 'Score', 'Score -5d', 'Score -20d', 'Score -50d', 'Score Chg (5d)', 'R(5-1)', 'R(10-5)', 'R(20-10)', 'R(40-20)']
             df_display = df_mom[cols]
             
             st.dataframe(
-                df_display.style.background_gradient(cmap='RdYlGn', subset=['Score', 'Score -5d', 'Score -20d', 'Score -50d'])
-                                .format("{:.2f}", subset=['Score', 'Score Chg (5d)', 'Score -5d', 'Score -20d', 'Score -50d', 'R(5-1)', 'R(10-5)', 'R(20-10)', 'R(40-20)', 'Last Price']),
+                df_display.style
+                .format({
+                    'Score': fmt_score,
+                    'Score Chg (5d)': fmt_score,
+                    'Score -5d': fmt_score,
+                    'Score -20d': fmt_score,
+                    'Score -50d': fmt_score,
+                    'R(5-1)': fmt_pct,
+                    'R(10-5)': fmt_pct,
+                    'R(20-10)': fmt_pct,
+                    'R(40-20)': fmt_pct,
+                    'Last Price': "{:.2f}"
+                })
+                .background_gradient(cmap='RdYlGn', subset=['Score', 'Score -5d', 'Score -20d', 'Score -50d']),
                 use_container_width=True,
                 height=600
             )
-            
+
             # --- Momentum History Chart ---
             st.divider()
             st.subheader("Momentum History Chart")
@@ -369,6 +385,124 @@ elif page == "Momentum Ranking":
                 st.info("Select sectors to view chart.")
     except Exception as e:
         st.error(f"Error calculating momentum: {e}")
+
+elif page == "Momentum Change":
+    st.header("Momentum Change Analysis")
+    st.markdown("""
+    **Indicator:** Daily variation of the Momentum Score (`Score Today - Score Yesterday`).
+    - **Green Bars (+):** Momentum is improving.
+    - **Red Bars (-):** Momentum is deteriorating.
+    - **Blue Line:** 5-Day Moving Average of the change (Trend).
+    
+    Use this to identify sectors with **negative momentum** (low score) but **positive change** (recovering).
+    """)
+    
+    # Settings
+    col_mom_1, col_mom_2 = st.columns(2)
+    with col_mom_1:
+        history_days_mom = st.slider("History (Days)", 30, 750, 120, step=10, key='mom_change_days')
+    
+    # Get all sectors for current weight type
+    all_opts = ds.get_all_sector_options()
+    current_opts = [o for o in all_opts if o['type'] == weight_type]
+    # Sort alphabetically
+    current_opts.sort(key=lambda x: x['name'])
+    
+    import plotly.graph_objects as go
+    from plotly.subplots import make_subplots
+    
+    # Name to ticker map
+    name_to_ticker = {o['name']: o['ticker'] for o in all_opts}
+    
+    # Display in Single Column
+    for idx, opt in enumerate(current_opts):
+        s_name = opt['name']
+        ticker = opt['ticker']
+        
+        # Container for each chart
+        with st.container():
+            # Fetch History
+            df_hist = ds.get_momentum_history(ticker, period_days=history_days_mom + 10) 
+            
+            if not df_hist.empty:
+                # Calculate Indicators
+                df_hist['Diff'] = df_hist['Score'].diff()
+                df_hist['MA5_Diff'] = df_hist['Diff'].rolling(window=5).mean()
+                
+                # Filter to requested days
+                df_plot = df_hist.tail(history_days_mom)
+                
+                if df_plot.empty:
+                    st.warning(f"No recent data for {s_name}")
+                    continue
+
+                # Current Score
+                curr_score = df_plot['Score'].iloc[-1]
+                
+                # Chart
+                fig = make_subplots(specs=[[{"secondary_y": True}]])
+                
+                # 1. Daily Change (Bars)
+                colors = ['green' if x >= 0 else 'red' for x in df_plot['Diff']]
+                
+                fig.add_trace(
+                    go.Bar(
+                        x=df_plot.index, 
+                        y=df_plot['Diff'], 
+                        name='Daily Change',
+                        marker_color=colors,
+                        opacity=0.6,
+                        showlegend=False
+                    ),
+                    secondary_y=False
+                )
+                
+                # 2. MA5 of Change (Line)
+                fig.add_trace(
+                    go.Scatter(
+                        x=df_plot.index,
+                        y=df_plot['MA5_Diff'],
+                        name='5d MA',
+                        line=dict(color='blue', width=2),
+                        showlegend=True
+                    ),
+                    secondary_y=False
+                )
+                
+                # 3. Momentum Score (Context - Right Axis)
+                fig.add_trace(
+                    go.Scatter(
+                        x=df_plot.index,
+                        y=df_plot['Score'],
+                        name='Mom Score',
+                        line=dict(color='gray', width=1, dash='dot'),
+                        opacity=0.5,
+                        showlegend=True
+                    ),
+                    secondary_y=True
+                )
+                
+                # Layout
+                fig.update_layout(
+                    title=f"<b>{s_name}</b> (Score: {curr_score:.2f})",
+                    height=350,
+                    margin=dict(l=20, r=20, t=40, b=20),
+                    hovermode="x unified",
+                    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+                )
+                
+                fig.update_yaxes(title_text="Change", secondary_y=False)
+                fig.update_yaxes(secondary_y=True, showgrid=False)
+                
+                # Remove gaps
+                dt_all = pd.date_range(start=df_plot.index.min(), end=df_plot.index.max())
+                dt_breaks = dt_all.difference(df_plot.index)
+                fig.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
+                
+                st.plotly_chart(fig, use_container_width=True)
+                st.divider()
+            else:
+                st.warning(f"No data for {s_name}")
 
 elif page == "Market Breadth":
     st.header("Market Breadth Analysis")
@@ -726,8 +860,8 @@ elif page == "Sector Charts":
         
         st.subheader(f"{s_name} ({s_ticker})")
         
-        # Create 4 columns for charts
-        c1, c2, c3, c4 = st.columns(4)
+        # Row 1: Breadth & High/Low (3 Cols)
+        c1, c2, c3 = st.columns(3)
         
         # 1. Net New Highs/Lows (60 Days)
         df_net = ds.get_sector_high_low_data(s_name, days=60)
@@ -760,53 +894,82 @@ elif page == "Sector Charts":
                 dt_breaks = dt_all.difference(df_ma20.index)
                 fig2.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
                 
-                fig2.add_hline(y=50, line_dash="dot", line_color="gray", annotation_text="50%")
+                fig2.add_hline(y=50, line_dash="dot", line_color="gray")
                 st.plotly_chart(fig2, use_container_width=True)
             else:
                 st.caption("No Breadth Data")
 
-        # 3. % > MA50 (60 Days) - NEW
+        # 3. % > MA50 (60 Days)
         df_ma50 = ds.get_breadth_history(s_name, 'pct_above_ma50', days=60)
         
         with c3:
             if not df_ma50.empty:
                 fig3 = go.Figure()
-                fig3.add_trace(go.Scatter(x=df_ma50.index, y=df_ma50['Value'], mode='lines', line=dict(color='purple'))) # Diff color
+                fig3.add_trace(go.Scatter(x=df_ma50.index, y=df_ma50['Value'], mode='lines', line=dict(color='purple')))
                 fig3.update_layout(title="% > MA50", height=300, yaxis=dict(range=[0, 100]), margin=dict(l=20, r=20, t=40, b=20), showlegend=False)
                 # Remove gaps
                 dt_all = pd.date_range(start=df_ma50.index.min(), end=df_ma50.index.max())
                 dt_breaks = dt_all.difference(df_ma50.index)
                 fig3.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
                 
-                fig3.add_hline(y=50, line_dash="dot", line_color="gray", annotation_text="50%")
+                fig3.add_hline(y=50, line_dash="dot", line_color="gray")
                 st.plotly_chart(fig3, use_container_width=True)
             else:
                 st.caption("No Breadth Data")
 
+        # Row 2: Momentum (2 Cols)
+        c4, c5 = st.columns(2)
+
         # 4. Momentum Score (60 Days)
-        df_mom = ds.get_momentum_history(s_ticker, period_days=60)
+        # Get slightly more history to calculate change comfortably
+        df_mom = ds.get_momentum_history(s_ticker, period_days=70)
         
-        with c4:
-            if not df_mom.empty:
+        if not df_mom.empty:
+            # Prepare data
+            df_mom['Diff'] = df_mom['Score'].diff()
+            df_mom['MA5_Diff'] = df_mom['Diff'].rolling(window=5).mean()
+            
+            # Slice to last 60 days for display
+            df_mom_disp = df_mom.tail(60)
+            
+            # Chart 4: Absolute Score
+            with c4:
                 fig4 = go.Figure()
                 # Colored background zones
-                min_y = min(df_mom['Score'].min(), -2)
-                max_y = max(df_mom['Score'].max(), 2)
+                min_y = min(df_mom_disp['Score'].min(), -2)
+                max_y = max(df_mom_disp['Score'].max(), 2)
                 
                 # Green Zone (>1)
-                fig4.add_shape(type="rect", x0=df_mom.index.min(), x1=df_mom.index.max(), y0=1, y1=max_y, fillcolor="green", opacity=0.1, layer="below", line_width=0)
+                fig4.add_shape(type="rect", x0=df_mom_disp.index.min(), x1=df_mom_disp.index.max(), y0=1, y1=max_y, fillcolor="green", opacity=0.1, layer="below", line_width=0)
                 # Red Zone (<1)
-                fig4.add_shape(type="rect", x0=df_mom.index.min(), x1=df_mom.index.max(), y0=min_y, y1=1, fillcolor="red", opacity=0.1, layer="below", line_width=0)
+                fig4.add_shape(type="rect", x0=df_mom_disp.index.min(), x1=df_mom_disp.index.max(), y0=min_y, y1=1, fillcolor="red", opacity=0.1, layer="below", line_width=0)
                 
-                fig4.add_trace(go.Scatter(x=df_mom.index, y=df_mom['Score'], mode='lines', line=dict(color='black')))
+                fig4.add_trace(go.Scatter(x=df_mom_disp.index, y=df_mom_disp['Score'], mode='lines', line=dict(color='black')))
                 fig4.update_layout(title="Momentum Score", height=300, margin=dict(l=20, r=20, t=40, b=20), showlegend=False)
                 # Remove gaps
-                dt_all = pd.date_range(start=df_mom.index.min(), end=df_mom.index.max())
-                dt_breaks = dt_all.difference(df_mom.index)
+                dt_all = pd.date_range(start=df_mom_disp.index.min(), end=df_mom_disp.index.max())
+                dt_breaks = dt_all.difference(df_mom_disp.index)
                 fig4.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
                 st.plotly_chart(fig4, use_container_width=True)
-            else:
-                st.caption("No Momentum Data")
+                
+            # Chart 5: Momentum Change
+            with c5:
+                fig5 = go.Figure()
+                colors_diff = ['green' if x >= 0 else 'red' for x in df_mom_disp['Diff']]
+                
+                # Bar
+                fig5.add_trace(go.Bar(x=df_mom_disp.index, y=df_mom_disp['Diff'], name='Change', marker_color=colors_diff, opacity=0.6))
+                # Line
+                fig5.add_trace(go.Scatter(x=df_mom_disp.index, y=df_mom_disp['MA5_Diff'], name='MA5', line=dict(color='blue', width=2)))
+                
+                fig5.update_layout(title="Momentum Change", height=300, margin=dict(l=20, r=20, t=40, b=20), showlegend=True,
+                                   legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1))
+                # Remove gaps
+                fig5.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
+                st.plotly_chart(fig5, use_container_width=True)
+        else:
+            with c4: st.caption("No Momentum Data")
+            with c5: st.caption("No Momentum Data")
         
         st.divider()
 

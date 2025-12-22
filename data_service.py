@@ -3,7 +3,8 @@ import pandas as pd
 from sqlalchemy.orm import Session
 from database import get_db, init_db
 from models import Sector, PriceData, Constituent, BreadthMetric, ConstituentPrice
-from datetime import date, timedelta
+from sqlalchemy.dialects.sqlite import insert
+from datetime import date, datetime, timedelta
 import time
 
 # List of US Sector ETFs (SPDR and Invesco Equal Weight)
@@ -457,6 +458,7 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                 
                 for i in range(0, len(ticker_list), batch_size):
                     batch = ticker_list[i:i+batch_size]
+                    print(f"  > Processing batch {i//batch_size + 1} ({len(batch)} tickers)...")
                     try:
                         # Determine start date for yfinance
                         # If start_date is provided (gap fill), use it.
@@ -474,8 +476,10 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                             data = yf.download(batch, period="10y", auto_adjust=True, progress=False)['Close']
 
                         if data.empty:
+                            print(f"    ! Batch returned empty data.")
                             continue
-                            
+                        
+                        print(f"    - Downloaded {len(data)} rows of data.")
                         if isinstance(data, pd.Series):
                             data = data.to_frame()
                             
@@ -516,51 +520,51 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                             if processed_df.empty:
                                 continue
 
+                            records_to_upsert = []
                             for dt, row in processed_df.iterrows():
                                 date_val = dt.date()
                                 
-                                # Valid MAs? (At start of history MAs are NaN)
-                                # Flags: 1 if Close > MA, 0 if Close <= MA, None if MA is NaN
                                 def get_flag(close, ma):
                                     return 1 if pd.notna(ma) and close > ma else (0 if pd.notna(ma) else None)
                                     
-                                f5 = get_flag(row['close'], row['ma5'])
-                                f10 = get_flag(row['close'], row['ma10'])
-                                f20 = get_flag(row['close'], row['ma20'])
-                                f50 = get_flag(row['close'], row['ma50'])
-                                f200 = get_flag(row['close'], row['ma200'])
-                                
-                                # DB Upsert
-                                existing = db.query(ConstituentPrice).filter_by(constituent_id=c_id, date=date_val).first()
-                                
-                                if not existing:
-                                    db.add(ConstituentPrice(
-                                        constituent_id=c_id,
-                                        date=date_val,
-                                        close=row['close'],
-                                        ma5=row['ma5'],
-                                        ma10=row['ma10'],
-                                        ma20=row['ma20'],
-                                        ma50=row['ma50'],
-                                        ma200=row['ma200'],
-                                        above_ma5=f5,
-                                        above_ma10=f10,
-                                        above_ma20=f20,
-                                        above_ma50=f50,
-                                        above_ma200=f200
-                                    ))
-                                else:
-                                    existing.close = row['close']
-                                    existing.ma5 = row['ma5']
-                                    existing.ma10 = row['ma10']
-                                    existing.ma20 = row['ma20']
-                                    existing.ma50 = row['ma50']
-                                    existing.ma200 = row['ma200']
-                                    existing.above_ma5 = f5
-                                    existing.above_ma10 = f10
-                                    existing.above_ma20 = f20
-                                    existing.above_ma50 = f50
-                                    existing.above_ma200 = f200
+                                records_to_upsert.append({
+                                    'constituent_id': c_id,
+                                    'date': date_val,
+                                    'close': float(row['close']),
+                                    'ma5': float(row['ma5']) if pd.notna(row['ma5']) else None,
+                                    'ma10': float(row['ma10']) if pd.notna(row['ma10']) else None,
+                                    'ma20': float(row['ma20']) if pd.notna(row['ma20']) else None,
+                                    'ma50': float(row['ma50']) if pd.notna(row['ma50']) else None,
+                                    'ma200': float(row['ma200']) if pd.notna(row['ma200']) else None,
+                                    'above_ma5': get_flag(row['close'], row['ma5']),
+                                    'above_ma10': get_flag(row['close'], row['ma10']),
+                                    'above_ma20': get_flag(row['close'], row['ma20']),
+                                    'above_ma50': get_flag(row['close'], row['ma50']),
+                                    'above_ma200': get_flag(row['close'], row['ma200'])
+                                })
+
+                            if records_to_upsert:
+                                # Bulk Upsert using SQLite-specific "INSERT OR REPLACE" logic via SQLAlchemy insert
+                                stmt = insert(ConstituentPrice).values(records_to_upsert)
+                                # Map conflict to update
+                                stmt = stmt.on_conflict_do_update(
+                                    index_elements=['constituent_id', 'date'],
+                                    set_={
+                                        'close': stmt.excluded.close,
+                                        'ma5': stmt.excluded.ma5,
+                                        'ma10': stmt.excluded.ma10,
+                                        'ma20': stmt.excluded.ma20,
+                                        'ma50': stmt.excluded.ma50,
+                                        'ma200': stmt.excluded.ma200,
+                                        'above_ma5': stmt.excluded.above_ma5,
+                                        'above_ma10': stmt.excluded.above_ma10,
+                                        'above_ma20': stmt.excluded.above_ma20,
+                                        'above_ma50': stmt.excluded.above_ma50,
+                                        'above_ma200': stmt.excluded.above_ma200,
+                                    }
+                                )
+                                db.execute(stmt)
+                                print(f"      + Upserted {len(records_to_upsert)} price records for ticker mapping.")
                                     
                     except Exception as e:
                         print(f"Error processing batch {i} for {sector.name}: {e}")
@@ -571,6 +575,16 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                 # After updating constituents, update Breadth Metrics
                 calculate_sector_breadth(sector.id, db)
 
+                # Update New Highs/Lows (integrated)
+                # Pass start_date to optimize: only write what we need
+                calculate_sector_high_low(sector.id, db, start_date=start_date)
+
+                # Update Progress
+                if progress_callback:
+                    progress_callback(msg, (idx + 1) / total_sectors)
+                
+                print(f"  Finished {sector.name}.")
+                
             except Exception as e:
                 print(f"CRITICAL ERROR updating sector {sector.name}: {e}")
                 db.rollback()
@@ -603,33 +617,178 @@ def calculate_sector_breadth(sector_id, db_session):
         func.sum(ConstituentPrice.above_ma200).label('sum_200')
     ).join(Constituent).filter(Constituent.sector_id == sector_id).group_by(ConstituentPrice.date).all()
     
+    metrics_to_upsert = []
     for row in subq:
         date_val = row.date
         total = row.total_count
         
         if total == 0: continue
         
-        # Helper to upsert metric
-        def upsert_metric(metric_name, count_val):
-            # If count_val is None (e.g. no MAs yet), skip or 0? 0 if total > 0 but sum is None
+        # Add metrics to list
+        def add_metric(metric_name, count_val):
             val = (count_val or 0) / total * 100
-            
-            existing = db_session.query(BreadthMetric).filter_by(
-                sector_id=sector_id, date=date_val, metric=metric_name
-            ).first()
-            if not existing:
-                db_session.add(BreadthMetric(sector_id=sector_id, date=date_val, metric=metric_name, value=val))
-            else:
-                existing.value = val
+            metrics_to_upsert.append({
+                'sector_id': sector_id,
+                'date': date_val,
+                'metric': metric_name,
+                'value': float(val)
+            })
 
-        upsert_metric('pct_above_ma5', row.sum_5)
-        upsert_metric('pct_above_ma10', row.sum_10)
-        upsert_metric('pct_above_ma20', row.sum_20)
-        upsert_metric('pct_above_ma50', row.sum_50)
-        upsert_metric('pct_above_ma200', row.sum_200)
+        add_metric('pct_above_ma5', row.sum_5)
+        add_metric('pct_above_ma10', row.sum_10)
+        add_metric('pct_above_ma20', row.sum_20)
+        add_metric('pct_above_ma50', row.sum_50)
+        add_metric('pct_above_ma200', row.sum_200)
+
+    if metrics_to_upsert:
+        stmt = insert(BreadthMetric).values(metrics_to_upsert)
+        stmt = stmt.on_conflict_do_update(
+            index_elements=['sector_id', 'date', 'metric'],
+            set_={'value': stmt.excluded.value}
+        )
+        db_session.execute(stmt)
         
     db_session.commit()
-    print("Breadth aggregation complete.")
+    print(f"Breadth aggregation complete ({len(metrics_to_upsert)} metrics calculated).")
+
+def calculate_sector_high_low(sector_id, db_session, start_date=None):
+    """
+    Calculates rolling 252-day New Highs / New Lows for a sector.
+    Integrated from backfill_new_highs.py.
+    Optimization: If start_date is provided, only deletes/re-inserts metrics from that date.
+    """
+    label_msg = f" (from {start_date})" if start_date else ""
+    print(f"  [High/Low] Fetching constituents for SectorID {sector_id}{label_msg}...")
+    
+    # Get constituents
+    constituents = db_session.query(Constituent).filter(Constituent.sector_id == sector_id).all()
+    if not constituents:
+        print("  [High/Low] No constituents found.")
+        return
+
+    c_ids = [c.id for c in constituents]
+    print(f"  [High/Low] Fetching prices for {len(c_ids)} tickers...")
+    
+    # Fetch only necessary prices
+    # To calculate rolling 252 for dates >= start_date, we need at least 252 trading days 
+    # of history BEFORE that date. ~400 calendar days is usually safe.
+    
+    if start_date:
+        if isinstance(start_date, str):
+            base_date = pd.to_datetime(start_date).date()
+        elif isinstance(start_date, (pd.Timestamp, datetime)):
+            base_date = start_date.date()
+        else:
+            base_date = start_date # assume it's already a date
+        
+        # We need data starting ~400 days before the base_date to get a valid 252-day window
+        fetch_start = base_date - timedelta(days=400)
+    else:
+        # If no start_date, assume we want at least a year of history + window
+        fetch_start = date.today() - timedelta(days=500)
+    
+    prices_q = db_session.query(ConstituentPrice.constituent_id, ConstituentPrice.date, ConstituentPrice.close)\
+        .filter(ConstituentPrice.constituent_id.in_(c_ids))\
+        .filter(ConstituentPrice.date >= fetch_start)\
+        .order_by(ConstituentPrice.date)
+    
+    df = pd.read_sql(prices_q.statement, db_session.bind)
+    
+    if df.empty:
+        return
+        
+    print(f"  [High/Low] Data fetched ({len(df)} rows). Calculating rolling windows...")
+    
+    df['date'] = pd.to_datetime(df['date'])
+    
+    # Group by constituent
+    high_counts = {} 
+    low_counts = {}
+    
+    # We want to update metrics for RECENT dates, essentially the ones we just added?
+    # Or just recalculate strictly the latest date usually?
+    # If we run this daily, we mostly care about the new days.
+    # But let's calculate for all dates present in the DF to be consistent with the window.
+    
+    # Initialize for dates in DF
+    unique_dates = df['date'].unique()
+    for d in unique_dates:
+        high_counts[d] = 0
+        low_counts[d] = 0
+        
+    grouped = df.groupby('constituent_id')
+    
+    print(f"  [High/Low] Processing {len(grouped)} constituent groups...")
+    for cid, group in grouped:
+        group = group.sort_values('date')
+        
+        # Performance optimization:
+        # Rolling Max/Min (252 days)
+        rolling_max = group['close'].rolling(window=252, min_periods=252).max()
+        rolling_min = group['close'].rolling(window=252, min_periods=252).min()
+        
+        # Identify Highs/Lows
+        is_high = (group['close'] >= rolling_max - 1e-9)
+        is_low = (group['close'] <= rolling_min + 1e-9)
+        
+        high_dates = group.loc[is_high, 'date']
+        low_dates = group.loc[is_low, 'date']
+        
+        for d in high_dates:
+            high_counts[d] += 1
+        for d in low_dates:
+            low_counts[d] += 1
+            
+    # Upsert into BreadthMetric
+    # We only need to write metrics for dates that changed or are new.
+    # For simplicity, we can upsert the calculated values.
+    
+    # Get distinct dates we have counts for
+    sorted_dates = sorted(high_counts.keys())
+    
+    # Delete/Insert is safer for the window we processed.
+    
+    # NEW OPTIMIZATION: Only touch records >= target_date
+    if start_date:
+        if isinstance(start_date, str):
+            target_date = pd.to_datetime(start_date).date()
+        elif isinstance(start_date, (pd.Timestamp, datetime)):
+            target_date = start_date.date()
+        else:
+            target_date = start_date
+    else:
+        target_date = min(unique_dates).date()
+    
+    # Delete existing High/Low metrics for the target window to allow overwriting
+    db_session.query(BreadthMetric).filter(
+        BreadthMetric.sector_id == sector_id,
+        BreadthMetric.metric.in_(['new_highs_252', 'new_lows_252']),
+        BreadthMetric.date >= target_date
+    ).delete(synchronize_session=False)
+    
+    new_records = []
+    
+    for d in sorted_dates:
+        d_date = d.date()
+        
+        # Only add records that are within our target update window
+        if d_date < target_date:
+            continue
+            
+        h_val = high_counts[d]
+        l_val = low_counts[d]
+        
+        if h_val > 0:
+            new_records.append(BreadthMetric(sector_id=sector_id, date=d_date, metric='new_highs_252', value=float(h_val)))
+        
+        if l_val > 0:
+            new_records.append(BreadthMetric(sector_id=sector_id, date=d_date, metric='new_lows_252', value=float(l_val)))
+            
+    if new_records:
+        db_session.bulk_save_objects(new_records)
+        db_session.commit()
+    print(f"High/Low Logic Complete. {len(new_records)} records updated.")
+
 
 def get_etf_price_history(sector_name, days=1825, weight_type='equal'):
     """
