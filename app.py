@@ -987,6 +987,9 @@ elif page == "Stocks > 25% (84d)":
     st.header("Stocks > 25% Increase (Last 84 Days)")
     st.markdown("Number of stocks in each sector that have risen by 25% or more over a rolling 84-day period.")
     
+    # History Slider
+    history_days = st.slider("History (Days)", min_value=90, max_value=1825, value=365, step=30, key='up25_slider')
+    
     # Get all sectors
     sector_opts = ds.get_sector_tickers(weight_type='cap')
     sector_names = sorted(list(sector_opts.keys()))
@@ -996,8 +999,7 @@ elif page == "Stocks > 25% (84d)":
     with st.spinner("Calculating historical data..."):
         for s_name in sector_names:
             # Calculate history
-            # Default to 365 days history for the chart
-            df_up = ds.get_stocks_up_history(s_name, lookback_window=84, threshold=0.25, days_history=365)
+            df_up = ds.get_stocks_up_history(s_name, lookback_window=84, threshold=0.25, days_history=history_days)
             
             if not df_up.empty:
                 # Plot
