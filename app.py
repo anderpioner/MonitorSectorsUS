@@ -81,7 +81,7 @@ def load_matrix(w_type):
     return df_matrix
 
 # Navigation
-page = st.sidebar.radio("View", ["Overview", "Performance Matrix", "Momentum Ranking", "Market Breadth", "Sector Dashboard", "New Highs / Lows", "Sector Charts", "Sector Stocks"])
+page = st.sidebar.radio("View", ["Overview", "Performance Matrix", "Momentum Ranking", "Momentum Score charts", "Market Breadth", "Sector Dashboard", "New Highs / Lows", "Sector Charts", "Sector Stocks"])
 
 if page == "Overview":
     try:
@@ -427,6 +427,64 @@ elif page == "Momentum Ranking":
         st.error(f"Error calculating momentum: {e}")
 
 
+
+
+elif page == "Momentum Score charts":
+    st.header("Momentum Score History (Last 60 Days)")
+    st.write("Comparing Cap Weighted (Left) vs Equal Weighted (Right) Momentum Scores.")
+    
+    # Imports
+    import plotly.express as px
+    
+    # Get all sectors
+    # We want to iterate through unique sectors and show both types
+    # ds.get_sector_tickers('cap') returns {Name: Ticker}
+    cap_sectors = ds.get_sector_tickers('cap')
+    equal_sectors = ds.get_sector_tickers('equal')
+    
+    # Sorted list of sector names
+    sector_names = sorted(list(cap_sectors.keys()))
+    
+    for s_name in sector_names:
+        st.subheader(s_name)
+        
+        col1, col2 = st.columns(2)
+        
+        # 1. Cap Weighted (Left)
+        with col1:
+            st.markdown("**Cap Weighted**")
+            ticker_cap = cap_sectors.get(s_name)
+            if ticker_cap:
+                df_cap = ds.get_momentum_history(ticker_cap, period_days=60)
+                if not df_cap.empty:
+                    # Plot
+                    fig = px.line(df_cap, x=df_cap.index, y='Score', title=f"{ticker_cap} Score")
+                    fig.update_layout(height=300, margin=dict(l=20, r=20, t=30, b=20))
+                    # Add reference line at 0? Scores are % now? 
+                    # Previous logic: 'Score' in df is * 100.
+                    st.plotly_chart(fig, use_container_width=True)
+                else:
+                    st.info(f"No data for {ticker_cap}")
+            else:
+                st.warning("Ticker not found")
+                
+        # 2. Equal Weighted (Right)
+        with col2:
+            st.markdown("**Equal Weighted**")
+            ticker_equal = equal_sectors.get(s_name)
+            if ticker_equal:
+                df_equal = ds.get_momentum_history(ticker_equal, period_days=60)
+                if not df_equal.empty:
+                    # Plot
+                    fig = px.line(df_equal, x=df_equal.index, y='Score', title=f"{ticker_equal} Score")
+                    fig.update_layout(height=300, margin=dict(l=20, r=20, t=30, b=20))
+                    st.plotly_chart(fig, use_container_width=True)
+                else:
+                    st.info(f"No data for {ticker_equal}")
+            else:
+                st.warning("Ticker not found")
+        
+        st.divider()
 
 elif page == "Market Breadth":
     st.header("Market Breadth Analysis")
