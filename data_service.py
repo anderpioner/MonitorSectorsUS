@@ -117,18 +117,18 @@ def update_sector_data(period="10y"):
                     # Logic same as vectorized but single point
                     p = df_calc['close']
                     try:
-                        p_1 = p.iloc[-2]
+                        p_0 = p.iloc[-1]
                         p_5 = p.iloc[-6]
                         p_10 = p.iloc[-11]
                         p_20 = p.iloc[-21]
                         p_40 = p.iloc[-41]
                         
-                        r_5_1 = (p_1 / p_5) - 1
+                        r_5_0 = (p_0 / p_5) - 1
                         r_10_5 = (p_5 / p_10) - 1
                         r_20_10 = (p_10 / p_20) - 1
                         r_40_20 = (p_20 / p_40) - 1
                         
-                        score = (0.25 * r_5_1) + (0.25 * r_10_5) + (0.25 * r_20_10) + (0.25 * r_40_20)
+                        score = (0.25 * r_5_0) + (0.25 * r_10_5) + (0.25 * r_20_10) + (0.25 * r_40_20)
                         
                         # Update latest row in DB
                         # Need to re-fetch or use existing object if session is consistent
@@ -275,10 +275,10 @@ def get_momentum_ranking(weight_type='cap'):
     """
     Calculates Momentum Ranking based on weighted returns.
     Formula:
-    30% * Return (5d to 1d)
-    30% * Return (10d to 5d)
-    20% * Return (20d to 10d)
-    20% * Return (40d to 20d)
+    25% * Return (5d to 0d)
+    25% * Return (10d to 5d)
+    25% * Return (20d to 10d)
+    25% * Return (40d to 20d)
     """
     # Need at least 40 days of history + buffer + lookback for past scores (50 days)
     # Total needed: 50 (max offset) + 40 (calc window) + buffer
@@ -302,21 +302,21 @@ def get_momentum_ranking(weight_type='cap'):
             # Base index
             base = idx_loc
             
-            p_1 = df_slice.iloc[base - 1]
+            p_0 = df_slice.iloc[base]
             p_5 = df_slice.iloc[base - 5]
             p_10 = df_slice.iloc[base - 10]
             p_20 = df_slice.iloc[base - 20]
             p_40 = df_slice.iloc[base - 40]
             
             # Calculate Return Intervals
-            r_5_1 = (p_1 / p_5) - 1
+            r_5_0 = (p_0 / p_5) - 1
             r_10_5 = (p_5 / p_10) - 1
             r_20_10 = (p_10 / p_20) - 1
             r_40_20 = (p_20 / p_40) - 1
             
             # Score
-            score = (0.25 * r_5_1) + (0.25 * r_10_5) + (0.25 * r_20_10) + (0.25 * r_40_20)
-            return score, r_5_1, r_10_5, r_20_10, r_40_20
+            score = (0.25 * r_5_0) + (0.25 * r_10_5) + (0.25 * r_20_10) + (0.25 * r_40_20)
+            return score, r_5_0, r_10_5, r_20_10, r_40_20
         except IndexError:
             return None, None, None, None, None
 
@@ -348,7 +348,7 @@ def get_momentum_ranking(weight_type='cap'):
             'Score -5d': score_5d,
             'Score -20d': score_20d,
             'Score -50d': score_50d,
-            'R(5-1)': r5,
+            'R(5-0)': r5,
             'R(10-5)': r10,
             'R(20-10)': r20,
             'R(40-20)': r40,
@@ -368,7 +368,7 @@ def get_momentum_ranking(weight_type='cap'):
     # If I calculate ratio using raw scores (0.02 / 0.01 = 2.0), it's the same as scaled (2.0 / 1.0 = 2.0).
     # So I don't need to scale the Ratio itself.
     
-    scale_cols = ['Score', 'Score -5d', 'Score -20d', 'Score -50d', 'R(5-1)', 'R(10-5)', 'R(20-10)', 'R(40-20)']
+    scale_cols = ['Score', 'Score -5d', 'Score -20d', 'Score -50d', 'R(5-0)', 'R(10-5)', 'R(20-10)', 'R(40-20)']
     
     # Check if cols exist (some might be None if history missing for specific ticker)
     # Fill N/As in scores? Or leave as None? Leave as None/NaN
@@ -432,7 +432,13 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
     try:
         query = db.query(Sector).filter(Sector.type == 'cap')
         if sector_name:
-            query = query.filter(Sector.name == sector_name)
+            # Robust check for list/iterable
+            if not isinstance(sector_name, str) and hasattr(sector_name, '__iter__'):
+                print(f"Filtering by list of sectors: {sector_name}")
+                query = query.filter(Sector.name.in_(sector_name))
+            else:
+                print(f"Filtering by single sector: {sector_name}")
+                query = query.filter(Sector.name == sector_name)
             
         sectors = query.all()
         total_sectors = len(sectors)
@@ -454,26 +460,30 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                     progress_callback(msg, idx / total_sectors)
                 
                 ticker_list = list(constituents.keys())
-                batch_size = 50
+                batch_size = 20 # Reduced from 50 to 20 to avoid timeouts/freezes
                 
                 for i in range(0, len(ticker_list), batch_size):
                     batch = ticker_list[i:i+batch_size]
                     print(f"  > Processing batch {i//batch_size + 1} ({len(batch)} tickers)...")
+                    
+                    # Add delay to avoid rate limiting
+                    time.sleep(1) 
+                    
                     try:
                         # Determine start date for yfinance
-                        # If start_date is provided (gap fill), use it.
-                        # Otherwise default to "10y" for full history or substantial logic.
-                        if start_date:
-                            # yf.download(start=...) expects string or datetime
-                            # We add a buffer? No, if we want specific range. 
-                            # But MAs need previous data! 
-                            # CRITICAL: To calculate MA200 for today, we need 200 days prior.
-                            # Ideally, we should fetch (start_date - 300 days) to calculate MAs correctly for the gap.
-                            
-                            fetch_start = pd.to_datetime(start_date) - pd.Timedelta(days=365) # Safe buffer
-                            data = yf.download(batch, start=fetch_start, auto_adjust=True, progress=False)['Close']
-                        else:
-                            data = yf.download(batch, period="10y", auto_adjust=True, progress=False)['Close']
+                        print(f"    - Starting download for {batch[0]}...{batch[-1]}")
+                        
+                        try:
+                            if start_date:
+                                fetch_start = pd.to_datetime(start_date) - pd.Timedelta(days=365) # Safe buffer
+                                data = yf.download(batch, start=fetch_start, auto_adjust=True, progress=False, timeout=30)['Close']
+                            else:
+                                data = yf.download(batch, period="10y", auto_adjust=True, progress=False, timeout=30)['Close']
+                        except Exception as e_down:
+                             print(f"    ! Download failed for batch: {e_down}")
+                             continue
+                             
+                        print("    - Download finished.")
 
                         if data.empty:
                             print(f"    ! Batch returned empty data.")
@@ -544,27 +554,37 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                                 })
 
                             if records_to_upsert:
-                                # Bulk Upsert using SQLite-specific "INSERT OR REPLACE" logic via SQLAlchemy insert
-                                stmt = insert(ConstituentPrice).values(records_to_upsert)
-                                # Map conflict to update
-                                stmt = stmt.on_conflict_do_update(
-                                    index_elements=['constituent_id', 'date'],
-                                    set_={
-                                        'close': stmt.excluded.close,
-                                        'ma5': stmt.excluded.ma5,
-                                        'ma10': stmt.excluded.ma10,
-                                        'ma20': stmt.excluded.ma20,
-                                        'ma50': stmt.excluded.ma50,
-                                        'ma200': stmt.excluded.ma200,
-                                        'above_ma5': stmt.excluded.above_ma5,
-                                        'above_ma10': stmt.excluded.above_ma10,
-                                        'above_ma20': stmt.excluded.above_ma20,
-                                        'above_ma50': stmt.excluded.above_ma50,
-                                        'above_ma200': stmt.excluded.above_ma200,
-                                    }
-                                )
-                                db.execute(stmt)
-                                print(f"      + Upserted {len(records_to_upsert)} price records for ticker mapping.")
+                                # Batch the SQL upsert to avoid SQLite variable limit
+                                upsert_batch_size = 500
+                                total_recs = len(records_to_upsert)
+                                
+                                for k in range(0, total_recs, upsert_batch_size):
+                                    batch = records_to_upsert[k : k + upsert_batch_size]
+                                    
+                                    # Bulk Upsert using SQLite-specific "INSERT OR REPLACE" logic via SQLAlchemy insert
+                                    stmt = insert(ConstituentPrice).values(batch)
+                                    # Map conflict to update
+                                    stmt = stmt.on_conflict_do_update(
+                                        index_elements=['constituent_id', 'date'],
+                                        set_={
+                                            'close': stmt.excluded.close,
+                                            'ma5': stmt.excluded.ma5,
+                                            'ma10': stmt.excluded.ma10,
+                                            'ma20': stmt.excluded.ma20,
+                                            'ma50': stmt.excluded.ma50,
+                                            'ma200': stmt.excluded.ma200,
+                                            'above_ma5': stmt.excluded.above_ma5,
+                                            'above_ma10': stmt.excluded.above_ma10,
+                                            'above_ma20': stmt.excluded.above_ma20,
+                                            'above_ma50': stmt.excluded.above_ma50,
+                                            'above_ma200': stmt.excluded.above_ma200,
+                                        }
+                                    )
+                                    db.execute(stmt)
+                                
+                                min_date = min(r['date'] for r in records_to_upsert)
+                                max_date = max(r['date'] for r in records_to_upsert)
+                                print(f"      + Upserted {len(records_to_upsert)} records. Range: {min_date} to {max_date}. (Batched)")
                                     
                     except Exception as e:
                         print(f"Error processing batch {i} for {sector.name}: {e}")
@@ -647,12 +667,15 @@ def calculate_sector_breadth(sector_id, db_session):
         add_metric('pct_above_ma200', row.sum_200)
 
     if metrics_to_upsert:
-        stmt = insert(BreadthMetric).values(metrics_to_upsert)
-        stmt = stmt.on_conflict_do_update(
-            index_elements=['sector_id', 'date', 'metric'],
-            set_={'value': stmt.excluded.value}
-        )
-        db_session.execute(stmt)
+        batch_size = 500
+        for i in range(0, len(metrics_to_upsert), batch_size):
+            batch = metrics_to_upsert[i:i+batch_size]
+            stmt = insert(BreadthMetric).values(batch)
+            stmt = stmt.on_conflict_do_update(
+                index_elements=['sector_id', 'date', 'metric'],
+                set_={'value': stmt.excluded.value}
+            )
+            db_session.execute(stmt)
         
     db_session.commit()
     print(f"Breadth aggregation complete ({len(metrics_to_upsert)} metrics calculated).")
@@ -1244,14 +1267,20 @@ def calculate_sector_up_metrics(sector_id, db_session, start_date=None, lookback
                     })
 
         # Bulk Upsert
+        # Bulk Upsert
         if metrics_to_upsert:
             from sqlalchemy.dialects.sqlite import insert as sqlite_insert
-            stmt = insert(BreadthMetric).values(metrics_to_upsert)
-            stmt = stmt.on_conflict_do_update(
-                index_elements=['sector_id', 'date', 'metric'],
-                set_={'value': stmt.excluded.value}
-            )
-            db_session.execute(stmt)
+            
+            batch_size = 500
+            for i in range(0, len(metrics_to_upsert), batch_size):
+                batch = metrics_to_upsert[i:i+batch_size]
+
+                stmt = insert(BreadthMetric).values(batch)
+                stmt = stmt.on_conflict_do_update(
+                    index_elements=['sector_id', 'date', 'metric'],
+                    set_={'value': stmt.excluded.value}
+                )
+                db_session.execute(stmt)
             db_session.commit()
             
         print(f"  > Metrics updated for thresholds {thresholds}. Total records: {len(metrics_to_upsert)}.")
@@ -1301,12 +1330,17 @@ def calculate_active_count(sector_id, db_session, start_date=None):
         # Bulk Upsert
         if metrics_to_upsert:
             from sqlalchemy.dialects.sqlite import insert as sqlite_insert
-            stmt = insert(BreadthMetric).values(metrics_to_upsert)
-            stmt = stmt.on_conflict_do_update(
-                index_elements=['sector_id', 'date', 'metric'],
-                set_={'value': stmt.excluded.value}
-            )
-            db_session.execute(stmt)
+            
+            batch_size = 500
+            for i in range(0, len(metrics_to_upsert), batch_size):
+                batch = metrics_to_upsert[i:i+batch_size]
+                
+                stmt = insert(BreadthMetric).values(batch)
+                stmt = stmt.on_conflict_do_update(
+                    index_elements=['sector_id', 'date', 'metric'],
+                    set_={'value': stmt.excluded.value}
+                )
+                db_session.execute(stmt)
             db_session.commit()
             
         print(f"  > Calculate 'active_count': Updated {len(metrics_to_upsert)} records.")

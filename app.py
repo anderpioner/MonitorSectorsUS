@@ -31,6 +31,14 @@ def update_progress(msg, val):
     status_text.text(msg)
     progress_bar.progress(val)
 
+# Sector Selection for Update
+sector_options = list(ds.get_sector_tickers('cap').keys())
+selected_sectors_update = st.sidebar.multiselect(
+    "Select Sectors to Update:", 
+    options=sector_options, 
+    default=sector_options
+)
+
 if st.sidebar.button("⚡ Atualização Rápida (Gap)"):
     with st.spinner("Atualizando dados recentes..."):
         try:
@@ -40,9 +48,17 @@ if st.sidebar.button("⚡ Atualização Rápida (Gap)"):
                 ds.update_sector_data(period="1mo")
                 # Update Constituents with a 7-day buffer to catch any lagging sectors
                 safe_start = latest - pd.Timedelta(days=7)
-                ds.update_constituents_data(start_date=safe_start, progress_callback=update_progress)
-                st.sidebar.success("Atualização concluída!")
-                st.cache_data.clear()
+                
+                if not selected_sectors_update:
+                    st.sidebar.warning("Please select at least one sector.")
+                else:
+                    ds.update_constituents_data(
+                        sector_name=selected_sectors_update, 
+                        start_date=safe_start, 
+                        progress_callback=update_progress
+                    )
+                    st.sidebar.success("Atualização concluída!")
+                    st.cache_data.clear()
             else:
                 st.sidebar.warning("Base vazia. Rode 'Reset Completo' primeiro.")
         except Exception as e:
@@ -51,15 +67,21 @@ if st.sidebar.button("⚡ Atualização Rápida (Gap)"):
 if st.sidebar.button("🔄 Reset Completo (Lento)"):
     with st.spinner("Recarregando TODO histórico (Demora muito)..."):
         try:
-            # Update ETFs
-            update_progress("Updating ETFs...", 0.05)
-            ds.update_sector_data(period="10y") 
-            
-            # Update Constituents
-            ds.update_constituents_data(progress_callback=update_progress)
-            
-            st.sidebar.success("Database updated successfully!")
-            st.cache_data.clear() 
+            if not selected_sectors_update:
+                st.sidebar.warning("Please select at least one sector.")
+            else:
+                # Update ETFs
+                update_progress("Updating ETFs...", 0.05)
+                ds.update_sector_data(period="10y") 
+                
+                # Update Constituents
+                ds.update_constituents_data(
+                    sector_name=selected_sectors_update, 
+                    progress_callback=update_progress
+                )
+                
+                st.sidebar.success("Database updated successfully!")
+                st.cache_data.clear() 
         except Exception as e:
             st.sidebar.error(f"Update failed: {e}")
 
@@ -226,7 +248,7 @@ elif page == "Momentum Ranking":
     st.header("Momentum Ranking")
     st.markdown("""
     **Formula:**
-    `Score = 0.25 * Return(5d-1d) + 0.25 * Return(10d-5d) + 0.25 * Return(20d-10d) + 0.25 * Return(40d-20d)`
+    `Score = 0.25 * Return(5d-0d) + 0.25 * Return(10d-5d) + 0.25 * Return(20d-10d) + 0.25 * Return(40d-20d)`
     """)
     
     types_to_show = [("Cap Weighted", "cap"), ("Equal Weighted", "equal")]
@@ -249,7 +271,7 @@ elif page == "Momentum Ranking":
                 fmt_pct = "{:.2f}%"
 
                 # Reorder
-                cols = ['Sector', 'Last Price', 'Date', 'Score', 'Score -5d', 'Score -20d', 'Score -50d', 'Score Chg (5d)', 'R(5-1)', 'R(10-5)', 'R(20-10)', 'R(40-20)']
+                cols = ['Sector', 'Last Price', 'Date', 'Score', 'Score -5d', 'Score -20d', 'Score -50d', 'Score Chg (5d)', 'R(5-0)', 'R(10-5)', 'R(20-10)', 'R(40-20)']
                 df_display = df_mom[cols]
                 
                 st.dataframe(
@@ -260,7 +282,7 @@ elif page == "Momentum Ranking":
                         'Score -5d': fmt_score,
                         'Score -20d': fmt_score,
                         'Score -50d': fmt_score,
-                        'R(5-1)': fmt_pct,
+                        'R(5-0)': fmt_pct,
                         'R(10-5)': fmt_pct,
                         'R(20-10)': fmt_pct,
                         'R(40-20)': fmt_pct,
@@ -273,6 +295,8 @@ elif page == "Momentum Ranking":
                 )
         except Exception as e:
             st.error(f"Error calculating momentum for {label}: {e}")
+            if 'df_mom' in locals() and not df_mom.empty:
+                 st.write(f"Available columns: {df_mom.columns.tolist()}")
         st.divider()
 
     try:
