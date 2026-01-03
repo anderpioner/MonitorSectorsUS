@@ -1195,19 +1195,39 @@ elif page == "ATR Strength":
         st.divider()
         
         # --- Visualization 2: Industry Treemap ---
-        st.subheader("Industry Volatility Detail")
+        st.divider()
         
-        fig_ind = px.treemap(
-            df_ind_agg,
-            path=['Sector', 'Industry'],
-            values='PctQualified',
-            color='MeanStrength',
-            color_continuous_scale='RdYlGn',
-            title='Industries by Volatility Intensity',
-            hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength']
-        )
+        # --- Visualization 2: Industry Treemaps per Sector ---
+        st.subheader("Industry Strength by Sector")
+        st.caption("Detailed view per Sector. Color scale is relative to the specific Sector.")
         
-        st.plotly_chart(fig_ind, use_container_width=True)
+        # Get unique sectors
+        sectors = df_ind_agg['Sector'].unique()
+        sectors.sort()
+        
+        # Create grid layout (e.g., 2 columns)
+        cols = st.columns(2)
+        
+        for i, sector in enumerate(sectors):
+            df_sec_ind = df_ind_agg[df_ind_agg['Sector'] == sector].copy()
+            
+            # Skip if no data
+            if df_sec_ind.empty or df_sec_ind['PctQualified'].sum() == 0:
+                continue
+                
+            fig = px.treemap(
+                df_sec_ind,
+                path=['Industry'],
+                values='PctQualified',
+                color='MeanStrength',
+                color_continuous_scale='RdYlGn',
+                title=f"{sector}",
+                hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength']
+            )
+            
+            with cols[i % 2]:
+                st.plotly_chart(fig, use_container_width=True)
+
 
 elif page == "Data Management":
     st.header("Data Management & Updates")
