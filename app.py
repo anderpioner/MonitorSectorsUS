@@ -615,21 +615,33 @@ elif page == "Market Breadth":
     df_ma10 = ds.get_breadth_data(selected_sector_breadth, metric='pct_above_ma10', days=days_history)
     
     if (df_ma20 is not None and not df_ma20.empty) and (df_ma50 is not None and not df_ma50.empty):
-        fig_combined = go.Figure()
+        # Create Subplots with Dual Axis for all charts
+        fig_combined = make_subplots(specs=[[{"secondary_y": True}]])
         
         # MA20
         fig_combined.add_trace(go.Scatter(
             x=df_ma20.index, y=df_ma20['Value'],
             mode='lines', name='% > MA20',
             line=dict(color='#ffc658', width=2) # Yellow/Orange
-        ))
+        ), secondary_y=False)
         
         # MA50
         fig_combined.add_trace(go.Scatter(
             x=df_ma50.index, y=df_ma50['Value'],
             mode='lines', name='% > MA50',
             line=dict(color='#ff7300', width=2) # Orange/Red
-        ))
+        ), secondary_y=False)
+
+        # Plot ETF
+        if not df_etf.empty:
+            fig_combined.add_trace(go.Scatter(
+                x=df_etf.index, y=df_etf['Close'],
+                name=f"{benchmark_ticker}",
+                line=dict(color='gray', width=1, dash='dot'),
+                mode='lines', opacity=0.5
+            ), secondary_y=True)
+            
+            fig_combined.update_yaxes(title_text=f"{benchmark_ticker} Price", secondary_y=True, showgrid=False)
         
         fig_combined.update_layout(
             title="Breadth Momentum: MA20 vs MA50",
@@ -640,12 +652,13 @@ elif page == "Market Breadth":
         )
          # Remove Gaps
         all_dates_c = df_ma20.index.union(df_ma50.index)
+        if not df_etf.empty: all_dates_c = all_dates_c.union(df_etf.index)
         dt_all_c = pd.date_range(start=all_dates_c.min(), end=all_dates_c.max())
         dt_breaks_c = dt_all_c.difference(all_dates_c)
         fig_combined.update_xaxes(rangebreaks=[dict(values=dt_breaks_c)])
         
         # 50% Line
-        fig_combined.add_hline(y=50, line_dash="dash", line_color="gray")
+        fig_combined.add_hline(y=50, line_dash="dash", line_color="gray", secondary_y=False)
         
         st.plotly_chart(fig_combined, use_container_width=True)
         
@@ -655,7 +668,7 @@ elif page == "Market Breadth":
         df_spread['diff'] = df_spread['Value_20'] - df_spread['Value_50']
         
         if not df_spread.empty:
-            fig_spread = go.Figure()
+            fig_spread = make_subplots(specs=[[{"secondary_y": True}]])
             colors = ['green' if x >= 0 else 'red' for x in df_spread['diff']]
             
             fig_spread.add_trace(go.Bar(
@@ -663,7 +676,17 @@ elif page == "Market Breadth":
                 y=df_spread['diff'],
                 marker_color=colors,
                 name='Spread (MA20 - MA50)'
-            ))
+            ), secondary_y=False)
+
+            # Plot ETF
+            if not df_etf.empty:
+                fig_spread.add_trace(go.Scatter(
+                    x=df_etf.index, y=df_etf['Close'],
+                    name=f"{benchmark_ticker}",
+                    line=dict(color='gray', width=1, dash='dot'),
+                    mode='lines', opacity=0.5
+                ), secondary_y=True)
+                fig_spread.update_yaxes(title_text=f"{benchmark_ticker} Price", secondary_y=True, showgrid=False)
             
             fig_spread.update_layout(
                 title="Spread: (% > MA20) - (% > MA50)",
@@ -677,13 +700,12 @@ elif page == "Market Breadth":
             
             st.plotly_chart(fig_spread, use_container_width=True)
             
-        # --- Spread Chart (MA5 - MA10) ---
         # --- Spread Chart (MA10 - MA20) ---
         if (df_ma10 is not None and not df_ma10.empty) and (df_ma20 is not None and not df_ma20.empty):
             df_spread_10_20 = df_ma10.join(df_ma20, lsuffix='_10', rsuffix='_20', how='inner')
             df_spread_10_20['diff'] = df_spread_10_20['Value_10'] - df_spread_10_20['Value_20']
             
-            fig_spread_10_20 = go.Figure()
+            fig_spread_10_20 = make_subplots(specs=[[{"secondary_y": True}]])
             colors_10_20 = ['green' if x >= 0 else 'red' for x in df_spread_10_20['diff']]
             
             fig_spread_10_20.add_trace(go.Bar(
@@ -691,7 +713,17 @@ elif page == "Market Breadth":
                 y=df_spread_10_20['diff'],
                 marker_color=colors_10_20,
                 name='Spread (MA10 - MA20)'
-            ))
+            ), secondary_y=False)
+
+            # Plot ETF
+            if not df_etf.empty:
+                fig_spread_10_20.add_trace(go.Scatter(
+                    x=df_etf.index, y=df_etf['Close'],
+                    name=f"{benchmark_ticker}",
+                    line=dict(color='gray', width=1, dash='dot'),
+                    mode='lines', opacity=0.5
+                ), secondary_y=True)
+                fig_spread_10_20.update_yaxes(title_text=f"{benchmark_ticker} Price", secondary_y=True, showgrid=False)
             
             fig_spread_10_20.update_layout(
                 title="Spread: (% > MA10) - (% > MA20)",
@@ -702,6 +734,7 @@ elif page == "Market Breadth":
             )
             # Remove Gaps
             all_dates_10_20 = df_ma10.index.union(df_ma20.index)
+            if not df_etf.empty: all_dates_10_20 = all_dates_10_20.union(df_etf.index)
             dt_all_10_20 = pd.date_range(start=all_dates_10_20.min(), end=all_dates_10_20.max())
             dt_breaks_10_20 = dt_all_10_20.difference(all_dates_10_20)
             fig_spread_10_20.update_xaxes(rangebreaks=[dict(values=dt_breaks_10_20)])
@@ -713,7 +746,7 @@ elif page == "Market Breadth":
             df_spread_5_10 = df_ma5.join(df_ma10, lsuffix='_5', rsuffix='_10', how='inner')
             df_spread_5_10['diff'] = df_spread_5_10['Value_5'] - df_spread_5_10['Value_10']
             
-            fig_spread_5_10 = go.Figure()
+            fig_spread_5_10 = make_subplots(specs=[[{"secondary_y": True}]])
             colors_5_10 = ['green' if x >= 0 else 'red' for x in df_spread_5_10['diff']]
             
             fig_spread_5_10.add_trace(go.Bar(
@@ -721,7 +754,17 @@ elif page == "Market Breadth":
                 y=df_spread_5_10['diff'],
                 marker_color=colors_5_10,
                 name='Spread (MA5 - MA10)'
-            ))
+            ), secondary_y=False)
+
+            # Plot ETF
+            if not df_etf.empty:
+                fig_spread_5_10.add_trace(go.Scatter(
+                    x=df_etf.index, y=df_etf['Close'],
+                    name=f"{benchmark_ticker}",
+                    line=dict(color='gray', width=1, dash='dot'),
+                    mode='lines', opacity=0.5
+                ), secondary_y=True)
+                fig_spread_5_10.update_yaxes(title_text=f"{benchmark_ticker} Price", secondary_y=True, showgrid=False)
             
             fig_spread_5_10.update_layout(
                 title="Spread: (% > MA5) - (% > MA10)",
@@ -732,6 +775,7 @@ elif page == "Market Breadth":
             )
             # Remove Gaps - reuse dates
             all_dates_5_10 = df_ma5.index.union(df_ma10.index)
+            if not df_etf.empty: all_dates_5_10 = all_dates_5_10.union(df_etf.index)
             dt_all_5_10 = pd.date_range(start=all_dates_5_10.min(), end=all_dates_5_10.max())
             dt_breaks_5_10 = dt_all_5_10.difference(all_dates_5_10)
             fig_spread_5_10.update_xaxes(rangebreaks=[dict(values=dt_breaks_5_10)])
