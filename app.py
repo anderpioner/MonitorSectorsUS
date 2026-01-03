@@ -37,7 +37,7 @@ if "current_view" not in st.session_state:
     st.session_state.current_view = "Overview"
 
 opts_etf = ["Overview", "Performance Matrix", "Momentum Ranking", "Momentum Score charts"]
-opts_breadth = ["Sector Charts", "Market Breadth", "New Highs / Lows", "ATR Variation"]
+opts_breadth = ["Sector Charts", "Market Breadth", "New Highs / Lows", "ATR Strength"]
 opts_individual = ["Sector Stocks", "Stocks > 25% (84d)", "Análise de Setores"]
 opts_admin = ["Data Management"]
 
@@ -1124,8 +1124,8 @@ elif page == "Análise de Setores":
                         st.markdown("### Detalhes")
                         st.dataframe(df, use_container_width=True)
 
-elif page == "ATR Variation":
-    st.header("ATR Variation Panel")
+elif page == "ATR Strength":
+    st.header("ATR Strength Panel (Bullish)")
     st.markdown("---")
     
     # Date Selection
@@ -1145,7 +1145,7 @@ elif page == "ATR Variation":
         total_counts_sector = df_atr.groupby('Sector')['ticker'].count().reset_index(name='TotalCount')
         total_counts_industry = df_atr.groupby(['Sector', 'Industry'])['ticker'].count().reset_index(name='TotalCount')
         
-        # Filter: Stocks > 1 ATR
+        # Filter: Stocks > 1 ATR (Implicitly Positive based on new logic)
         df_qualified = df_atr[df_atr['is_above_atr']].copy()
         
         # --- Sector Aggregation ---
@@ -1173,15 +1173,15 @@ elif page == "ATR Variation":
         df_ind_agg['MeanStrength'] = df_ind_agg['MeanStrength'].fillna(0)
         
         # --- Visualization 1: Sector Treemap ---
-        st.subheader("Sector Volatility Map")
-        st.caption("Size = % Stocks > 1 ATR | Color = Mean Signal Strength (AbsChange / ATR)")
+        st.subheader("Sector Bullish Strength")
+        st.caption("Size = % Stocks > 1 ATR (Positive) | Color = Mean Strength (Gain / ATR)")
         
         fig_sec = px.treemap(
             df_sector_agg,
             path=['Sector'],
             values='PctQualified', # Size
             color='MeanStrength',  # Color
-            color_continuous_scale='Reds',
+            color_continuous_scale='RdYlGn',
             title='Sectors by Volatility Intensity',
             hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength']
         )
@@ -1202,7 +1202,7 @@ elif page == "ATR Variation":
             path=['Sector', 'Industry'],
             values='PctQualified',
             color='MeanStrength',
-            color_continuous_scale='Reds',
+            color_continuous_scale='RdYlGn',
             title='Industries by Volatility Intensity',
             hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength']
         )

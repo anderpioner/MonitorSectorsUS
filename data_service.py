@@ -1477,7 +1477,7 @@ def get_atr_variation_stats(target_date=None):
             ConstituentPrice.close,
             ConstituentPrice.atr14,
             ConstituentPrice.constituent_id
-        ).join(Constituent).join(Sector).filter(
+        ).select_from(ConstituentPrice).join(Constituent).join(Sector).filter(
             ConstituentPrice.date == target_date
         )
         
@@ -1508,9 +1508,10 @@ def get_atr_variation_stats(target_date=None):
         merged = merged.dropna(subset=['prev_close', 'atr14']) # Need both to calc
         
         # Calculate Metrics
-        merged['change_abs'] = (merged['close'] - merged['prev_close']).abs()
-        merged['is_above_atr'] = merged['change_abs'] > merged['atr14']
-        merged['signal_strength'] = merged['change_abs'] / merged['atr14'] # Ratio
+        # User request: Only count POSITIVE variation (Strength)
+        merged['change'] = (merged['close'] - merged['prev_close'])
+        merged['is_above_atr'] = merged['change'] > merged['atr14']
+        merged['signal_strength'] = merged['change'] / merged['atr14'] # Ratio
         
         return merged
         

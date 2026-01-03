@@ -1,5 +1,7 @@
 import pandas as pd
-import pandas_ta as ta
+import pandas as pd
+# import pandas_ta as ta # Not installed, using manual calc
+from database import get_db
 from database import get_db
 from models import Constituent, ConstituentPrice, Sector
 from sqlalchemy import func
