@@ -1510,7 +1510,8 @@ def get_atr_variation_stats(target_date=None):
         # Calculate Metrics
         # User request: Only count POSITIVE variation (Strength)
         merged['change'] = (merged['close'] - merged['prev_close'])
-        merged['is_above_atr'] = merged['change'] > merged['atr14']
+        # User defined criteria: Variation > 0.7 * ATR and Positive
+        merged['is_above_atr'] = merged['change'] > (0.7 * merged['atr14'])
         merged['signal_strength'] = merged['change'] / merged['atr14'] # Ratio
         
         return merged

@@ -674,6 +674,69 @@ elif page == "Market Breadth":
             fig_spread.update_xaxes(rangebreaks=[dict(values=dt_breaks_c)])
             
             st.plotly_chart(fig_spread, use_container_width=True)
+            
+        # --- Spread Chart (MA5 - MA10) ---
+        df_ma5 = ds.get_breadth_data(selected_sector_breadth, metric='pct_above_ma5', days=days_history)
+        df_ma10 = ds.get_breadth_data(selected_sector_breadth, metric='pct_above_ma10', days=days_history)
+
+        if (df_ma5 is not None and not df_ma5.empty) and (df_ma10 is not None and not df_ma10.empty):
+            df_spread_5_10 = df_ma5.join(df_ma10, lsuffix='_5', rsuffix='_10', how='inner')
+            df_spread_5_10['diff'] = df_spread_5_10['Value_5'] - df_spread_5_10['Value_10']
+            
+            fig_spread_5_10 = go.Figure()
+            colors_5_10 = ['green' if x >= 0 else 'red' for x in df_spread_5_10['diff']]
+            
+            fig_spread_5_10.add_trace(go.Bar(
+                x=df_spread_5_10.index, 
+                y=df_spread_5_10['diff'],
+                marker_color=colors_5_10,
+                name='Spread (MA5 - MA10)'
+            ))
+            
+            fig_spread_5_10.update_layout(
+                title="Spread: (% > MA5) - (% > MA10)",
+                height=250,
+                margin=dict(l=20, r=20, t=30, b=20),
+                yaxis=dict(title="Delta (%)"),
+                showlegend=False
+            )
+            # Remove Gaps - reuse dates
+            all_dates_5_10 = df_ma5.index.union(df_ma10.index)
+            dt_all_5_10 = pd.date_range(start=all_dates_5_10.min(), end=all_dates_5_10.max())
+            dt_breaks_5_10 = dt_all_5_10.difference(all_dates_5_10)
+            fig_spread_5_10.update_xaxes(rangebreaks=[dict(values=dt_breaks_5_10)])
+            
+            st.plotly_chart(fig_spread_5_10, use_container_width=True)
+
+        # --- Spread Chart (MA10 - MA20) ---
+        if (df_ma10 is not None and not df_ma10.empty) and (df_ma20 is not None and not df_ma20.empty):
+            df_spread_10_20 = df_ma10.join(df_ma20, lsuffix='_10', rsuffix='_20', how='inner')
+            df_spread_10_20['diff'] = df_spread_10_20['Value_10'] - df_spread_10_20['Value_20']
+            
+            fig_spread_10_20 = go.Figure()
+            colors_10_20 = ['green' if x >= 0 else 'red' for x in df_spread_10_20['diff']]
+            
+            fig_spread_10_20.add_trace(go.Bar(
+                x=df_spread_10_20.index, 
+                y=df_spread_10_20['diff'],
+                marker_color=colors_10_20,
+                name='Spread (MA10 - MA20)'
+            ))
+            
+            fig_spread_10_20.update_layout(
+                title="Spread: (% > MA10) - (% > MA20)",
+                height=250,
+                margin=dict(l=20, r=20, t=30, b=20),
+                yaxis=dict(title="Delta (%)"),
+                showlegend=False
+            )
+            # Remove Gaps
+            all_dates_10_20 = df_ma10.index.union(df_ma20.index)
+            dt_all_10_20 = pd.date_range(start=all_dates_10_20.min(), end=all_dates_10_20.max())
+            dt_breaks_10_20 = dt_all_10_20.difference(all_dates_10_20)
+            fig_spread_10_20.update_xaxes(rangebreaks=[dict(values=dt_breaks_10_20)])
+            
+            st.plotly_chart(fig_spread_10_20, use_container_width=True)
 
         st.divider()
 
@@ -1246,7 +1309,7 @@ elif page == "ATR Strength":
         
         # --- Visualization 1: Sector Treemap ---
         st.subheader("Sector Bullish Strength")
-        st.caption("Size = % Stocks > 1 ATR (Positive) | Color = Mean Strength (Gain / ATR)")
+        st.caption("Size = % Stocks > 0.7 ATR (Positive) | Color = Mean Strength (Gain / ATR)")
         
         fig_sec = px.treemap(
             df_sector_agg,
