@@ -1260,9 +1260,9 @@ elif page == "ATR Strength":
             ],
             title='Sectors by Volatility Intensity',
             hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength'],
-            custom_data=['QualifiedCount']
+            custom_data=['QualifiedCount', 'PctQualified']
         )
-        fig_sec.update_traces(texttemplate='%{label}<br>(%{customdata[0]})') # Add Count to Label
+        fig_sec.update_traces(texttemplate='%{label}<br>(%{customdata[0]}) %{customdata[1]:.1f}%') # Add Count and Pct to Label
 
         # Fix: If PctQualified is 0, Treemap might hide it.
         # But we want to show it. Treemap values must be positive.
@@ -1306,9 +1306,9 @@ elif page == "ATR Strength":
                 ],
                 title=f"{sector}",
                 hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength'],
-                custom_data=['QualifiedCount']
+                custom_data=['QualifiedCount', 'PctQualified']
             )
-            fig.update_traces(texttemplate='%{label}<br>(%{customdata[0]})') # Add Count to Label
+            fig.update_traces(texttemplate='%{label}<br>(%{customdata[0]}) %{customdata[1]:.1f}%') # Add Count and Pct to Label
             
             with cols[i % 2]:
                 st.plotly_chart(fig, use_container_width=True)
