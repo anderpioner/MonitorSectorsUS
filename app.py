@@ -1220,7 +1220,7 @@ elif page == "ATR Strength":
                 path=['Industry'],
                 values='PctQualified',
                 color='MeanStrength',
-                color_continuous_scale='RdYlGn',
+                color_continuous_scale=['#0000FF', '#008000'], # Blue to Green
                 title=f"{sector}",
                 hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength']
             )
