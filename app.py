@@ -37,7 +37,7 @@ if "current_view" not in st.session_state:
     st.session_state.current_view = "Overview"
 
 opts_etf = ["Overview", "Performance Matrix", "Momentum Ranking", "Momentum Score charts"]
-opts_breadth = ["Sector Charts", "Market Breadth", "New Highs / Lows"]
+opts_breadth = ["Sector Charts", "Market Breadth", "New Highs / Lows", "ATR Variation"]
 opts_individual = ["Sector Stocks", "Stocks > 25% (84d)", "Análise de Setores"]
 opts_admin = ["Data Management"]
 
