@@ -604,7 +604,50 @@ elif page == "Market Breadth":
 
     # Fetch ETF Data based on selection
     df_etf = ds.get_etf_price_history(selected_sector_breadth, days=days_history, weight_type=selected_benchmark_type)
+
+    # --- New Chart: % > MA20 vs % > MA50 ---
+    st.subheader("Medium vs Long Term Trend")
+    st.caption("Comparison of % Stocks > MA20 and % Stocks > MA50")
     
+    df_ma20 = ds.get_breadth_data(selected_sector_breadth, metric='pct_above_ma20', days=days_history)
+    df_ma50 = ds.get_breadth_data(selected_sector_breadth, metric='pct_above_ma50', days=days_history)
+    
+    if (df_ma20 is not None and not df_ma20.empty) and (df_ma50 is not None and not df_ma50.empty):
+        fig_combined = go.Figure()
+        
+        # MA20
+        fig_combined.add_trace(go.Scatter(
+            x=df_ma20.index, y=df_ma20['Value'],
+            mode='lines', name='% > MA20',
+            line=dict(color='#ffc658', width=2) # Yellow/Orange
+        ))
+        
+        # MA50
+        fig_combined.add_trace(go.Scatter(
+            x=df_ma50.index, y=df_ma50['Value'],
+            mode='lines', name='% > MA50',
+            line=dict(color='#ff7300', width=2) # Orange/Red
+        ))
+        
+        fig_combined.update_layout(
+            title="Breadth Momentum: MA20 vs MA50",
+            height=350,
+            margin=dict(l=20, r=20, t=40, b=20),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            yaxis=dict(range=[0, 100], title="Percentage (%)")
+        )
+         # Remove Gaps
+        all_dates_c = df_ma20.index.union(df_ma50.index)
+        dt_all_c = pd.date_range(start=all_dates_c.min(), end=all_dates_c.max())
+        dt_breaks_c = dt_all_c.difference(all_dates_c)
+        fig_combined.update_xaxes(rangebreaks=[dict(values=dt_breaks_c)])
+        
+        # 50% Line
+        fig_combined.add_hline(y=50, line_dash="dash", line_color="gray")
+        
+        st.plotly_chart(fig_combined, use_container_width=True)
+        st.divider()
+
     # Loop through metrics and create charts
     for m in metrics_config:
         metric_key = m['col']
