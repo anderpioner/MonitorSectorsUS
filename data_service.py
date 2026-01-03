@@ -473,58 +473,99 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                         # Determine start date for yfinance
                         print(f"    - Starting download for {batch[0]}...{batch[-1]}")
                         
+
                         try:
                             if start_date:
                                 fetch_start = pd.to_datetime(start_date) - pd.Timedelta(days=365) # Safe buffer
-                                data = yf.download(batch, start=fetch_start, auto_adjust=True, progress=False, timeout=30)['Close']
+                                raw_data = yf.download(batch, start=fetch_start, auto_adjust=True, progress=False, timeout=30)
                             else:
-                                data = yf.download(batch, period="10y", auto_adjust=True, progress=False, timeout=30)['Close']
+                                raw_data = yf.download(batch, period="10y", auto_adjust=True, progress=False, timeout=30)
                         except Exception as e_down:
                              print(f"    ! Download failed for batch: {e_down}")
                              continue
                              
                         print("    - Download finished.")
 
-                        if data.empty:
+                        if raw_data.empty:
                             print(f"    ! Batch returned empty data.")
                             continue
                         
-                        print(f"    - Downloaded {len(data)} rows of data.")
-                        if isinstance(data, pd.Series):
-                            data = data.to_frame()
-                            
-                        # Process each ticker
-                        for ticker in data.columns:
+                        # Normalize Data Access
+                        # Loop through the batch tickers and extract data for each
+                        for ticker in batch:
                             if ticker not in constituents: continue
                             
-                            series = data[ticker].dropna()
-                            if series.empty: continue
+                            # Extract data for specific ticker
+                            try:
+                                if len(batch) > 1:
+                                    # MultiIndex: (Price, Ticker)
+                                    # Need to handle cases where some tickers fail
+                                    if ticker not in raw_data['Close'].columns:
+                                        continue
+                                    t_close = raw_data['Close'][ticker]
+                                    t_high = raw_data['High'][ticker]
+                                    t_low = raw_data['Low'][ticker]
+                                else:
+                                    # Single Index: (Price)
+                                    t_close = raw_data['Close']
+                                    t_high = raw_data['High']
+                                    t_low = raw_data['Low']
+                            except KeyError:
+                                continue
+
+                            # Combine into DataFrame and Drop NaNs
+                            df_t = pd.DataFrame({
+                                'close': t_close, 
+                                'high': t_high, 
+                                'low': t_low
+                            }).dropna()
                             
-                            # Calculate MAs
+                            if df_t.empty: continue
+                            
+                            series = df_t['close']
+                            highs = df_t['high']
+                            lows = df_t['low']
+
+                            # --- Calculate Indicators ---
+                            
+                            # SMAs
                             ma5 = series.rolling(window=5).mean()
                             ma10 = series.rolling(window=10).mean()
                             ma20 = series.rolling(window=20).mean()
                             ma50 = series.rolling(window=50).mean()
                             ma200 = series.rolling(window=200).mean()
                             
+                            # EMAs
+                            ema8 = series.ewm(span=8, adjust=False).mean()
+                            ema20 = series.ewm(span=20, adjust=False).mean()
+                            ema50 = series.ewm(span=50, adjust=False).mean()
+                            
+                            # ATR (14)
+                            # TR = Max(H-L, Abs(H-Cp), Abs(L-Cp))
+                            prev_close = series.shift(1)
+                            tr1 = highs - lows
+                            tr2 = (highs - prev_close).abs()
+                            tr3 = (lows - prev_close).abs()
+                            tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+                            # Wilder's Smoothing: alpha=1/14
+                            atr14 = tr.ewm(alpha=1/14, adjust=False).mean()
+                            
                             # Prepare data for insertion
                             c_id = constituents[ticker]
                             
                             processed_df = pd.DataFrame({
                                 'close': series,
-                                'ma5': ma5,
-                                'ma10': ma10,
-                                'ma20': ma20,
-                                'ma50': ma50,
-                                'ma200': ma200
+                                'high': highs,
+                                'low': lows,
+                                'ma5': ma5, 'ma10': ma10, 'ma20': ma20, 'ma50': ma50, 'ma200': ma200,
+                                'ema8': ema8, 'ema20': ema20, 'ema50': ema50,
+                                'atr14': atr14
                             })
                             
-                            # If gap filling, we only want to store the NEW dates, 
-                            # BUT we needed the history to calculate the MAs.
+                            # Filter by date if needed
                             if start_date:
                                 processed_df = processed_df[processed_df.index.date > pd.to_datetime(start_date).date()]
                             else:
-                                # If full update, store last 10 years (approx 2520 trading days)
                                 processed_df = processed_df.tail(2520)
                             
                             if processed_df.empty:
@@ -536,16 +577,25 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                                 
                                 def get_flag(close, ma):
                                     return 1 if pd.notna(ma) and close > ma else (0 if pd.notna(ma) else None)
-                                    
+                                
+                                # Helper to clean NaN
+                                def val(v): return float(v) if pd.notna(v) else None
+                                
                                 records_to_upsert.append({
                                     'constituent_id': c_id,
                                     'date': date_val,
                                     'close': float(row['close']),
-                                    'ma5': float(row['ma5']) if pd.notna(row['ma5']) else None,
-                                    'ma10': float(row['ma10']) if pd.notna(row['ma10']) else None,
-                                    'ma20': float(row['ma20']) if pd.notna(row['ma20']) else None,
-                                    'ma50': float(row['ma50']) if pd.notna(row['ma50']) else None,
-                                    'ma200': float(row['ma200']) if pd.notna(row['ma200']) else None,
+                                    'high': val(row['high']),
+                                    'low': val(row['low']),
+                                    'ma5': val(row['ma5']),
+                                    'ma10': val(row['ma10']),
+                                    'ma20': val(row['ma20']),
+                                    'ma50': val(row['ma50']),
+                                    'ma200': val(row['ma200']),
+                                    'ema8': val(row['ema8']),
+                                    'ema20': val(row['ema20']),
+                                    'ema50': val(row['ema50']),
+                                    'atr14': val(row['atr14']),
                                     'above_ma5': get_flag(row['close'], row['ma5']),
                                     'above_ma10': get_flag(row['close'], row['ma10']),
                                     'above_ma20': get_flag(row['close'], row['ma20']),
@@ -554,25 +604,27 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                                 })
 
                             if records_to_upsert:
-                                # Batch the SQL upsert to avoid SQLite variable limit
                                 upsert_batch_size = 500
                                 total_recs = len(records_to_upsert)
                                 
                                 for k in range(0, total_recs, upsert_batch_size):
-                                    batch = records_to_upsert[k : k + upsert_batch_size]
-                                    
-                                    # Bulk Upsert using SQLite-specific "INSERT OR REPLACE" logic via SQLAlchemy insert
-                                    stmt = insert(ConstituentPrice).values(batch)
-                                    # Map conflict to update
+                                    batch_recs = records_to_upsert[k : k + upsert_batch_size]
+                                    stmt = insert(ConstituentPrice).values(batch_recs)
                                     stmt = stmt.on_conflict_do_update(
                                         index_elements=['constituent_id', 'date'],
                                         set_={
                                             'close': stmt.excluded.close,
+                                            'high': stmt.excluded.high,
+                                            'low': stmt.excluded.low,
                                             'ma5': stmt.excluded.ma5,
                                             'ma10': stmt.excluded.ma10,
                                             'ma20': stmt.excluded.ma20,
                                             'ma50': stmt.excluded.ma50,
                                             'ma200': stmt.excluded.ma200,
+                                            'ema8': stmt.excluded.ema8,
+                                            'ema20': stmt.excluded.ema20,
+                                            'ema50': stmt.excluded.ema50,
+                                            'atr14': stmt.excluded.atr14,
                                             'above_ma5': stmt.excluded.above_ma5,
                                             'above_ma10': stmt.excluded.above_ma10,
                                             'above_ma20': stmt.excluded.above_ma20,
@@ -1385,6 +1437,83 @@ def get_sector_counts() -> dict:
             .all()
             
         return {r[0]: r[1] for r in results}
+    finally:
+        db.close()
+
+def get_atr_variation_stats(target_date=None):
+    """
+    Aggregates ATR variation stats for Sectors and Industries.
+    Criteria: Abs(Close - PrevClose) > ATR14
+    
+    Returns: DataFrame with columns [Sector, Industry, Ticker, Close, PctChange, ATR14, DeltaATR, AboveATR]
+    """
+    db = next(get_db())
+    try:
+        if not target_date:
+            target_date = db.query(func.max(ConstituentPrice.date)).scalar()
+        
+        if not target_date:
+            return pd.DataFrame()
+
+        # Fetch data for target_date and prev_date (for pct_change and prev_close)
+        # Actually, we can fetch just T and assume we can calc change from close/prev or if valid.
+        # But easier to fetch today's data w/ ATR.
+        
+        # We need: Ticker, Sector, Industry, Close (Today), ATR14 (Today), PrevClose (to calc Delta)
+        # PrevClose might not be in the same row.
+        # Alternatively, if we just want "Change", we can use (Open vs Close)? No, request is "Variation", usually Close-Close.
+        
+        # Optimized query: Fetch T and T-1 for all constituents.
+        # To simplify: Let's fetch the last 2 records for every constituent that has data on target_date.
+        
+        # Step 1: Get all constituents with data on target_date
+        # (Using a subquery or join might be heavy on SQLite if naive. Let's do a join.)
+        
+        # Query: Get PriceData for Target Date
+        query = db.query(
+            Constituent.ticker, 
+            Sector.name.label('Sector'), 
+            Constituent.industry.label('Industry'),
+            ConstituentPrice.close,
+            ConstituentPrice.atr14,
+            ConstituentPrice.constituent_id
+        ).join(Constituent).join(Sector).filter(
+            ConstituentPrice.date == target_date
+        )
+        
+        df_today = pd.read_sql(query.statement, db.bind)
+        
+        if df_today.empty:
+            return pd.DataFrame()
+        
+        # Step 2: Get PriceData for Previous Date available for these constituents
+        # It's expensive to do "Previous Date" per ticker in SQL.
+        # Global previous date is easier.
+        prev_global_date = db.query(func.max(ConstituentPrice.date)).filter(ConstituentPrice.date < target_date).scalar()
+        
+        if not prev_global_date:
+            return pd.DataFrame()
+            
+        query_prev = db.query(
+            ConstituentPrice.constituent_id,
+            ConstituentPrice.close.label('prev_close')
+        ).filter(
+            ConstituentPrice.date == prev_global_date
+        )
+        
+        df_prev = pd.read_sql(query_prev.statement, db.bind)
+        
+        # Merge
+        merged = pd.merge(df_today, df_prev, on='constituent_id', how='left')
+        merged = merged.dropna(subset=['prev_close', 'atr14']) # Need both to calc
+        
+        # Calculate Metrics
+        merged['change_abs'] = (merged['close'] - merged['prev_close']).abs()
+        merged['is_above_atr'] = merged['change_abs'] > merged['atr14']
+        merged['signal_strength'] = merged['change_abs'] / merged['atr14'] # Ratio
+        
+        return merged
+        
     finally:
         db.close()
 

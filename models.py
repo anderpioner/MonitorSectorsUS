@@ -50,6 +50,8 @@ class ConstituentPrice(Base):
     constituent_id = Column(Integer, ForeignKey("constituents.id"), nullable=False, index=True)
     date = Column(Date, nullable=False, index=True)
     close = Column(Float, nullable=False)
+    high = Column(Float, nullable=True)
+    low = Column(Float, nullable=True)
     
     # Moving Averages
     ma5 = Column(Float, nullable=True)
@@ -57,6 +59,14 @@ class ConstituentPrice(Base):
     ma20 = Column(Float, nullable=True)
     ma50 = Column(Float, nullable=True)
     ma200 = Column(Float, nullable=True)
+
+    # Exponential Moving Averages
+    ema8 = Column(Float, nullable=True)
+    ema20 = Column(Float, nullable=True)
+    ema50 = Column(Float, nullable=True)
+
+    # Volatility
+    atr14 = Column(Float, nullable=True)
     
     # Flags (Is Close > MA?)
     above_ma5 = Column(Integer, nullable=True)

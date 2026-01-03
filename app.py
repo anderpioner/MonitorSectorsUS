@@ -1124,6 +1124,91 @@ elif page == "Análise de Setores":
                         st.markdown("### Detalhes")
                         st.dataframe(df, use_container_width=True)
 
+elif page == "ATR Variation":
+    st.header("ATR Variation Panel")
+    st.markdown("---")
+    
+    # Date Selection
+    latest_date = ds.get_latest_data_date()
+    # Ideally allow date selection, but sticking to latest for now
+    st.info(f"Showing data for: **{latest_date}**")
+    
+    # Fetch Data
+    with st.spinner("Calculating ATR Stats..."):
+        df_atr = ds.get_atr_variation_stats(target_date=latest_date)
+        
+    if df_atr.empty:
+        st.warning("No data found for the selected date.")
+    else:
+        # Filter for logic
+        # Count total stocks per sector
+        total_counts_sector = df_atr.groupby('Sector')['ticker'].count().reset_index(name='TotalCount')
+        total_counts_industry = df_atr.groupby(['Sector', 'Industry'])['ticker'].count().reset_index(name='TotalCount')
+        
+        # Filter: Stocks > 1 ATR
+        df_qualified = df_atr[df_atr['is_above_atr']].copy()
+        
+        # --- Sector Aggregation ---
+        # Count qualified
+        qual_counts_sector = df_qualified.groupby('Sector')['ticker'].count().reset_index(name='QualifiedCount')
+        # Mean Signal Strength
+        qual_strength_sector = df_qualified.groupby('Sector')['signal_strength'].mean().reset_index(name='MeanStrength')
+        
+        # Merge Sector
+        df_sector_agg = pd.merge(total_counts_sector, qual_counts_sector, on='Sector', how='left').fillna(0)
+        df_sector_agg = pd.merge(df_sector_agg, qual_strength_sector, on='Sector', how='left') # MeanStrength can be NaN if 0 qualified
+        
+        df_sector_agg['PctQualified'] = (df_sector_agg['QualifiedCount'] / df_sector_agg['TotalCount']) * 100
+        # Fill NaN Strength with 0 or Neutral? Let's say 0 but handle color scale
+        df_sector_agg['MeanStrength'] = df_sector_agg['MeanStrength'].fillna(0)
+        
+        # --- Industry Aggregation ---
+        qual_counts_ind = df_qualified.groupby(['Sector', 'Industry'])['ticker'].count().reset_index(name='QualifiedCount')
+        qual_strength_ind = df_qualified.groupby(['Sector', 'Industry'])['signal_strength'].mean().reset_index(name='MeanStrength')
+        
+        df_ind_agg = pd.merge(total_counts_industry, qual_counts_ind, on=['Sector', 'Industry'], how='left').fillna(0)
+        df_ind_agg = pd.merge(df_ind_agg, qual_strength_ind, on=['Sector', 'Industry'], how='left')
+        
+        df_ind_agg['PctQualified'] = (df_ind_agg['QualifiedCount'] / df_ind_agg['TotalCount']) * 100
+        df_ind_agg['MeanStrength'] = df_ind_agg['MeanStrength'].fillna(0)
+        
+        # --- Visualization 1: Sector Treemap ---
+        st.subheader("Sector Volatility Map")
+        st.caption("Size = % Stocks > 1 ATR | Color = Mean Signal Strength (AbsChange / ATR)")
+        
+        fig_sec = px.treemap(
+            df_sector_agg,
+            path=['Sector'],
+            values='PctQualified', # Size
+            color='MeanStrength',  # Color
+            color_continuous_scale='Reds',
+            title='Sectors by Volatility Intensity',
+            hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength']
+        )
+        # Fix: If PctQualified is 0, Treemap might hide it.
+        # But we want to show it. Treemap values must be positive.
+        # If 0, maybe set small epsilon? Or user accepts they disappear?
+        # User requested "Size proportional to percentage". If 0%, size 0, disappears. Correct.
+        
+        st.plotly_chart(fig_sec, use_container_width=True)
+        
+        st.divider()
+        
+        # --- Visualization 2: Industry Treemap ---
+        st.subheader("Industry Volatility Detail")
+        
+        fig_ind = px.treemap(
+            df_ind_agg,
+            path=['Sector', 'Industry'],
+            values='PctQualified',
+            color='MeanStrength',
+            color_continuous_scale='Reds',
+            title='Industries by Volatility Intensity',
+            hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength']
+        )
+        
+        st.plotly_chart(fig_ind, use_container_width=True)
+
 elif page == "Data Management":
     st.header("Data Management & Updates")
     st.markdown("---")
