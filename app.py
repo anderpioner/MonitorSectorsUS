@@ -1181,7 +1181,7 @@ elif page == "ATR Strength":
             path=['Sector'],
             values='PctQualified', # Size
             color='MeanStrength',  # Color
-            color_continuous_scale='RdYlGn',
+            color_continuous_scale=['#0000FF', '#008000'], # Blue to Green
             title='Sectors by Volatility Intensity',
             hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength']
         )
