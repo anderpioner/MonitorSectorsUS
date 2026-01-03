@@ -12,78 +12,7 @@ st.title("US Market Sector Monitor")
 
 
 
-# Update Section
-st.sidebar.markdown("---")
-st.sidebar.subheader("Data Update")
-
-# Show last update date
-try:
-    latest_date = ds.get_latest_data_date()
-    st.sidebar.text(f"Last Data: {latest_date}")
-except:
-    st.sidebar.text("Last Data: Unknown")
-
-# Progress Bar Container
-progress_bar = st.sidebar.progress(0)
-status_text = st.sidebar.empty()
-
-def update_progress(msg, val):
-    status_text.text(msg)
-    progress_bar.progress(val)
-
-# Sector Selection for Update
-sector_options = list(ds.get_sector_tickers('cap').keys())
-selected_sectors_update = st.sidebar.multiselect(
-    "Select Sectors to Update:", 
-    options=sector_options, 
-    default=sector_options
-)
-
-if st.sidebar.button("⚡ Atualização Rápida (Gap)"):
-    with st.spinner("Atualizando dados recentes..."):
-        try:
-            latest = ds.get_latest_data_date()
-            if latest:
-                # Update ETFs first (short period to cover gaps)
-                ds.update_sector_data(period="1mo")
-                # Update Constituents with a 7-day buffer to catch any lagging sectors
-                safe_start = latest - pd.Timedelta(days=7)
-                
-                if not selected_sectors_update:
-                    st.sidebar.warning("Please select at least one sector.")
-                else:
-                    ds.update_constituents_data(
-                        sector_name=selected_sectors_update, 
-                        start_date=safe_start, 
-                        progress_callback=update_progress
-                    )
-                    st.sidebar.success("Atualização concluída!")
-                    st.cache_data.clear()
-            else:
-                st.sidebar.warning("Base vazia. Rode 'Reset Completo' primeiro.")
-        except Exception as e:
-            st.sidebar.error(f"Erro: {e}")
-
-if st.sidebar.button("🔄 Reset Completo (Lento)"):
-    with st.spinner("Recarregando TODO histórico (Demora muito)..."):
-        try:
-            if not selected_sectors_update:
-                st.sidebar.warning("Please select at least one sector.")
-            else:
-                # Update ETFs
-                update_progress("Updating ETFs...", 0.05)
-                ds.update_sector_data(period="10y") 
-                
-                # Update Constituents
-                ds.update_constituents_data(
-                    sector_name=selected_sectors_update, 
-                    progress_callback=update_progress
-                )
-                
-                st.sidebar.success("Database updated successfully!")
-                st.cache_data.clear() 
-        except Exception as e:
-            st.sidebar.error(f"Update failed: {e}")
+# Update Section moved to 'Data Management' page under Administrator.
 
 # Data Loading
 @st.cache_data
@@ -108,28 +37,48 @@ if "current_view" not in st.session_state:
     st.session_state.current_view = "Overview"
 
 opts_etf = ["Overview", "Performance Matrix", "Momentum Ranking", "Momentum Score charts"]
-opts_stock = ["Sector Charts", "Market Breadth", "New Highs / Lows", "Sector Stocks", "Stocks > 25% (84d)"]
+opts_breadth = ["Sector Charts", "Market Breadth", "New Highs / Lows"]
+opts_individual = ["Sector Stocks", "Stocks > 25% (84d)", "Análise de Setores"]
+opts_admin = ["Data Management"]
 
 # Determine indices based on current state
 idx_etf = opts_etf.index(st.session_state.current_view) if st.session_state.current_view in opts_etf else None
-idx_stock = opts_stock.index(st.session_state.current_view) if st.session_state.current_view in opts_stock else None
+idx_breadth = opts_breadth.index(st.session_state.current_view) if st.session_state.current_view in opts_breadth else None
+idx_individual = opts_individual.index(st.session_state.current_view) if st.session_state.current_view in opts_individual else None
+idx_admin = opts_admin.index(st.session_state.current_view) if st.session_state.current_view in opts_admin else None
 
-st.sidebar.subheader("ETF Analysis")
-sel_etf = st.sidebar.radio("ETF Analysis", opts_etf, index=idx_etf, key="radio_etf", label_visibility="collapsed")
+st.sidebar.subheader("Sector's ETF's")
+sel_etf = st.sidebar.radio("Sector's ETF's", opts_etf, index=idx_etf, key="radio_etf", label_visibility="collapsed")
 
 st.sidebar.markdown("---")
-st.sidebar.subheader("Stock Analysis")
-sel_stock = st.sidebar.radio("Stock Analysis", opts_stock, index=idx_stock, key="radio_stock", label_visibility="collapsed")
+st.sidebar.subheader("Market Breadth")
+sel_breadth = st.sidebar.radio("Market Breadth", opts_breadth, index=idx_breadth, key="radio_breadth", label_visibility="collapsed")
+
+st.sidebar.markdown("---")
+st.sidebar.subheader("Individual Stocks")
+sel_individual = st.sidebar.radio("Individual Stocks", opts_individual, index=idx_individual, key="radio_individual", label_visibility="collapsed")
+
+st.sidebar.markdown("---")
+st.sidebar.subheader("Administrator")
+sel_admin = st.sidebar.radio("Administrator", opts_admin, index=idx_admin, key="radio_admin", label_visibility="collapsed")
 
 # Logic to update state
 new_view = st.session_state.current_view
-# Check if ETF radio triggered a change (and is a valid selection)
+# Check if ETF radio triggered a change
 if sel_etf and sel_etf != st.session_state.current_view and sel_etf in opts_etf:
     new_view = sel_etf
 
-# Check if Stock radio triggered a change
-if sel_stock and sel_stock != st.session_state.current_view and sel_stock in opts_stock:
-    new_view = sel_stock
+# Check if Breadth radio triggered a change
+if sel_breadth and sel_breadth != st.session_state.current_view and sel_breadth in opts_breadth:
+    new_view = sel_breadth
+
+# Check if Individual radio triggered a change
+if sel_individual and sel_individual != st.session_state.current_view and sel_individual in opts_individual:
+    new_view = sel_individual
+
+# Check if Admin radio triggered a change
+if sel_admin and sel_admin != st.session_state.current_view and sel_admin in opts_admin:
+    new_view = sel_admin
 
 if new_view != st.session_state.current_view:
     st.session_state.current_view = new_view
@@ -1076,3 +1025,193 @@ elif page == "Stocks > 25% (84d)":
                     st.info(f"No data available for {s_name} ({label})")
             
             st.divider()
+
+elif page == "Análise de Setores":
+    st.header("Análise de Setores")
+    st.write("Identifique a distribuição setorial da sua lista de ações.")
+
+    # Input Area
+    raw_input = st.text_area("Insira os Tickers (separados por vírgula, espaço ou nova linha):", height=150, placeholder="AAPL, MSFT\nGOOG XLE")
+    
+    if st.button("Analisar Carteira"):
+        if not raw_input.strip():
+            st.warning("Por favor, insira pelo menos um ticker.")
+        else:
+            # Parse using Regex to handle multiple separators
+            import re
+            # Split by comma, newline, or whitespace
+            tickers = re.split(r'[,\s\n]+', raw_input)
+            # Clean and filter empty strings
+            tickers = [t.strip().upper() for t in tickers if t.strip()]
+            
+            if not tickers:
+                st.warning("Nenhum ticker válido encontrado.")
+            else:
+                with st.spinner("Analisando setores..."):
+                    # Backend Calls
+                    sector_map = ds.get_sectors_for_tickers(tickers)
+                    sector_totals = ds.get_sector_counts()
+                    
+
+                    # Identify unknowns initially
+                    unknowns = [t for t in tickers if t not in sector_map]
+                    
+                    if unknowns:
+                        st.info(f"Buscando {len(unknowns)} tickers desconhecidos no Yahoo Finance...")
+                        yahoo_map = ds.fetch_sector_from_yahoo(unknowns)
+                        
+                        # Merge results
+                        if yahoo_map:
+                            sector_map.update(yahoo_map)
+                            st.success(f"Encontrados {len(yahoo_map)} setores via Yahoo Finance.")
+                        
+                        # Re-evaluate unknowns
+                        unknowns = [t for t in tickers if t not in sector_map]
+
+                    # 1. Process User Data
+                    user_counts = {}
+                    for t in tickers:
+                        if t in sector_map:
+                            s = sector_map[t]
+                            user_counts[s] = user_counts.get(s, 0) + 1
+                            
+                    if unknowns:
+                        st.warning(f"Tickers não encontrados na base ou Yahoo: {', '.join(unknowns)}")
+                    
+                    if not user_counts:
+                         st.error("Nenhum setor identificado para os tickers fornecidos.")
+                    else:
+                        # 2. Calculate Ratios
+                        data = []
+                        for sector, u_count in user_counts.items():
+                            app_count = sector_totals.get(sector, 0)
+                            
+                            ratio = 0
+                            if app_count > 0:
+                                ratio = u_count / app_count
+                                
+                            data.append({
+                                'Setor': sector,
+                                'Seu Contagem': u_count,
+                                'Total no App': app_count,
+                                'Razão': ratio,
+                                'Razão (%)': ratio * 100
+                            })
+                            
+                        # Create DF
+                        df = pd.DataFrame(data)
+                        df = df.sort_values('Razão', ascending=False)
+                        
+                        st.divider()
+                        st.subheader("Representatividade Setorial")
+                        
+                        # Chart
+                        fig = px.bar(
+                            df, 
+                            x='Setor', 
+                            y='Razão (%)',
+                            text='Razão (%)',
+                            title="Densidade da Carteira por Setor (Sua Qtde / Total Monitorado)",
+                            labels={'Razão (%)': 'Razão (%)'},
+                            color='Razão (%)',
+                            color_continuous_scale='Viridis'
+                        )
+                        fig.update_traces(texttemplate='%{text:.2f}%', textposition='outside')
+                        fig.update_layout(height=500)
+                        st.plotly_chart(fig, use_container_width=True)
+                        
+                        # Dataframe
+                        st.markdown("### Detalhes")
+                        st.dataframe(df, use_container_width=True)
+
+elif page == "Data Management":
+    st.header("Data Management & Updates")
+    st.markdown("---")
+    
+    col_info, col_status = st.columns(2)
+    
+    with col_info:
+        st.subheader("System Status")
+        # Show last update date
+        try:
+            latest_date = ds.get_latest_data_date()
+            st.info(f"**Last Data Available:** {latest_date}")
+        except:
+            st.warning("Last Data: Unknown")
+            
+    # Progress Bar Container in main area
+    st.subheader("Update Progress")
+    progress_bar = st.progress(0)
+    status_text = st.empty()
+
+    def update_progress(msg, val):
+        status_text.text(msg)
+        progress_bar.progress(val)
+
+    st.divider()
+
+    # Sector Selection
+    st.subheader("Update Configuration")
+    sector_options = list(ds.get_sector_tickers('cap').keys())
+    
+    # Use session state to persist selection if needed, but standard key works
+    selected_sectors_update = st.multiselect(
+        "Select Sectors to Update:", 
+        options=sector_options, 
+        default=sector_options,
+        key="admin_sector_select"
+    )
+
+    st.markdown("### Actions")
+    
+    tab1, tab2 = st.tabs(["⚡ Quick Update", "🔄 Full Reset"])
+    
+    with tab1:
+        st.markdown("**Quick Check (Gap Fill):** Updates ETFs (1mo) and Constituents (last 7 days). Use this for daily updates.")
+        if st.button("🚀 Start Quick Update", type="primary"):
+            with st.spinner("Updating recent data..."):
+                try:
+                    latest = ds.get_latest_data_date()
+                    if latest:
+                        # Update ETFs first
+                        ds.update_sector_data(period="1mo")
+                        # Update Constituents
+                        safe_start = latest - pd.Timedelta(days=7)
+                        
+                        if not selected_sectors_update:
+                            st.warning("Please select at least one sector.")
+                        else:
+                            ds.update_constituents_data(
+                                sector_name=selected_sectors_update, 
+                                start_date=safe_start, 
+                                progress_callback=update_progress
+                            )
+                            st.success("Quick update completed successfully!")
+                            st.cache_data.clear()
+                    else:
+                        st.warning("Database seems empty. Please run 'Full Reset' first.")
+                except Exception as e:
+                    st.error(f"Error during update: {e}")
+
+    with tab2:
+        st.markdown("**Full Reset (Slow):** Re-downloads 10 years of data for ETFs and full history for chosen sectors. **This can take a long time.**")
+        if st.button("⚠️ Start Full Reset", type="secondary"):
+            with st.spinner("Reloading ALL history (Get some coffee)..."):
+                try:
+                    if not selected_sectors_update:
+                        st.warning("Please select at least one sector.")
+                    else:
+                        # Update ETFs
+                        update_progress("Updating ETFs...", 0.05)
+                        ds.update_sector_data(period="10y") 
+                        
+                        # Update Constituents
+                        ds.update_constituents_data(
+                            sector_name=selected_sectors_update, 
+                            progress_callback=update_progress
+                        )
+                        
+                        st.success("Database fully reset and updated!")
+                        st.cache_data.clear() 
+                except Exception as e:
+                    st.error(f"Full reset failed: {e}")

@@ -4,17 +4,17 @@ import data_service as ds
 
 # Mapping of CSV filenames to Sector Names in DB
 file_mapping = {
-    "BasicMaterials o200k.csv": "Materials",
-    "ComunicationService o200k.csv": "Communication Services",
-    "ConsumerCyclical o200k.csv": "Consumer Discretionary",
-    "ConsumerDefensive o200k.csv": "Consumer Staples",
-    "Energy o 200k.csv": "Energy",
-    "Financial o200k.csv": "Financials",
-    "Helthcare o200k.csv": "Health Care",
-    "Industrials o200k.csv": "Industrials",
-    "Realstate o200k.csv": "Real Estate",
-    "Technology o200k.csv": "Technology",
-    "Utilities o200k.csv": "Utilities"
+    "BasicMaterials o200k.csv": "Basic Materials Sector",
+    "ComunicationService o200k.csv": "Communication Services Sector",
+    "ConsumerCyclical o200k.csv": "Consumer Cyclical Sector",
+    "ConsumerDefensive o200k.csv": "Consumer Defensive Sector",
+    "Energy o 200k.csv": "Energy Sector",
+    "Financial o200k.csv": "Financial Services Sector",
+    "Helthcare o200k.csv": "Healthcare Sector",
+    "Industrials o200k.csv": "Industrials Sector",
+    "Realstate o200k.csv": "Real Estate Sector",
+    "Technology o200k.csv": "Technology Sector",
+    "Utilities o200k.csv": "Utilities Sector"
 }
 
 def run_import():

@@ -40,6 +40,8 @@ class Constituent(Base):
     
     sector = relationship("Sector", back_populates="constituents")
     prices = relationship("ConstituentPrice", back_populates="constituent", cascade="all, delete-orphan")
+    
+    industry = Column(String, nullable=True, index=True)
 
 class ConstituentPrice(Base):
     __tablename__ = "constituent_prices"

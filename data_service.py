@@ -10,17 +10,17 @@ import time
 # List of US Sector ETFs (SPDR and Invesco Equal Weight)
 # Format: { 'Sector Name': {'cap': 'TickerCW', 'equal': 'TickerEW'} }
 SECTORS_CONFIG = {
-    'Communication Services': {'cap': 'XLC', 'equal': 'RSPC'},
-    'Consumer Discretionary': {'cap': 'XLY', 'equal': 'RSPD'},
-    'Consumer Staples': {'cap': 'XLP', 'equal': 'RSPS'},
-    'Energy': {'cap': 'XLE', 'equal': 'RSPG'},
-    'Financials': {'cap': 'XLF', 'equal': 'RSPF'},
-    'Health Care': {'cap': 'XLV', 'equal': 'RSPH'},
-    'Industrials': {'cap': 'XLI', 'equal': 'RSPN'},
-    'Materials': {'cap': 'XLB', 'equal': 'RSPM'},
-    'Real Estate': {'cap': 'XLRE', 'equal': 'RSPR'},
-    'Technology': {'cap': 'XLK', 'equal': 'RSPT'},
-    'Utilities': {'cap': 'XLU', 'equal': 'RSPU'}
+    'Communication Services Sector': {'cap': 'XLC', 'equal': 'RSPC'},
+    'Consumer Cyclical Sector': {'cap': 'XLY', 'equal': 'RSPD'},
+    'Consumer Defensive Sector': {'cap': 'XLP', 'equal': 'RSPS'},
+    'Energy Sector': {'cap': 'XLE', 'equal': 'RSPG'},
+    'Financial Services Sector': {'cap': 'XLF', 'equal': 'RSPF'},
+    'Healthcare Sector': {'cap': 'XLV', 'equal': 'RSPH'},
+    'Industrials Sector': {'cap': 'XLI', 'equal': 'RSPN'},
+    'Basic Materials Sector': {'cap': 'XLB', 'equal': 'RSPM'},
+    'Real Estate Sector': {'cap': 'XLRE', 'equal': 'RSPR'},
+    'Technology Sector': {'cap': 'XLK', 'equal': 'RSPT'},
+    'Utilities Sector': {'cap': 'XLU', 'equal': 'RSPU'}
 }
 
 def initialize_sectors_in_db():
@@ -1349,3 +1349,90 @@ def calculate_active_count(sector_id, db_session, start_date=None):
         print(f"Error calculating active count: {e}")
         db_session.rollback()
 
+
+def get_sectors_for_tickers(tickers: list) -> dict:
+    """
+    Identifies the sector for a list of tickers.
+    Returns: dict {ticker: sector_name}
+    """
+    db = next(get_db())
+    try:
+        # Clean inputs
+        clean_tickers = [t.strip().upper() for t in tickers if t and t.strip()]
+        if not clean_tickers:
+            return {}
+            
+        results = db.query(Constituent.ticker, Sector.name)\
+            .join(Sector)\
+            .filter(Constituent.ticker.in_(clean_tickers))\
+            .all()
+            
+        return {r[0]: r[1] for r in results}
+    finally:
+        db.close()
+
+def get_sector_counts() -> dict:
+    """
+    Returns the total number of constituents per sector in the database.
+    Returns: dict {sector_name: count}
+    """
+    db = next(get_db())
+    try:
+        results = db.query(Sector.name, func.count(Constituent.id))\
+            .join(Constituent)\
+            .filter(Sector.type == 'cap')\
+            .group_by(Sector.name)\
+            .all()
+            
+        return {r[0]: r[1] for r in results}
+    finally:
+        db.close()
+
+def fetch_sector_from_yahoo(tickers: list) -> dict:
+    """
+    Fetches sector information from Yahoo Finance for a list of tickers
+    and maps them to the app's sector names.
+    """
+    if not tickers:
+        return {}
+
+    # Yahoo Sector -> App Sector Mapping
+    yahoo_to_app_map = {
+        'Basic Materials': 'Materials',
+        'Communication Services': 'Communication Services',
+        'Consumer Cyclical': 'Consumer Discretionary',
+        'Consumer Defensive': 'Consumer Staples',
+        'Energy': 'Energy',
+        'Financial Services': 'Financials',
+        'Healthcare': 'Health Care',
+        'Industrials': 'Industrials',
+        'Real Estate': 'Real Estate',
+        'Technology': 'Technology',
+        'Utilities': 'Utilities'
+    }
+
+    found_sectors = {}
+    
+    print(f"Fetching Yahoo info for: {tickers}")
+    
+    for t in tickers:
+        try:
+            # yfinance.Ticker info property fetches data (can be slow for many tickers)
+            # Maybe optimize with Ticker(str) but we need individual info.
+            info = yf.Ticker(t).info
+            y_sector = info.get('sector')
+            
+            if y_sector:
+                # Try to map, fallback to original if not in map (or maybe ignore?)
+                # If mapped key exists
+                if y_sector in yahoo_to_app_map:
+                    found_sectors[t] = yahoo_to_app_map[y_sector]
+                else:
+                    # Provide a best guess or just return what Yahoo gave if it matches key logic
+                    # Check if y_sector is exactly one of our app keys?
+                    # For now, let's just stick to the map to ensure it fits in charts.
+                    print(f"  Warning: Yahoo sector '{y_sector}' for {t} not in map.")
+        except Exception as e:
+            print(f"  Error fetching {t} from Yahoo: {e}")
+            
+    return found_sectors
