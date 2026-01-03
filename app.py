@@ -611,6 +611,8 @@ elif page == "Market Breadth":
     
     df_ma20 = ds.get_breadth_data(selected_sector_breadth, metric='pct_above_ma20', days=days_history)
     df_ma50 = ds.get_breadth_data(selected_sector_breadth, metric='pct_above_ma50', days=days_history)
+    df_ma5 = ds.get_breadth_data(selected_sector_breadth, metric='pct_above_ma5', days=days_history)
+    df_ma10 = ds.get_breadth_data(selected_sector_breadth, metric='pct_above_ma10', days=days_history)
     
     if (df_ma20 is not None and not df_ma20.empty) and (df_ma50 is not None and not df_ma50.empty):
         fig_combined = go.Figure()
@@ -676,38 +678,6 @@ elif page == "Market Breadth":
             st.plotly_chart(fig_spread, use_container_width=True)
             
         # --- Spread Chart (MA5 - MA10) ---
-        df_ma5 = ds.get_breadth_data(selected_sector_breadth, metric='pct_above_ma5', days=days_history)
-        df_ma10 = ds.get_breadth_data(selected_sector_breadth, metric='pct_above_ma10', days=days_history)
-
-        if (df_ma5 is not None and not df_ma5.empty) and (df_ma10 is not None and not df_ma10.empty):
-            df_spread_5_10 = df_ma5.join(df_ma10, lsuffix='_5', rsuffix='_10', how='inner')
-            df_spread_5_10['diff'] = df_spread_5_10['Value_5'] - df_spread_5_10['Value_10']
-            
-            fig_spread_5_10 = go.Figure()
-            colors_5_10 = ['green' if x >= 0 else 'red' for x in df_spread_5_10['diff']]
-            
-            fig_spread_5_10.add_trace(go.Bar(
-                x=df_spread_5_10.index, 
-                y=df_spread_5_10['diff'],
-                marker_color=colors_5_10,
-                name='Spread (MA5 - MA10)'
-            ))
-            
-            fig_spread_5_10.update_layout(
-                title="Spread: (% > MA5) - (% > MA10)",
-                height=250,
-                margin=dict(l=20, r=20, t=30, b=20),
-                yaxis=dict(title="Delta (%)"),
-                showlegend=False
-            )
-            # Remove Gaps - reuse dates
-            all_dates_5_10 = df_ma5.index.union(df_ma10.index)
-            dt_all_5_10 = pd.date_range(start=all_dates_5_10.min(), end=all_dates_5_10.max())
-            dt_breaks_5_10 = dt_all_5_10.difference(all_dates_5_10)
-            fig_spread_5_10.update_xaxes(rangebreaks=[dict(values=dt_breaks_5_10)])
-            
-            st.plotly_chart(fig_spread_5_10, use_container_width=True)
-
         # --- Spread Chart (MA10 - MA20) ---
         if (df_ma10 is not None and not df_ma10.empty) and (df_ma20 is not None and not df_ma20.empty):
             df_spread_10_20 = df_ma10.join(df_ma20, lsuffix='_10', rsuffix='_20', how='inner')
@@ -737,6 +707,36 @@ elif page == "Market Breadth":
             fig_spread_10_20.update_xaxes(rangebreaks=[dict(values=dt_breaks_10_20)])
             
             st.plotly_chart(fig_spread_10_20, use_container_width=True)
+
+        # --- Spread Chart (MA5 - MA10) ---
+        if (df_ma5 is not None and not df_ma5.empty) and (df_ma10 is not None and not df_ma10.empty):
+            df_spread_5_10 = df_ma5.join(df_ma10, lsuffix='_5', rsuffix='_10', how='inner')
+            df_spread_5_10['diff'] = df_spread_5_10['Value_5'] - df_spread_5_10['Value_10']
+            
+            fig_spread_5_10 = go.Figure()
+            colors_5_10 = ['green' if x >= 0 else 'red' for x in df_spread_5_10['diff']]
+            
+            fig_spread_5_10.add_trace(go.Bar(
+                x=df_spread_5_10.index, 
+                y=df_spread_5_10['diff'],
+                marker_color=colors_5_10,
+                name='Spread (MA5 - MA10)'
+            ))
+            
+            fig_spread_5_10.update_layout(
+                title="Spread: (% > MA5) - (% > MA10)",
+                height=250,
+                margin=dict(l=20, r=20, t=30, b=20),
+                yaxis=dict(title="Delta (%)"),
+                showlegend=False
+            )
+            # Remove Gaps - reuse dates
+            all_dates_5_10 = df_ma5.index.union(df_ma10.index)
+            dt_all_5_10 = pd.date_range(start=all_dates_5_10.min(), end=all_dates_5_10.max())
+            dt_breaks_5_10 = dt_all_5_10.difference(all_dates_5_10)
+            fig_spread_5_10.update_xaxes(rangebreaks=[dict(values=dt_breaks_5_10)])
+            
+            st.plotly_chart(fig_spread_5_10, use_container_width=True)
 
         st.divider()
 
