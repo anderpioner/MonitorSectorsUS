@@ -1253,7 +1253,11 @@ elif page == "ATR Strength":
             path=['Sector'],
             values='PctQualified', # Size
             color='MeanStrength',  # Color
-            color_continuous_scale=['#0000FF', '#008000'], # Blue to Green
+            # User custom scale: Blue (Low) -> Green (High)
+            color_continuous_scale=[
+                '#0000ff', '#0040ff', '#0080ff', '#00c0ff', '#00ffff', 
+                '#00ffc0', '#00ff80', '#00ff40', '#00ff00'
+            ],
             title='Sectors by Volatility Intensity',
             hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength']
         )
@@ -1292,7 +1296,11 @@ elif page == "ATR Strength":
                 path=['Industry'],
                 values='PctQualified',
                 color='MeanStrength',
-                color_continuous_scale=['#0000FF', '#008000'], # Blue to Green
+                # User custom scale: Blue (Low) -> Green (High)
+                color_continuous_scale=[
+                    '#0000ff', '#0040ff', '#0080ff', '#00c0ff', '#00ffff', 
+                    '#00ffc0', '#00ff80', '#00ff40', '#00ff00'
+                ],
                 title=f"{sector}",
                 hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength']
             )
