@@ -1254,13 +1254,20 @@ elif page == "ATR Strength":
             values='PctQualified', # Size
             color='MeanStrength',  # Color
             # User custom scale: Blue (Low) -> Green (High)
+            path=['Sector'],
+            values='PctQualified', # Size
+            color='MeanStrength',  # Color
+            # User custom scale: Blue (Low) -> Green (High)
             color_continuous_scale=[
                 '#0000ff', '#0040ff', '#0080ff', '#00c0ff', '#00ffff', 
                 '#00ffc0', '#00ff80', '#00ff40', '#00ff00'
             ],
             title='Sectors by Volatility Intensity',
-            hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength']
+            hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength'],
+            custom_data=['QualifiedCount']
         )
+        fig_sec.update_traces(texttemplate='%{label}<br>(%{customdata[0]})') # Add Count to Label
+
         # Fix: If PctQualified is 0, Treemap might hide it.
         # But we want to show it. Treemap values must be positive.
         # If 0, maybe set small epsilon? Or user accepts they disappear?
@@ -1302,8 +1309,10 @@ elif page == "ATR Strength":
                     '#00ffc0', '#00ff80', '#00ff40', '#00ff00'
                 ],
                 title=f"{sector}",
-                hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength']
+                hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength'],
+                custom_data=['QualifiedCount']
             )
+            fig.update_traces(texttemplate='%{label}<br>(%{customdata[0]})') # Add Count to Label
             
             with cols[i % 2]:
                 st.plotly_chart(fig, use_container_width=True)
