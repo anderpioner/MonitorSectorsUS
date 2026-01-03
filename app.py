@@ -1254,10 +1254,6 @@ elif page == "ATR Strength":
             values='PctQualified', # Size
             color='MeanStrength',  # Color
             # User custom scale: Blue (Low) -> Green (High)
-            path=['Sector'],
-            values='PctQualified', # Size
-            color='MeanStrength',  # Color
-            # User custom scale: Blue (Low) -> Green (High)
             color_continuous_scale=[
                 '#0000ff', '#0040ff', '#0080ff', '#00c0ff', '#00ffff', 
                 '#00ffc0', '#00ff80', '#00ff40', '#00ff00'
