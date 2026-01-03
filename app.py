@@ -646,6 +646,35 @@ elif page == "Market Breadth":
         fig_combined.add_hline(y=50, line_dash="dash", line_color="gray")
         
         st.plotly_chart(fig_combined, use_container_width=True)
+        
+        # --- Spread Chart (MA20 - MA50) ---
+        # Align indexes
+        df_spread = df_ma20.join(df_ma50, lsuffix='_20', rsuffix='_50', how='inner')
+        df_spread['diff'] = df_spread['Value_20'] - df_spread['Value_50']
+        
+        if not df_spread.empty:
+            fig_spread = go.Figure()
+            colors = ['green' if x >= 0 else 'red' for x in df_spread['diff']]
+            
+            fig_spread.add_trace(go.Bar(
+                x=df_spread.index, 
+                y=df_spread['diff'],
+                marker_color=colors,
+                name='Spread (MA20 - MA50)'
+            ))
+            
+            fig_spread.update_layout(
+                title="Spread: (% > MA20) - (% > MA50)",
+                height=250, # Smaller height
+                margin=dict(l=20, r=20, t=30, b=20),
+                yaxis=dict(title="Delta (%)"),
+                showlegend=False
+            )
+            # Remove Gaps matching the chart above
+            fig_spread.update_xaxes(rangebreaks=[dict(values=dt_breaks_c)])
+            
+            st.plotly_chart(fig_spread, use_container_width=True)
+
         st.divider()
 
     # Loop through metrics and create charts
