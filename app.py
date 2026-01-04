@@ -1447,24 +1447,30 @@ elif page == "EMA Trend Setup":
         # with col:
         st.subheader(f"{s_name} ({s_ticker})")
         
-        # 1. Broad Breadth Metric
+        # 1. Broad Breadth Metric (Numerator)
         df_setup = ds.get_breadth_data(s_name, metric='ema_trend_setup', days=days_history)
+        
+        # 2. Active Count (Denominator)
+        df_active = ds.get_breadth_data(s_name, metric='active_count', days=days_history)
         
         # Fetch ETF for overlay
         df_etf = ds.get_etf_price_history(s_name, days=days_history, weight_type='cap')
         
-        if df_setup is not None and not df_setup.empty:
+        if df_setup is not None and not df_setup.empty and df_active is not None and not df_active.empty:
+            # Align and Calculate Percentage
+            df_chart = df_setup.join(df_active, lsuffix='_setup', rsuffix='_total', how='inner')
+            df_chart['pct'] = (df_chart['Value_setup'] / df_chart['Value_total']) * 100
+            
             # Create chart
             fig = make_subplots(specs=[[{"secondary_y": True}]])
             
-            # Line chart for Setup Count (No Fill)
+            # Line chart for Setup Percentage
             fig.add_trace(go.Scatter(
-                x=df_setup.index, 
-                y=df_setup['Value'], 
-                name='Stock Count',
-                # fill='tozeroy', # Removed fill
+                x=df_chart.index, 
+                y=df_chart['pct'], 
+                name='% Stocks',
                 mode='lines',
-                line=dict(width=2, color='#00C49F') # Teal/Greenish, increased width
+                line=dict(width=2, color='#00C49F') # Teal/Greenish
             ), secondary_y=False)
             
             # ETF Price Overlay
@@ -1479,21 +1485,22 @@ elif page == "EMA Trend Setup":
             
             fig.update_layout(
                 title=dict(text=f"{s_name}", font=dict(size=14)),
-                height=400, # Increased height for full width
+                height=400, 
                 margin=dict(l=40, r=40, t=40, b=40),
-                showlegend=True, # Show legend now that we have space
-                xaxis=dict(showticklabels=True) # Show labels
+                showlegend=True,
+                xaxis=dict(showticklabels=True),
+                yaxis=dict(title="% Stocks", tickformat=".1f") # Format as percentage
             )
             
             # Remove Gaps
-            all_dates = df_setup.index
+            all_dates = df_chart.index
             if not df_etf.empty: all_dates = all_dates.union(df_etf.index)
             dt_all = pd.date_range(start=all_dates.min(), end=all_dates.max())
             dt_breaks = dt_all.difference(all_dates)
             fig.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
             
-            fig.update_yaxes(title=None, secondary_y=False)
-            fig.update_yaxes(showgrid=False, showticklabels=False, secondary_y=True) # Minimal right axis
+            fig.update_yaxes(showgrid=True, secondary_y=False) # Show grid for percentage
+            fig.update_yaxes(showgrid=False, showticklabels=False, secondary_y=True) 
             
             st.plotly_chart(fig, use_container_width=True)
         else:
