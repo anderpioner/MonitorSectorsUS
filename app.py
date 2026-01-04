@@ -1473,7 +1473,7 @@ elif page == "EMA Trend Setup":
                 y=df_chart['pct'], 
                 name='% Stocks',
                 mode='lines',
-                line=dict(width=2, color='#00C49F') # Teal/Greenish
+                line=dict(width=2, color='#006652') # Darker - Swapped
             ), secondary_y=False)
             
             # 5-Day Moving Average (Thinner)
@@ -1482,7 +1482,7 @@ elif page == "EMA Trend Setup":
                 y=df_chart['pct_ma5'],
                 name='MA5 (%)',
                 mode='lines',
-                line=dict(width=1, color='#006652') # Darker Teal/Green, Thin
+                line=dict(width=1, color='#00C49F') # Brighter - Swapped
             ), secondary_y=False)
             
             # ETF Price Overlay
