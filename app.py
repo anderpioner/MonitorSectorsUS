@@ -1461,6 +1461,9 @@ elif page == "EMA Trend Setup":
             df_chart = df_setup.join(df_active, lsuffix='_setup', rsuffix='_total', how='inner')
             df_chart['pct'] = (df_chart['Value_setup'] / df_chart['Value_total']) * 100
             
+            # Calculate 5-day Moving Average
+            df_chart['pct_ma5'] = df_chart['pct'].rolling(window=5).mean()
+            
             # Create chart
             fig = make_subplots(specs=[[{"secondary_y": True}]])
             
@@ -1471,6 +1474,15 @@ elif page == "EMA Trend Setup":
                 name='% Stocks',
                 mode='lines',
                 line=dict(width=2, color='#00C49F') # Teal/Greenish
+            ), secondary_y=False)
+            
+            # 5-Day Moving Average (Thinner)
+            fig.add_trace(go.Scatter(
+                x=df_chart.index,
+                y=df_chart['pct_ma5'],
+                name='MA5 (%)',
+                mode='lines',
+                line=dict(width=1, color='#006652') # Darker Teal/Green, Thin
             ), secondary_y=False)
             
             # ETF Price Overlay
