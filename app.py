@@ -1495,6 +1495,60 @@ elif page == "EMA Trend Setup":
                     mode='lines', opacity=0.5
                 ), secondary_y=True)
             
+            # --- Background Trend Coloring ---
+            # Calculate Trend: 1 if MA5[t] >= MA5[t-1], -1 if MA5[t] < MA5[t-1]
+            # Use 'pct_ma5' from df_chart
+            ser_ma = df_chart['pct_ma5']
+            
+            # Find segments efficiently
+            # We iterate and create rectangles for contiguous blocks
+            if not ser_ma.dropna().empty:
+                # Get clean series with index
+                s = ser_ma.dropna()
+                
+                # Identify changes
+                diff = s.diff()
+                # 1 = Up, -1 = Down. 0 is effectively neutral, treat as extension of previous or ignore
+                # Map to trend labels
+                trends = diff.apply(lambda x: 1 if x > 0 else (-1 if x < 0 else 0))
+                
+                # We need to build start/end blocks
+                current_trend = 0
+                block_start = None
+                
+                dates = s.index
+                vals = trends.values
+                
+                for i in range(1, len(dates)): # Start from 2nd valid point
+                    dt = dates[i]
+                    tr = vals[i]
+                    
+                    if tr != 0:
+                        if tr != current_trend:
+                            # Close previous block if it exists
+                            if current_trend != 0 and block_start is not None:
+                                color = "rgba(0, 255, 0, 0.08)" if current_trend == 1 else "rgba(255, 0, 0, 0.08)"
+                                fig.add_vrect(
+                                    x0=block_start, x1=dates[i-1], 
+                                    fillcolor=color, layer="below", line_width=0
+                                )
+                            
+                            # Start new block
+                            current_trend = tr
+                            block_start = dates[i-1] # Start from previous day to connect
+                        else:
+                            # Same trend, extend. Do nothing.
+                            pass
+                    # If tr == 0 (flat), we ignore and keep current trend logic extending
+                
+                # Close final block
+                if current_trend != 0 and block_start is not None:
+                    color = "rgba(0, 255, 0, 0.08)" if current_trend == 1 else "rgba(255, 0, 0, 0.08)"
+                    fig.add_vrect(
+                        x0=block_start, x1=dates[-1], 
+                        fillcolor=color, layer="below", line_width=0
+                    )
+            
             fig.update_layout(
                 title=dict(text=f"{s_name}", font=dict(size=14)),
                 height=400, 
