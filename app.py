@@ -1435,34 +1435,37 @@ elif page == "EMA Trend Setup":
     # History Slider
     days_history = st.slider("History (Days)", 30, 1825, 365, key="ema_setup_slider")
     
-    # Grid Layout
-    cols = st.columns(3)
+    # Grid Layout - REMOVED for Full Width
+    # cols = st.columns(3) 
     
     # Get all sectors
     sector_opts = ds.get_sector_tickers(weight_type='cap')
     
     for idx, (s_name, s_ticker) in enumerate(sorted(sector_opts.items())):
-        col = cols[idx % 3]
+        # col = cols[idx % 3]
         
-        with col:
-            # 1. Broad Breadth Metric
-            df_setup = ds.get_breadth_data(s_name, metric='ema_trend_setup', days=days_history)
+        # with col:
+        st.subheader(f"{s_name} ({s_ticker})")
+        
+        # 1. Broad Breadth Metric
+        df_setup = ds.get_breadth_data(s_name, metric='ema_trend_setup', days=days_history)
+        
+        # Fetch ETF for overlay
+        df_etf = ds.get_etf_price_history(s_name, days=days_history, weight_type='cap')
+        
+        if df_setup is not None and not df_setup.empty:
+            # Create chart
+            fig = make_subplots(specs=[[{"secondary_y": True}]])
             
-            # Fetch ETF for overlay
-            df_etf = ds.get_etf_price_history(s_name, days=days_history, weight_type='cap')
-            
-            if df_setup is not None and not df_setup.empty:
-                # Create chart
-                fig = make_subplots(specs=[[{"secondary_y": True}]])
-                
-                # Area chart for Setup Count
-                fig.add_trace(go.Scatter(
-                    x=df_setup.index, 
-                    y=df_setup['Value'], 
-                    name='Stock Count',
-                    fill='tozeroy',
-                    mode='lines',
-                    line=dict(width=1, color='#00C49F') # Teal/Greenish
+            # Line chart for Setup Count (No Fill)
+            fig.add_trace(go.Scatter(
+                x=df_setup.index, 
+                y=df_setup['Value'], 
+                name='Stock Count',
+                # fill='tozeroy', # Removed fill
+                mode='lines',
+                line=dict(width=2, color='#00C49F') # Teal/Greenish, increased width
+            ), secondary_y=False)
                 ), secondary_y=False)
                 
                 # ETF Price Overlay
@@ -1476,12 +1479,12 @@ elif page == "EMA Trend Setup":
                     ), secondary_y=True)
                 
                 fig.update_layout(
-                    title=dict(text=f"{s_name}", font=dict(size=14)),
-                    height=250,
-                    margin=dict(l=10, r=10, t=30, b=10),
-                    showlegend=False,
-                    xaxis=dict(showticklabels=False) # Compact view
-                )
+                title=dict(text=f"{s_name}", font=dict(size=14)),
+                height=400, # Increased height for full width
+                margin=dict(l=40, r=40, t=40, b=40),
+                showlegend=True, # Show legend now that we have space
+                xaxis=dict(showticklabels=True) # Show labels
+            )
                 
                 # Remove Gaps
                 all_dates = df_setup.index
