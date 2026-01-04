@@ -1440,11 +1440,32 @@ def get_sector_counts() -> dict:
     finally:
         db.close()
 
+def get_sector_constituents(sector_ticker):
+    """
+    Returns a list of tickers belonging to the sector identified by sector_ticker.
+    """
+    db = next(get_db())
+    try:
+        results = db.query(Constituent.ticker)\
+            .join(Sector)\
+            .filter(Sector.ticker == sector_ticker)\
+            .all()
+        return [r[0] for r in results]
+    finally:
+        db.close()
+
 def calculate_ema_setup_counts(sector_ticker, db_session, start_date=None):
     """
     Calculates the number of stocks in the sector that meet the EMA Trend Setup criteria:
     EMA8 > EMA20 AND EMA20 > EMA50 AND Close > EMA20
     """
+    # Get Sector ID
+    sector = db_session.query(Sector).filter_by(ticker=sector_ticker).first()
+    if not sector:
+        print(f"Sector {sector_ticker} not found")
+        return
+    sector_id = sector.id
+
     # Get all constituents for the sector
     constituents = get_sector_constituents(sector_ticker)
     if not constituents:
@@ -1454,9 +1475,9 @@ def calculate_ema_setup_counts(sector_ticker, db_session, start_date=None):
     
     # Query Data - Explicitly join with Constituent to filter by Sector if needed, 
     # but get_sector_constituents already gives us the list
-    query = db_session.query(ConstituentPrice.ticker, ConstituentPrice.date, ConstituentPrice.close, ConstituentPrice.ema8, ConstituentPrice.ema20, ConstituentPrice.ema50).filter(
-        ConstituentPrice.ticker.in_(constituents)
-    )
+    query = db_session.query(Constituent.ticker, ConstituentPrice.date, ConstituentPrice.close, ConstituentPrice.ema8, ConstituentPrice.ema20, ConstituentPrice.ema50)\
+        .join(Constituent)\
+        .filter(Constituent.ticker.in_(constituents))
     
     if start_date:
         query = query.filter(ConstituentPrice.date >= start_date)
@@ -1483,19 +1504,20 @@ def calculate_ema_setup_counts(sector_ticker, db_session, start_date=None):
     for _, row in daily_counts.iterrows():
         val = int(row['value'])
         
+        # Use sector_id instead of sector_ticker
         existing = db_session.query(BreadthMetric).filter_by(
-            sector_ticker=sector_ticker,
+            sector_id=sector_id,
             date=row['date'],
-            metric_key=metric_key
+            metric=metric_key
         ).first()
         
         if existing:
             existing.value = val
         else:
             new_metric = BreadthMetric(
-                sector_ticker=sector_ticker,
+                sector_id=sector_id,
                 date=row['date'],
-                metric_key=metric_key,
+                metric=metric_key,
                 value=val
             )
             db_session.add(new_metric)

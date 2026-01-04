@@ -1440,7 +1440,7 @@ elif page == "EMA Trend Setup":
         
         with col:
             # 1. Broad Breadth Metric
-            df_setup = ds.get_breadth_data(s_ticker, metric='ema_trend_setup', days=120) # Default to 120 days or use global
+            df_setup = ds.get_breadth_data(s_name, metric='ema_trend_setup', days=120) # Default to 120 days or use global
             
             # Fetch ETF for overlay
             df_etf = ds.get_etf_price_history(s_ticker, days=120, weight_type='cap')
