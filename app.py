@@ -1466,7 +1466,6 @@ elif page == "EMA Trend Setup":
                 mode='lines',
                 line=dict(width=2, color='#00C49F') # Teal/Greenish, increased width
             ), secondary_y=False)
-                ), secondary_y=False)
                 
                 # ETF Price Overlay
                 if not df_etf.empty:
@@ -1479,12 +1478,12 @@ elif page == "EMA Trend Setup":
                     ), secondary_y=True)
                 
                 fig.update_layout(
-                title=dict(text=f"{s_name}", font=dict(size=14)),
-                height=400, # Increased height for full width
-                margin=dict(l=40, r=40, t=40, b=40),
-                showlegend=True, # Show legend now that we have space
-                xaxis=dict(showticklabels=True) # Show labels
-            )
+                    title=dict(text=f"{s_name}", font=dict(size=14)),
+                    height=400, # Increased height for full width
+                    margin=dict(l=40, r=40, t=40, b=40),
+                    showlegend=True, # Show legend now that we have space
+                    xaxis=dict(showticklabels=True) # Show labels
+                )
                 
                 # Remove Gaps
                 all_dates = df_setup.index
