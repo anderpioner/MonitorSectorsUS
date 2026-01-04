@@ -38,7 +38,7 @@ if "current_view" not in st.session_state:
 
 opts_etf = ["Overview", "Performance Matrix", "Momentum Ranking", "Momentum Score charts"]
 opts_breadth = ["Sector Charts", "Market Breadth", "New Highs / Lows", "ATR Strength", "Stocks > 25% (84d)", "Análise de Setores"]
-opts_individual = ["Sector Stocks"]
+opts_individual = ["Stocks Counting"]
 opts_admin = ["Data Management"]
 
 # Determine indices based on current state
