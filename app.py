@@ -1428,8 +1428,12 @@ elif page == "ATR Strength":
 
 
 elif page == "EMA Trend Setup":
+
     st.header("Sector Trends: EMA Bullish Setup")
     st.caption("Stocks meeting criteria: EMA8 > EMA20 > EMA50 and Close > EMA20")
+
+    # History Slider
+    days_history = st.slider("History (Days)", 30, 1825, 365, key="ema_setup_slider")
     
     # Grid Layout
     cols = st.columns(3)
@@ -1442,10 +1446,10 @@ elif page == "EMA Trend Setup":
         
         with col:
             # 1. Broad Breadth Metric
-            df_setup = ds.get_breadth_data(s_name, metric='ema_trend_setup', days=120) # Default to 120 days or use global
+            df_setup = ds.get_breadth_data(s_name, metric='ema_trend_setup', days=days_history)
             
             # Fetch ETF for overlay
-            df_etf = ds.get_etf_price_history(s_ticker, days=120, weight_type='cap')
+            df_etf = ds.get_etf_price_history(s_ticker, days=days_history, weight_type='cap')
             
             if df_setup is not None and not df_setup.empty:
                 # Create chart
