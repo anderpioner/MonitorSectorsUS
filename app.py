@@ -1466,38 +1466,38 @@ elif page == "EMA Trend Setup":
                 mode='lines',
                 line=dict(width=2, color='#00C49F') # Teal/Greenish, increased width
             ), secondary_y=False)
-                
-                # ETF Price Overlay
-                if not df_etf.empty:
-                    fig.add_trace(go.Scatter(
-                        x=df_etf.index,
-                        y=df_etf['Close'],
-                        name=f"{s_ticker}",
-                        line=dict(color='gray', width=1, dash='dot'),
-                        mode='lines', opacity=0.5
-                    ), secondary_y=True)
-                
-                fig.update_layout(
-                    title=dict(text=f"{s_name}", font=dict(size=14)),
-                    height=400, # Increased height for full width
-                    margin=dict(l=40, r=40, t=40, b=40),
-                    showlegend=True, # Show legend now that we have space
-                    xaxis=dict(showticklabels=True) # Show labels
-                )
-                
-                # Remove Gaps
-                all_dates = df_setup.index
-                if not df_etf.empty: all_dates = all_dates.union(df_etf.index)
-                dt_all = pd.date_range(start=all_dates.min(), end=all_dates.max())
-                dt_breaks = dt_all.difference(all_dates)
-                fig.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
-                
-                fig.update_yaxes(title=None, secondary_y=False)
-                fig.update_yaxes(showgrid=False, showticklabels=False, secondary_y=True) # Minimal right axis
-                
-                st.plotly_chart(fig, use_container_width=True)
-            else:
-                st.warning(f"No data for {s_name}")
+            
+            # ETF Price Overlay
+            if not df_etf.empty:
+                fig.add_trace(go.Scatter(
+                    x=df_etf.index,
+                    y=df_etf['Close'],
+                    name=f"{s_ticker}",
+                    line=dict(color='gray', width=1, dash='dot'),
+                    mode='lines', opacity=0.5
+                ), secondary_y=True)
+            
+            fig.update_layout(
+                title=dict(text=f"{s_name}", font=dict(size=14)),
+                height=400, # Increased height for full width
+                margin=dict(l=40, r=40, t=40, b=40),
+                showlegend=True, # Show legend now that we have space
+                xaxis=dict(showticklabels=True) # Show labels
+            )
+            
+            # Remove Gaps
+            all_dates = df_setup.index
+            if not df_etf.empty: all_dates = all_dates.union(df_etf.index)
+            dt_all = pd.date_range(start=all_dates.min(), end=all_dates.max())
+            dt_breaks = dt_all.difference(all_dates)
+            fig.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
+            
+            fig.update_yaxes(title=None, secondary_y=False)
+            fig.update_yaxes(showgrid=False, showticklabels=False, secondary_y=True) # Minimal right axis
+            
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.warning(f"No data for {s_name}")
 
 
 elif page == "Data Management":
