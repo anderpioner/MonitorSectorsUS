@@ -1489,7 +1489,8 @@ elif page == "EMA Trend Setup":
                 margin=dict(l=40, r=40, t=40, b=40),
                 showlegend=True,
                 xaxis=dict(showticklabels=True),
-                yaxis=dict(title="% Stocks", tickformat=".1f") # Format as percentage
+                yaxis=dict(title="% Stocks", tickformat=".1f"), # Format as percentage
+                hovermode="x unified" # Vertical line on hover
             )
             
             # Remove Gaps
