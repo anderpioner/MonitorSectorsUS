@@ -37,8 +37,8 @@ if "current_view" not in st.session_state:
     st.session_state.current_view = "Overview"
 
 opts_etf = ["Overview", "Performance Matrix", "Momentum Ranking", "Momentum Score charts"]
-opts_breadth = ["Sector Charts", "Market Breadth", "New Highs / Lows", "ATR Strength"]
-opts_individual = ["Sector Stocks", "Stocks > 25% (84d)", "Análise de Setores"]
+opts_breadth = ["Sector Charts", "Market Breadth", "New Highs / Lows", "ATR Strength", "Stocks > 25% (84d)", "Análise de Setores"]
+opts_individual = ["Sector Stocks"]
 opts_admin = ["Data Management"]
 
 # Determine indices based on current state
@@ -1112,7 +1112,7 @@ elif page == "Sector Charts":
 
         st.divider()
 
-elif page == "Sector Stocks":
+elif page == "Stocks Counting":
     st.header("Sector Constituents")
     st.markdown("View the list of stocks (tickers) belonging to each sector.")
     
