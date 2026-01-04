@@ -1449,7 +1449,7 @@ elif page == "EMA Trend Setup":
             df_setup = ds.get_breadth_data(s_name, metric='ema_trend_setup', days=days_history)
             
             # Fetch ETF for overlay
-            df_etf = ds.get_etf_price_history(s_ticker, days=days_history, weight_type='cap')
+            df_etf = ds.get_etf_price_history(s_name, days=days_history, weight_type='cap')
             
             if df_setup is not None and not df_setup.empty:
                 # Create chart
