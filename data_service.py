@@ -1440,6 +1440,69 @@ def get_sector_counts() -> dict:
     finally:
         db.close()
 
+def calculate_ema_setup_counts(sector_ticker, db_session, start_date=None):
+    """
+    Calculates the number of stocks in the sector that meet the EMA Trend Setup criteria:
+    EMA8 > EMA20 AND EMA20 > EMA50 AND Close > EMA20
+    """
+    # Get all constituents for the sector
+    constituents = get_sector_constituents(sector_ticker)
+    if not constituents:
+        return
+        
+    start_time = time.time()
+    
+    # Query Data - Explicitly join with Constituent to filter by Sector if needed, 
+    # but get_sector_constituents already gives us the list
+    query = db_session.query(ConstituentPrice.ticker, ConstituentPrice.date, ConstituentPrice.close, ConstituentPrice.ema8, ConstituentPrice.ema20, ConstituentPrice.ema50).filter(
+        ConstituentPrice.ticker.in_(constituents)
+    )
+    
+    if start_date:
+        query = query.filter(ConstituentPrice.date >= start_date)
+        
+    df = pd.read_sql(query.statement, db_session.bind)
+    
+    if df.empty:
+        return
+
+    # Filter Criteria
+    # EMA8 > EMA20 AND EMA20 > EMA50 AND Close > EMA20
+    condition = (df['ema8'] > df['ema20']) & (df['ema20'] > df['ema50']) & (df['close'] > df['ema20'])
+    
+    df_filtered = df[condition]
+    
+    # Count per date
+    daily_counts = df_filtered.groupby('date')['ticker'].count().reset_index()
+    daily_counts.columns = ['date', 'value']
+    
+    # Insert/Update BreadthMetric
+    metric_key = 'ema_trend_setup'
+    
+    # Bulk optimization or iterate? Iterate is safer for upsert logic unless we have bulk_upsert
+    for _, row in daily_counts.iterrows():
+        val = int(row['value'])
+        
+        existing = db_session.query(BreadthMetric).filter_by(
+            sector_ticker=sector_ticker,
+            date=row['date'],
+            metric_key=metric_key
+        ).first()
+        
+        if existing:
+            existing.value = val
+        else:
+            new_metric = BreadthMetric(
+                sector_ticker=sector_ticker,
+                date=row['date'],
+                metric_key=metric_key,
+                value=val
+            )
+            db_session.add(new_metric)
+            
+    db_session.commit()
+    print(f"[{sector_ticker}] Updated {metric_key} for {len(daily_counts)} days. Time: {time.time() - start_time:.2f}s")
+
 def get_atr_variation_stats(target_date=None):
     """
     Aggregates ATR variation stats for Sectors and Industries.

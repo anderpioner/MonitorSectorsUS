@@ -37,7 +37,7 @@ if "current_view" not in st.session_state:
     st.session_state.current_view = "Overview"
 
 opts_etf = ["Overview", "Performance Matrix", "Momentum Ranking", "Momentum Score charts"]
-opts_breadth = ["Sector Charts", "Market Breadth", "New Highs / Lows", "ATR Strength", "Stocks > 25% (84d)", "Análise de Setores"]
+opts_breadth = ["Sector Charts", "Market Breadth", "New Highs / Lows", "ATR Strength", "EMA Trend Setup", "Stocks > 25% (84d)", "Análise de Setores"]
 opts_individual = ["Stocks Counting"]
 opts_admin = ["Data Management"]
 
@@ -92,6 +92,9 @@ if page == "Overview":
             # Period Selector
             st.write("### Settings")
             period_options = {
+                "5 Days": 5,
+                "10 Days": 10,
+                "20 Days": 20,
                 "30 Days": 30,
                 "60 Days": 60,
                 "120 Days": 120,
@@ -1417,8 +1420,76 @@ elif page == "ATR Strength":
             )
             fig.update_traces(texttemplate='%{label}<br>(%{customdata[0]}) %{customdata[1]:.1f}%') # Add Count and Pct to Label
             
+
             with cols[i % 2]:
                 st.plotly_chart(fig, use_container_width=True)
+
+
+elif page == "EMA Trend Setup":
+    st.header("Sector Trends: EMA Bullish Setup")
+    st.caption("Stocks meeting criteria: EMA8 > EMA20 > EMA50 and Close > EMA20")
+    
+    # Grid Layout
+    cols = st.columns(3)
+    
+    # Get all sectors
+    sector_opts = ds.get_sector_tickers(weight_type='cap')
+    
+    for idx, (s_name, s_ticker) in enumerate(sorted(sector_opts.items())):
+        col = cols[idx % 3]
+        
+        with col:
+            # 1. Broad Breadth Metric
+            df_setup = ds.get_breadth_data(s_ticker, metric='ema_trend_setup', days=120) # Default to 120 days or use global
+            
+            # Fetch ETF for overlay
+            df_etf = ds.get_etf_price_history(s_ticker, days=120, weight_type='cap')
+            
+            if df_setup is not None and not df_setup.empty:
+                # Create chart
+                fig = make_subplots(specs=[[{"secondary_y": True}]])
+                
+                # Area chart for Setup Count
+                fig.add_trace(go.Scatter(
+                    x=df_setup.index, 
+                    y=df_setup['Value'], 
+                    name='Stock Count',
+                    fill='tozeroy',
+                    mode='lines',
+                    line=dict(width=1, color='#00C49F') # Teal/Greenish
+                ), secondary_y=False)
+                
+                # ETF Price Overlay
+                if not df_etf.empty:
+                    fig.add_trace(go.Scatter(
+                        x=df_etf.index,
+                        y=df_etf['Close'],
+                        name=f"{s_ticker}",
+                        line=dict(color='gray', width=1, dash='dot'),
+                        mode='lines', opacity=0.5
+                    ), secondary_y=True)
+                
+                fig.update_layout(
+                    title=dict(text=f"{s_name}", font=dict(size=14)),
+                    height=250,
+                    margin=dict(l=10, r=10, t=30, b=10),
+                    showlegend=False,
+                    xaxis=dict(showticklabels=False) # Compact view
+                )
+                
+                # Remove Gaps
+                all_dates = df_setup.index
+                if not df_etf.empty: all_dates = all_dates.union(df_etf.index)
+                dt_all = pd.date_range(start=all_dates.min(), end=all_dates.max())
+                dt_breaks = dt_all.difference(all_dates)
+                fig.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
+                
+                fig.update_yaxes(title=None, secondary_y=False)
+                fig.update_yaxes(showgrid=False, showticklabels=False, secondary_y=True) # Minimal right axis
+                
+                st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.warning(f"No data for {s_name}")
 
 
 elif page == "Data Management":
