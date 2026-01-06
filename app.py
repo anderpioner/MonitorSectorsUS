@@ -1570,6 +1570,58 @@ elif page == "EMA Trend Setup":
             fig.update_yaxes(showgrid=False, showticklabels=False, secondary_y=True) 
             
             st.plotly_chart(fig, use_container_width=True)
+            
+            # --- Fear & Greed Indicator ---
+            ser_fng = ds.get_sector_fear_greed(s_name, days=days_history)
+            
+            if not ser_fng.empty:
+                current_val = ser_fng.iloc[-1]
+                
+                # Determine Label and Color
+                if current_val > 75:
+                    status = "EXTREME GREED"
+                    color_status = "red"
+                elif current_val > 60:
+                    status = "GREED"
+                    color_status = "orange"
+                elif current_val < 25:
+                    status = "EXTREME FEAR"
+                    color_status = "green"
+                elif current_val < 40:
+                    status = "FEAR"
+                    color_status = "lightgreen"
+                else:
+                    status = "NEUTRAL"
+                    color_status = "gray"
+                
+                # Small Metric Display
+                st.markdown(f"**Sentiment:** <span style='color:{color_status}'>{status} ({current_val:.0f})</span>", unsafe_allow_html=True)
+                
+                # Mini Chart for F&G History
+                fig_fng = go.Figure()
+                fig_fng.add_trace(go.Scatter(
+                    x=ser_fng.index, y=ser_fng.values,
+                    mode='lines',
+                    fill='tozeroy',
+                    marker_color=color_status if 'color_status' in locals() else 'gray', # Use dynamic color? No, use gradient or fixed.
+                    line=dict(width=1, color='gray'),
+                    name='Fear & Greed'
+                ))
+                
+                # Add Zones
+                fig_fng.add_hrect(y0=75, y1=100, fillcolor="red", opacity=0.1, line_width=0)
+                fig_fng.add_hrect(y0=0, y1=25, fillcolor="green", opacity=0.1, line_width=0)
+                
+                fig_fng.update_layout(
+                    height=150,
+                    margin=dict(l=40, r=40, t=10, b=10),
+                    yaxis=dict(range=[0, 100], showticklabels=False, title="F&G"),
+                    xaxis=dict(showticklabels=False),
+                    showlegend=False,
+                    hovermode="x unified"
+                )
+                st.plotly_chart(fig_fng, use_container_width=True)
+
         else:
             st.warning(f"No data for {s_name}")
 

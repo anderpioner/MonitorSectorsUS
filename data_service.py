@@ -419,6 +419,60 @@ def get_latest_data_date():
     finally:
         db.close()
 
+def fetch_batch_history(db, map_id_to_ticker, cutoff_date, days_needed=365):
+    """
+    Fetches historical data for a batch of tickers from DB to support indicator calculation.
+    Returns dict: {ticker: pd.DataFrame(index=date, columns=[close, high, low])}
+    """
+    # Calculate fetch start for DB
+    # We need ~252 trading days. 365 calendar days + buffer is safe.
+    db_start = pd.to_datetime(cutoff_date) - pd.Timedelta(days=days_needed + 50) 
+    
+    ids = list(map_id_to_ticker.keys())
+    
+    # We need to explicitly select columns to avoid huge objects if extended
+    query = db.query(
+        ConstituentPrice.constituent_id, 
+        ConstituentPrice.date, 
+        ConstituentPrice.close, 
+        ConstituentPrice.high, 
+        ConstituentPrice.low
+    ).filter(
+        ConstituentPrice.constituent_id.in_(ids),
+        ConstituentPrice.date >= db_start.date(),
+        ConstituentPrice.date <= pd.to_datetime(cutoff_date).date() # Include overlap date if any to stitch
+    )
+    
+    rows = query_rows = query.all()
+    if not query_rows:
+        return {}
+        
+    # Process into dict of DFs
+    from collections import defaultdict
+    data_by_id = defaultdict(list)
+    for r in query_rows:
+        # Check for None values in High/Low and fallback to Close if needed
+        h = r.high if r.high is not None else r.close
+        l = r.low if r.low is not None else r.close
+        
+        data_by_id[r.constituent_id].append({
+            'date': pd.to_datetime(r.date),
+            'close': float(r.close),
+            'high': float(h),
+            'low': float(l)
+        })
+        
+    result = {}
+    for cid, records in data_by_id.items():
+        if not records: continue
+        ticker = map_id_to_ticker[cid]
+        df = pd.DataFrame(records)
+        if not df.empty:
+            df.set_index('date', inplace=True)
+            result[ticker] = df.sort_index()
+        
+    return result
+
 def update_constituents_data(sector_name=None, start_date=None, progress_callback=None):
     """
     Fetches data for constituents, calculates MAs/Flags, and stores in ConstituentPrice.
@@ -473,10 +527,15 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                         # Determine start date for yfinance
                         print(f"    - Starting download for {batch[0]}...{batch[-1]}")
                         
-
+                        batch_history = {}
                         try:
                             if start_date:
-                                fetch_start = pd.to_datetime(start_date) - pd.Timedelta(days=365) # Safe buffer
+                                # New Optimization: Fetch history from DB
+                                fetch_start = pd.to_datetime(start_date)
+                                batch_mapping = {constituents[t]: t for t in batch}
+                                batch_history = fetch_batch_history(db, batch_mapping, fetch_start)
+                                
+                                # Download from start_date
                                 raw_data = yf.download(batch, start=fetch_start, auto_adjust=True, progress=False, timeout=30)
                             else:
                                 raw_data = yf.download(batch, period="10y", auto_adjust=True, progress=False, timeout=30)
@@ -522,9 +581,19 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                             
                             if df_t.empty: continue
                             
-                            series = df_t['close']
-                            highs = df_t['high']
-                            lows = df_t['low']
+                            # Stitch History if needed
+                            if start_date and ticker in batch_history:
+                                hist_df = batch_history[ticker]
+                                combined_df = pd.concat([hist_df, df_t])
+                                combined_df = combined_df[~combined_df.index.duplicated(keep='last')]
+                                combined_df.sort_index(inplace=True)
+                                calc_df = combined_df
+                            else:
+                                calc_df = df_t
+                            
+                            series = calc_df['close']
+                            highs = calc_df['high']
+                            lows = calc_df['low']
 
                             # --- Calculate Indicators ---
                             
@@ -656,6 +725,9 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
 
                 # Update Active Constituent Count
                 calculate_active_count(sector.id, db, start_date=start_date)
+
+                # Update EMA Trend Setup Metric (New)
+                calculate_ema_setup_counts(sector.ticker, db, start_date=start_date)
 
                 # Update Progress
                 if progress_callback:
@@ -1524,6 +1596,136 @@ def calculate_ema_setup_counts(sector_ticker, db_session, start_date=None):
             
     db_session.commit()
     print(f"[{sector_ticker}] Updated {metric_key} for {len(daily_counts)} days. Time: {time.time() - start_time:.2f}s")
+
+
+def get_sector_fear_greed(sector_name, days=365):
+    """
+    Calculates a composite Fear & Greed Index (0-100) for the sector.
+    Components:
+    1. Breadth Strength (60%): Average of % > MA20, % > MA50, % > MA200
+    2. Momentum (20%): RSI(14) of Sector ETF (Normalized 0-100)
+    3. Trend Quality (20%): EMA Setup % (Normalized relative to its own recent history? No, use absolute 0-100)
+    
+    Actually, let's keep it simple and robust:
+    - Pct > MA20
+    - Pct > MA50
+    - Pct > MA200
+    - RSI(14) ETF
+    
+    Returns: Series with Index=Date, Values=Index(0-100)
+    """
+    # 1. Fetch Breadth Data
+    df_ma20 = get_breadth_data(sector_name, metric='pct_above_ma20', days=days)
+    df_ma50 = get_breadth_data(sector_name, metric='pct_above_ma50', days=days)
+    df_ma200 = get_breadth_data(sector_name, metric='pct_above_ma200', days=days)
+    
+    # 2. Fetch ETF Price for Momentum (RSI)
+    df_etf = get_etf_price_history(sector_name, days=days + 30, weight_type='cap') # Extra buffer for RSI
+    
+    if df_ma50 is None or df_ma50.empty or df_etf.empty:
+        return pd.Series()
+        
+    # Align Data
+    # Rename cols
+    df_all = df_ma50.rename(columns={'Value': 'ma50'})
+    if df_ma20 is not None and not df_ma20.empty:
+        df_all = df_all.join(df_ma20.rename(columns={'Value': 'ma20'}), how='inner')
+    else:
+        df_all['ma20'] = df_all['ma50'] # Fallback
+        
+    if df_ma200 is not None and not df_ma200.empty:
+        df_all = df_all.join(df_ma200.rename(columns={'Value': 'ma200'}), how='inner')
+    else:
+        df_all['ma200'] = df_all['ma50'] # Fallback
+        
+    df_all = df_all.join(df_etf.rename(columns={'Close': 'price'}), how='inner')
+    
+    # Calculate RSI(14)
+    delta = df_all['price'].diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+    rs = gain / loss
+    df_all['rsi'] = 100 - (100 / (1 + rs))
+    
+    # Fill NaN RSI (first 14 days)
+    df_all['rsi'] = df_all['rsi'].fillna(50)
+    
+    # Composite Score Calculation
+    # Weights: Breadth 60% (20% each), RSI 40%? Or Equal?
+    # Let's try equal weights for robustness -> 25% each
+    df_all['fng'] = (
+        df_all['ma20'] * 0.25 + 
+        df_all['ma50'] * 0.25 + 
+        df_all['ma200'] * 0.25 + 
+        df_all['rsi'] * 0.25
+    )
+    
+    return df_all['fng']
+
+
+def get_sector_fear_greed(sector_name, days=365):
+    """
+    Calculates a composite Fear & Greed Index (0-100) for the sector.
+    Components:
+    1. Breadth Strength (60%): Average of % > MA20, % > MA50, % > MA200
+    2. Momentum (20%): RSI(14) of Sector ETF (Normalized 0-100)
+    3. Trend Quality (20%): EMA Setup % (Normalized relative to its own recent history? No, use absolute 0-100)
+    
+    Actually, let's keep it simple and robust:
+    - Pct > MA20
+    - Pct > MA50
+    - Pct > MA200
+    - RSI(14) ETF
+    
+    Returns: Series with Index=Date, Values=Index(0-100)
+    """
+    # 1. Fetch Breadth Data
+    df_ma20 = get_breadth_data(sector_name, metric='pct_above_ma20', days=days)
+    df_ma50 = get_breadth_data(sector_name, metric='pct_above_ma50', days=days)
+    df_ma200 = get_breadth_data(sector_name, metric='pct_above_ma200', days=days)
+    
+    # 2. Fetch ETF Price for Momentum (RSI)
+    df_etf = get_etf_price_history(sector_name, days=days + 30, weight_type='cap') # Extra buffer for RSI
+    
+    if df_ma50 is None or df_ma50.empty or df_etf.empty:
+        return pd.Series()
+        
+    # Align Data
+    # Rename cols
+    df_all = df_ma50.rename(columns={'Value': 'ma50'})
+    if df_ma20 is not None and not df_ma20.empty:
+        df_all = df_all.join(df_ma20.rename(columns={'Value': 'ma20'}), how='inner')
+    else:
+        df_all['ma20'] = df_all['ma50'] # Fallback
+        
+    if df_ma200 is not None and not df_ma200.empty:
+        df_all = df_all.join(df_ma200.rename(columns={'Value': 'ma200'}), how='inner')
+    else:
+        df_all['ma200'] = df_all['ma50'] # Fallback
+        
+    df_all = df_all.join(df_etf.rename(columns={'Close': 'price'}), how='inner')
+    
+    # Calculate RSI(14)
+    delta = df_all['price'].diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+    rs = gain / loss
+    df_all['rsi'] = 100 - (100 / (1 + rs))
+    
+    # Fill NaN RSI (first 14 days)
+    df_all['rsi'] = df_all['rsi'].fillna(50)
+    
+    # Composite Score Calculation
+    # Weights: Breadth 60% (20% each), RSI 40%? Or Equal?
+    # Let's try equal weights for robustness -> 25% each
+    df_all['fng'] = (
+        df_all['ma20'] * 0.25 + 
+        df_all['ma50'] * 0.25 + 
+        df_all['ma200'] * 0.25 + 
+        df_all['rsi'] * 0.25
+    )
+    
+    return df_all['fng']
 
 def get_atr_variation_stats(target_date=None):
     """
