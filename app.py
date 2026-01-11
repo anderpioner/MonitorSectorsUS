@@ -39,7 +39,7 @@ if "current_view" not in st.session_state:
     st.session_state.current_view = "Overview"
 
 opts_etf = ["Overview", "Performance Matrix", "Momentum Ranking", "Momentum Score charts"]
-opts_breadth = ["Sector Charts", "Market Breadth", "New Highs / Lows", "ATR Strength", "EMA Trend Setup", "Stocks > 25% (84d)", "Análise de Setores"]
+opts_breadth = ["Sector Charts", "Market Breadth", "New Highs / Lows", "ATR Strength", "ATR Neutral", "ATR Weakness", "EMA Trend Setup", "Stocks > 25% (84d)", "Análise de Setores", "Análise de Indústrias"]
 opts_individual = ["Stocks Counting"]
 opts_admin = ["Data Management"]
 
@@ -995,7 +995,10 @@ elif page == "New Highs / Lows":
         st.info("No New Highs/Lows data available. Please ensure backfill is complete.")
 
 elif page == "Sector Charts":
-    st.header("Sector Charts (Last 60 Days)")
+    st.header("Sector Charts")
+    
+    # History Control
+    days_chart = st.slider("History Length (Days)", min_value=40, max_value=1440, value=120, step=40, key='sector_charts_slider')
     
     # Get all sectors
     sector_opts = ds.get_sector_tickers(weight_type='cap') # {Name: Ticker}
@@ -1004,15 +1007,192 @@ elif page == "Sector Charts":
     for s_name in sorted(sector_opts.keys()):
         s_ticker = sector_opts[s_name]
         
-        st.subheader(f"{s_name} ({s_ticker})")
+        # Get count
+        count = ds.get_sector_constituent_count(s_name)
         
-        # Row 1: Breadth & High/Low (3 Cols)
-        c1, c2, c3 = st.columns(3)
+        st.subheader(f"{s_name} ({s_ticker}) - {count} Ações")
         
-        # 1. Net New Highs/Lows (60 Days)
-        df_net = ds.get_sector_high_low_data(s_name, days=60)
+        # Layout: 2 Columns
+        c1, c2 = st.columns(2)
         
+        # --- PREPARE DATA ---
+        
+        # 1. Net H/L
+        df_net = ds.get_sector_high_low_data(s_name, days=days_chart)
+        
+        # 2. MA20 & MA50
+        df_ma20 = ds.get_breadth_history(s_name, 'pct_above_ma20', days=days_chart)
+        df_ma50 = ds.get_breadth_history(s_name, 'pct_above_ma50', days=days_chart)
+        
+        # 3. EMA Setup
+        df_setup = ds.get_breadth_data(s_name, metric='ema_trend_setup', days=days_chart)
+        df_active = ds.get_breadth_data(s_name, metric='active_count', days=days_chart)
+        
+        # 4. Momentum Tickers
+        tickers_cfg = ds.SECTORS_CONFIG[s_name]
+        ticker_cap = tickers_cfg['cap']
+        ticker_eq = tickers_cfg['equal']
+        
+        # --- SECTOR HEALTH INDEX ---
+        # Calculate components if data is available
+        if (not df_ma20.empty and not df_ma50.empty and 
+            df_setup is not None and not df_setup.empty and 
+            df_active is not None and not df_active.empty and 
+            not df_net.empty):
+            
+            try:
+                # Align all data frames
+                # Base index on active count or ma20
+                df_idx = df_active.join(df_ma20, rsuffix='_ma20', how='inner')
+                df_idx = df_idx.join(df_ma50, rsuffix='_ma50', how='inner')
+                df_idx = df_idx.join(df_setup, rsuffix='_setup', how='inner')
+                df_idx = df_idx.join(df_net, rsuffix='_net', how='inner')
+                
+                # Verify we have data
+                if not df_idx.empty:
+                    # 1. Trend (40%) - Avg(MA20, MA50, EMA Setup)
+                    # MA20/50 are already %, Setup needs calc
+                    idx_setup_pct = (df_idx['Value_setup'] / df_idx['Value']) * 100
+                    trend_score = (df_idx['Value_ma20'] + df_idx['Value_ma50'] + idx_setup_pct) / 3
+                    
+                    # 2. Momentum (30%) - 50 + (Spread / 2)
+                    spread = df_idx['Value_ma20'] - df_idx['Value_ma50']
+                    mom_score = 50 + (spread / 2)
+                    
+                    # 3. Leadership (30%) - 50 + (Net / Total * 50)
+                    # Net is raw count, div by active count
+                    leadership_ratio = df_idx['Net'] / df_idx['Value']
+                    # Clean potential inf/nan
+                    leadership_ratio = leadership_ratio.fillna(0)
+                    leadership_score = 50 + (leadership_ratio * 50)
+                    
+                    # Final Weighted Score
+                    final_score = (trend_score * 0.4) + (mom_score * 0.3) + (leadership_score * 0.3)
+                    
+                    # --- Discrete Chart ---
+                    fig_idx = go.Figure()
+                    
+                    # Add Score Line
+                    fig_idx.add_trace(go.Scatter(
+                        x=final_score.index, 
+                        y=final_score, 
+                        mode='lines', 
+                        line=dict(color='black', width=2),
+                        name='Health Index'
+                    ))
+                    
+                    # Background Zones (Colored Bands)
+                    # Bullish (60-100)
+                    fig_idx.add_hrect(y0=60, y1=100, fillcolor="green", opacity=0.1, line_width=0, layer="below")
+                    # Neutral (40-60)
+                    fig_idx.add_hrect(y0=40, y1=60, fillcolor="yellow", opacity=0.1, line_width=0, layer="below")
+                    # Bearish (0-40)
+                    fig_idx.add_hrect(y0=0, y1=40, fillcolor="red", opacity=0.1, line_width=0, layer="below")
+                    
+                    current_val = final_score.iloc[-1]
+                    color_val = "green" if current_val >= 60 else ("red" if current_val <= 40 else "orange")
+                    
+                    fig_idx.update_layout(
+                        title=dict(
+                            text=f"Sector Health Index: <span style='color:{color_val}'>{current_val:.1f}</span>",
+                            font=dict(size=14),
+                            x=0,
+                            y=0.9
+                        ),
+                        height=150, # Discrete height
+                        margin=dict(l=20, r=20, t=30, b=20),
+                        yaxis=dict(range=[0, 100], showticklabels=False, showgrid=False),
+                        xaxis=dict(showticklabels=False, showgrid=False),
+                        showlegend=False,
+                        hovermode="x unified"
+                    )
+                    
+                    # Remove Gaps
+                    dt_all = pd.date_range(start=final_score.index.min(), end=final_score.index.max())
+                    dt_breaks = dt_all.difference(final_score.index)
+                    fig_idx.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
+                    
+                    st.plotly_chart(fig_idx, use_container_width=True)
+                else:
+                    st.warning("Health Index: No overlapping data found after join.")
+            except Exception as e:
+                st.error(f"Health Index Error: {str(e)}")
+        else:
+             # Debug missing data
+             missing = []
+             if df_ma20.empty: missing.append("MA20")
+             if df_ma50.empty: missing.append("MA50")
+             if df_setup is None or df_setup.empty: missing.append("EMA Setup")
+             if df_active is None or df_active.empty: missing.append("Active Count")
+             if df_net.empty: missing.append("Net High/Low")
+             st.caption(f"Health Index N/A (Missing: {', '.join(missing)})")
+        
+        # --- COLUMN 1 (LEFT) ---
         with c1:
+            # Chart 1.1: Momentum (Combined) - MOVED TO TOP
+            df_mom_cap = ds.get_momentum_history(ticker_cap, period_days=days_chart)
+            df_mom_eq = ds.get_momentum_history(ticker_eq, period_days=days_chart)
+            
+            if not df_mom_cap.empty or not df_mom_eq.empty:
+                fig_mom = go.Figure()
+                
+                # Combine dates for gap removal
+                all_dates = pd.Index([])
+                if not df_mom_cap.empty: all_dates = all_dates.union(df_mom_cap.index)
+                if not df_mom_eq.empty: all_dates = all_dates.union(df_mom_eq.index)
+                
+                if not df_mom_cap.empty:
+                    fig_mom.add_trace(go.Scatter(x=df_mom_cap.index, y=df_mom_cap['Score'], name='Cap', line=dict(color='black', width=2)))
+                if not df_mom_eq.empty:
+                    fig_mom.add_trace(go.Scatter(x=df_mom_eq.index, y=df_mom_eq['Score'], name='Equal', line=dict(color='gray', width=1, dash='dot')))
+                    
+                # Background Zones 
+                fig_mom.add_hrect(y0=1, y1=100, fillcolor="green", opacity=0.05, line_width=0, layer="below")
+                fig_mom.add_hrect(y0=-100, y1=1, fillcolor="red", opacity=0.05, line_width=0, layer="below")
+                
+                # Dynamic Y range
+                y_vals = []
+                if not df_mom_cap.empty: y_vals.extend(df_mom_cap['Score'].dropna().values)
+                if not df_mom_eq.empty: y_vals.extend(df_mom_eq['Score'].dropna().values)
+                if y_vals:
+                    mn, mx = min(y_vals), max(y_vals)
+                    pad = (mx - mn) * 0.1 if mx != mn else 0.1
+                    fig_mom.update_yaxes(range=[min(mn, 0.9) - pad, max(mx, 1.1) + pad])
+
+                fig_mom.update_layout(title="Momentum Score", height=300, margin=dict(l=20, r=20, t=40, b=20), showlegend=True, legend=dict(x=0, y=1, orientation="h"))
+                
+                # Remove gaps
+                dt_all = pd.date_range(start=all_dates.min(), end=all_dates.max())
+                dt_breaks = dt_all.difference(all_dates)
+                fig_mom.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
+                
+                st.plotly_chart(fig_mom, use_container_width=True)
+            else:
+                 st.info("No Momentum Data")
+
+            # Chart 1.2: EMA Trend Setup
+            if df_setup is not None and not df_setup.empty and df_active is not None and not df_active.empty:
+                 # Align
+                df_ema = df_setup.join(df_active, lsuffix='_setup', rsuffix='_total', how='inner')
+                if not df_ema.empty and df_ema['Value_total'].sum() > 0:
+                    df_ema['pct'] = (df_ema['Value_setup'] / df_ema['Value_total']) * 100
+                    
+                    fig_ema = go.Figure()
+                    fig_ema.add_trace(go.Scatter(x=df_ema.index, y=df_ema['pct'], mode='lines', line=dict(color='#006652', width=2), name='% Setup'))
+                    fig_ema.update_layout(title="EMA Trend Setup (%)", height=300, margin=dict(l=20, r=20, t=40, b=20), showlegend=False)
+                    
+                    # Remove Gaps
+                    dt_all = pd.date_range(start=df_ema.index.min(), end=df_ema.index.max())
+                    dt_breaks = dt_all.difference(df_ema.index)
+                    fig_ema.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
+                    
+                    st.plotly_chart(fig_ema, use_container_width=True)
+                else:
+                    st.info("Insufficient EMA Data")
+            else:
+                 st.info("No EMA Setup Data")
+
+            # Chart 1.3: Net New Highs/Lows
             if not df_net.empty:
                 import plotly.graph_objects as go
                 fig1 = go.Figure()
@@ -1025,17 +1205,17 @@ elif page == "Sector Charts":
                 fig1.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
                 st.plotly_chart(fig1, use_container_width=True)
             else:
-                st.caption("No High/Low Data")
-                
-        # 2. % > MA20 (60 Days)
-        df_ma20 = ds.get_breadth_history(s_name, 'pct_above_ma20', days=60)
-        
+                st.info("No High/Low Data")
+
+        # --- COLUMN 2 (RIGHT) ---
         with c2:
+            # Chart 2.1: % > MA20
             if not df_ma20.empty:
                 fig2 = go.Figure()
-                fig2.add_trace(go.Scatter(x=df_ma20.index, y=df_ma20['Value'], mode='lines', line=dict(color='blue')))
+                fig2.add_trace(go.Scatter(x=df_ma20.index, y=df_ma20['Value'], mode='lines', line=dict(color='#ffc658'))) # Yellow/Orange
                 fig2.update_layout(title="% > MA20", height=300, yaxis=dict(range=[0, 100]), margin=dict(l=20, r=20, t=40, b=20), showlegend=False)
-                # Remove gaps
+                
+                 # Remove gaps
                 dt_all = pd.date_range(start=df_ma20.index.min(), end=df_ma20.index.max())
                 dt_breaks = dt_all.difference(df_ma20.index)
                 fig2.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
@@ -1043,77 +1223,46 @@ elif page == "Sector Charts":
                 fig2.add_hline(y=50, line_dash="dot", line_color="gray")
                 st.plotly_chart(fig2, use_container_width=True)
             else:
-                st.caption("No Breadth Data")
+                st.info("No Data for % > MA20")
 
-        # 3. % > MA50 (60 Days)
-        df_ma50 = ds.get_breadth_history(s_name, 'pct_above_ma50', days=60)
-        
-        with c3:
+            # Chart 2.2: % > MA50
             if not df_ma50.empty:
                 fig3 = go.Figure()
-                fig3.add_trace(go.Scatter(x=df_ma50.index, y=df_ma50['Value'], mode='lines', line=dict(color='purple')))
+                fig3.add_trace(go.Scatter(x=df_ma50.index, y=df_ma50['Value'], mode='lines', line=dict(color='#ff7300'))) # Orange/Red
                 fig3.update_layout(title="% > MA50", height=300, yaxis=dict(range=[0, 100]), margin=dict(l=20, r=20, t=40, b=20), showlegend=False)
+                
                 # Remove gaps
                 dt_all = pd.date_range(start=df_ma50.index.min(), end=df_ma50.index.max())
                 dt_breaks = dt_all.difference(df_ma50.index)
                 fig3.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
-                
+
                 fig3.add_hline(y=50, line_dash="dot", line_color="gray")
                 st.plotly_chart(fig3, use_container_width=True)
             else:
-                st.caption("No Breadth Data")
+                st.info("No Data for % > MA50")
 
-        # Row 2: Momentum (2 Cols)
-        c4, c5 = st.columns(2)
-
-        # Get Tickers for both weights
-        tickers = ds.SECTORS_CONFIG[s_name]
-        s_ticker_cap = tickers['cap']
-        s_ticker_equal = tickers['equal']
-        
-        # Helper to plot momentum
-        def plot_momentum_chart(col_obj, ticker, title_suffix):
-             df_mom = ds.get_momentum_history(ticker, period_days=60)
-             
-             with col_obj:
-                 if not df_mom.empty:
-                    fig = go.Figure()
+            # Chart 2.3: Spread (% > MA20 - % > MA50)
+            if not df_ma20.empty and not df_ma50.empty:
+                # Align
+                df_spd = df_ma20.join(df_ma50, lsuffix='_20', rsuffix='_50', how='inner')
+                if not df_spd.empty:
+                    df_spd['diff'] = df_spd['Value_20'] - df_spd['Value_50']
                     
-                    # Colored background zones
-                    min_y = min(df_mom['Score'].min(), -2)
-                    max_y = max(df_mom['Score'].max(), 2)
-                    
-                    # Ensure 1 is in range
-                    min_y = min(min_y, 0.95)
-                    max_y = max(max_y, 1.05)
-                    
-                    # Green Zone (>1)
-                    fig.add_shape(type="rect", x0=df_mom.index.min(), x1=df_mom.index.max(), y0=1, y1=max_y, fillcolor="green", opacity=0.1, layer="below", line_width=0)
-                    # Red Zone (<1)
-                    fig.add_shape(type="rect", x0=df_mom.index.min(), x1=df_mom.index.max(), y0=min_y, y1=1, fillcolor="red", opacity=0.1, layer="below", line_width=0)
-                    
-                    fig.add_trace(go.Scatter(x=df_mom.index, y=df_mom['Score'], mode='lines', line=dict(color='black')))
-                    fig.update_layout(
-                        title=f"Momentum Score {title_suffix}", 
-                        height=300, 
-                        margin=dict(l=20, r=20, t=40, b=20), 
-                        showlegend=False
-                    )
+                    fig_spd = go.Figure()
+                    colors = ['green' if x >= 0 else 'red' for x in df_spd['diff']]
+                    fig_spd.add_trace(go.Bar(x=df_spd.index, y=df_spd['diff'], marker_color=colors))
+                    fig_spd.update_layout(title="Spread (% > MA20 - % > MA50)", height=300, margin=dict(l=20, r=20, t=40, b=20), showlegend=False)
                     
                     # Remove gaps
-                    dt_all = pd.date_range(start=df_mom.index.min(), end=df_mom.index.max())
-                    dt_breaks = dt_all.difference(df_mom.index)
-                    fig.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
+                    dt_all = pd.date_range(start=df_spd.index.min(), end=df_spd.index.max())
+                    dt_breaks = dt_all.difference(df_spd.index)
+                    fig_spd.update_xaxes(rangebreaks=[dict(values=dt_breaks)])
                     
-                    st.plotly_chart(fig, use_container_width=True)
-                 else:
-                    st.caption(f"No Momentum Data for {ticker}")
-
-        # 4. Momentum Score (Cap Weighted)
-        plot_momentum_chart(c4, s_ticker_cap, f"({s_ticker_cap})")
-
-        # 5. Momentum Score (Equal Weighted)
-        plot_momentum_chart(c5, s_ticker_equal, f"({s_ticker_equal})")
+                    st.plotly_chart(fig_spd, use_container_width=True)
+                else:
+                    st.info("No Overlapping Data for Spread")
+            else:
+                st.info("Insufficient Data for Spread")
 
         st.divider()
 
@@ -1308,6 +1457,105 @@ elif page == "Análise de Setores":
                         st.markdown("### Detalhes")
                         st.dataframe(df, use_container_width=True)
 
+
+elif page == "Análise de Indústrias":
+    st.header("Análise de Indústrias")
+    st.write("Identifique a distribuição industrial da sua lista de ações.")
+
+    # Input Area
+    raw_input = st.text_area("Insira os Tickers (separados por vírgula, espaço ou nova linha):", height=150, placeholder="AAPL, MSFT\nGOOG XLE", key="ind_input")
+    
+    if st.button("Analisar Carteira", key="btn_ind"):
+        if not raw_input.strip():
+            st.warning("Por favor, insira pelo menos um ticker.")
+        else:
+            # Parse using Regex to handle multiple separators
+            import re
+            # Split by comma, newline, or whitespace
+            tickers = re.split(r'[,\s\n]+', raw_input)
+            # Clean and filter empty strings
+            tickers = [t.strip().upper() for t in tickers if t.strip()]
+            
+            if not tickers:
+                st.warning("Nenhum ticker válido encontrado.")
+            else:
+                with st.spinner("Analisando indústrias..."):
+                    # Backend Calls
+                    ind_map = ds.get_industries_for_tickers(tickers)
+                    ind_totals = ds.get_industry_counts()
+                    
+
+                    # Identify unknowns initially
+                    unknowns = [t for t in tickers if t not in ind_map]
+                    
+                    if unknowns:
+                        st.info(f"Buscando {len(unknowns)} tickers desconhecidos no Yahoo Finance...")
+                        yahoo_map = ds.fetch_industry_from_yahoo(unknowns)
+                        
+                        # Merge results
+                        if yahoo_map:
+                            ind_map.update(yahoo_map)
+                            st.success(f"Encontradas {len(yahoo_map)} indústrias via Yahoo Finance.")
+                        
+                        # Re-evaluate unknowns
+                        unknowns = [t for t in tickers if t not in ind_map]
+
+                    # 1. Process User Data
+                    user_counts = {}
+                    for t in tickers:
+                        if t in ind_map:
+                            i_name = ind_map[t]
+                            user_counts[i_name] = user_counts.get(i_name, 0) + 1
+                            
+                    if unknowns:
+                        st.warning(f"Tickers não encontrados na base ou Yahoo: {', '.join(unknowns)}")
+                    
+                    if not user_counts:
+                         st.error("Nenhuma indústria identificada para os tickers fornecidos.")
+                    else:
+                        # 2. Calculate Ratios
+                        data = []
+                        for industry, u_count in user_counts.items():
+                            app_count = ind_totals.get(industry, 0)
+                            
+                            ratio = 0
+                            if app_count > 0:
+                                ratio = u_count / app_count
+                                
+                            data.append({
+                                'Indústria': industry,
+                                'Seu Contagem': u_count,
+                                'Total no App': app_count,
+                                'Razão': ratio,
+                                'Razão (%)': ratio * 100
+                            })
+                            
+                        # Create DF
+                        df = pd.DataFrame(data)
+                        df = df.sort_values('Razão', ascending=False)
+                        
+                        st.divider()
+                        st.subheader("Representatividade Industrial")
+                        
+                        # Chart
+                        fig = px.bar(
+                            df, 
+                            x='Indústria', 
+                            y='Razão (%)',
+                            text='Razão (%)',
+                            title="Densidade da Carteira por Indústria (Sua Qtde / Total Monitorado)",
+                            labels={'Razão (%)': 'Razão (%)'},
+                            color='Razão (%)',
+                            color_continuous_scale='Viridis'
+                        )
+                        fig.update_traces(texttemplate='%{text:.2f}%', textposition='outside')
+                        fig.update_layout(height=600)
+                        st.plotly_chart(fig, use_container_width=True)
+                        
+                        # Dataframe
+                        st.markdown("### Detalhes")
+                        st.dataframe(df, use_container_width=True)
+
 elif page == "ATR Strength":
     st.header("ATR Strength Panel (Bullish)")
     st.markdown("---")
@@ -1423,6 +1671,225 @@ elif page == "ATR Strength":
             fig.update_traces(texttemplate='%{label}<br>(%{customdata[0]}) %{customdata[1]:.1f}%') # Add Count and Pct to Label
             
 
+            with cols[i % 2]:
+                st.plotly_chart(fig, use_container_width=True)
+
+
+
+
+elif page == "ATR Neutral":
+    st.header("ATR Volatility Panel (Significant Moves > 0.7 ATR)")
+    st.markdown("---")
+    
+    # Date Selection
+    latest_date = ds.get_latest_data_date()
+    st.info(f"Showing data for: **{latest_date}**")
+    
+    # Fetch Data
+    with st.spinner("Calculating ATR Stats..."):
+        df_atr = ds.get_atr_variation_stats(target_date=latest_date)
+        
+    if df_atr.empty:
+        st.warning("No data found for the selected date.")
+    else:
+        # Filter: Significant Moves (Volatile)
+        # Abs(change) > 0.7 * ATR
+        df_qualified = df_atr[df_atr['is_volatile']].copy()
+        
+        # Total counts (Denominator is all stocks)
+        total_counts_sector = df_atr.groupby('Sector')['ticker'].count().reset_index(name='TotalCount')
+        total_counts_industry = df_atr.groupby(['Sector', 'Industry'])['ticker'].count().reset_index(name='TotalCount')
+        
+        # --- Sector Aggregation ---
+        qual_counts_sector = df_qualified.groupby('Sector')['ticker'].count().reset_index(name='QualifiedCount')
+        # Mean Signal Strength (Can be positive or negative)
+        qual_strength_sector = df_qualified.groupby('Sector')['signal_strength'].mean().reset_index(name='MeanStrength')
+        
+        df_sector_agg = pd.merge(total_counts_sector, qual_counts_sector, on='Sector', how='left').fillna(0)
+        df_sector_agg = pd.merge(df_sector_agg, qual_strength_sector, on='Sector', how='left')
+        
+        df_sector_agg['PctQualified'] = (df_sector_agg['QualifiedCount'] / df_sector_agg['TotalCount']) * 100
+        df_sector_agg['MeanStrength'] = df_sector_agg['MeanStrength'].fillna(0)
+        
+        # --- Industry Aggregation ---
+        qual_counts_ind = df_qualified.groupby(['Sector', 'Industry'])['ticker'].count().reset_index(name='QualifiedCount')
+        qual_strength_ind = df_qualified.groupby(['Sector', 'Industry'])['signal_strength'].mean().reset_index(name='MeanStrength')
+        
+        df_ind_agg = pd.merge(total_counts_industry, qual_counts_ind, on=['Sector', 'Industry'], how='left').fillna(0)
+        df_ind_agg = pd.merge(df_ind_agg, qual_strength_ind, on=['Sector', 'Industry'], how='left')
+        
+        df_ind_agg['PctQualified'] = (df_ind_agg['QualifiedCount'] / df_ind_agg['TotalCount']) * 100
+        df_ind_agg['MeanStrength'] = df_ind_agg['MeanStrength'].fillna(0)
+        
+        # Color Scale: Blue (Positive) to Purple (Negative)
+        # Deep Purple (Neg) -> Light Purple -> Grey -> Light Blue -> Deep Blue (Pos)
+        color_scale_neutral = [
+            '#4b0082', '#800080', '#ba55d3', '#e6e6fa', '#f0f0f0', 
+            '#e0ffff', '#87cefa', '#00bfff', '#0000ff'
+        ]
+        
+        # --- Visualization 1: Sector Treemap ---
+        st.subheader("Sector Volatility")
+        st.caption("Size = % Active Stocks (> 0.7 ATR Move) | Color = Mean Strength (Blue=Up, Purple=Down)")
+        
+        fig_sec = px.treemap(
+            df_sector_agg,
+            path=['Sector'],
+            values='PctQualified', # Size
+            color='MeanStrength',  # Color (Diverging)
+            color_continuous_scale=color_scale_neutral, 
+            # Center color scale at 0? 
+            # If we don't fix range, 0 might not be center if data is skewed.
+            # Ideally we center it.
+            range_color=[-2, 2], # Clip at 2x ATR average move? Or dynamic symetric?
+            title='Sectors by Volatility Activity',
+            hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength'],
+            custom_data=['QualifiedCount', 'PctQualified']
+        )
+        fig_sec.update_traces(texttemplate='%{label}<br>(%{customdata[0]}) %{customdata[1]:.1f}%')
+        
+        st.plotly_chart(fig_sec, use_container_width=True)
+        
+        st.divider()
+        
+        # --- Visualization 2: Industry Treemaps per Sector ---
+        st.subheader("Industry Volatility by Sector")
+        
+        sectors = df_ind_agg['Sector'].unique()
+        sectors.sort()
+        
+        cols = st.columns(2)
+        
+        for i, sector in enumerate(sectors):
+            df_sec_ind = df_ind_agg[df_ind_agg['Sector'] == sector].copy()
+            
+            if df_sec_ind.empty or df_sec_ind['PctQualified'].sum() == 0:
+                continue
+                
+            fig = px.treemap(
+                df_sec_ind,
+                path=['Industry'],
+                values='PctQualified',
+                color='MeanStrength',
+                color_continuous_scale=color_scale_neutral,
+                range_color=[-2, 2],
+                title=f"{sector}",
+                hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength'],
+                custom_data=['QualifiedCount', 'PctQualified']
+            )
+            fig.update_traces(texttemplate='%{label}<br>(%{customdata[0]}) %{customdata[1]:.1f}%')
+            
+            with cols[i % 2]:
+                st.plotly_chart(fig, use_container_width=True)
+
+
+elif page == "ATR Weakness":
+    st.header("ATR Weakness Panel (Bearish)")
+    st.markdown("---")
+    
+    # Date Selection (Mirrors ATR Strength)
+    latest_date = ds.get_latest_data_date()
+    st.info(f"Showing data for: **{latest_date}**")
+    
+    # Fetch Data
+    with st.spinner("Calculating ATR Stats..."):
+        df_atr = ds.get_atr_variation_stats(target_date=latest_date)
+        
+    if df_atr.empty:
+        st.warning("No data found for the selected date.")
+    else:
+        # Filter for Weakness Logic
+        # Total counts (Same as Strength, denominator is all stocks)
+        total_counts_sector = df_atr.groupby('Sector')['ticker'].count().reset_index(name='TotalCount')
+        total_counts_industry = df_atr.groupby(['Sector', 'Industry'])['ticker'].count().reset_index(name='TotalCount')
+        
+        # Filter: Stocks < -0.7 ATR (Weakness)
+        # Note: signal_strength will be negative (e.g. -1.5).
+        df_qualified = df_atr[df_atr['is_below_atr']].copy()
+        
+        # --- Sector Aggregation ---
+        qual_counts_sector = df_qualified.groupby('Sector')['ticker'].count().reset_index(name='QualifiedCount')
+        # Mean Signal Strength (Negative values)
+        qual_strength_sector = df_qualified.groupby('Sector')['signal_strength'].mean().reset_index(name='MeanStrength')
+        
+        # Merge Sector
+        df_sector_agg = pd.merge(total_counts_sector, qual_counts_sector, on='Sector', how='left').fillna(0)
+        df_sector_agg = pd.merge(df_sector_agg, qual_strength_sector, on='Sector', how='left')
+        
+        df_sector_agg['PctQualified'] = (df_sector_agg['QualifiedCount'] / df_sector_agg['TotalCount']) * 100
+        df_sector_agg['MeanStrength'] = df_sector_agg['MeanStrength'].fillna(0)
+        
+        # --- Industry Aggregation ---
+        qual_counts_ind = df_qualified.groupby(['Sector', 'Industry'])['ticker'].count().reset_index(name='QualifiedCount')
+        qual_strength_ind = df_qualified.groupby(['Sector', 'Industry'])['signal_strength'].mean().reset_index(name='MeanStrength')
+        
+        df_ind_agg = pd.merge(total_counts_industry, qual_counts_ind, on=['Sector', 'Industry'], how='left').fillna(0)
+        df_ind_agg = pd.merge(df_ind_agg, qual_strength_ind, on=['Sector', 'Industry'], how='left')
+        
+        df_ind_agg['PctQualified'] = (df_ind_agg['QualifiedCount'] / df_ind_agg['TotalCount']) * 100
+        df_ind_agg['MeanStrength'] = df_ind_agg['MeanStrength'].fillna(0)
+        
+        # Color Scale: Orange to Yellow
+        # Logic: We want STRONGER NEGATIVE (e.g. -3.0) to be DARK ORANGE.
+        # Weaker Negative (e.g. -0.7) to be YELLOW.
+        # Plotly maps min value to start of scale, max value to end.
+        
+        # Range of data: -3.0 (Min) to -0.7 (Max).
+        # Scale: ['#cc5500' (Dark/Burnt Orange), ..., '#ffff00' (Yellow)]
+        # If we map directly: Min (-3.0) -> Start (#cc5500). Max (-0.7) -> End (#ffff00).
+        # This matches the "Dark = Strong" intuition.
+        color_scale_weakness = [
+            '#cc5500', '#e65c00', '#ff6600', '#ff8000', '#ff9933', 
+            '#ffb366', '#ffcc99', '#ffe5cc', '#ffff00'
+        ]
+        
+        # --- Visualization 1: Sector Treemap ---
+        st.subheader("Sector Bearish Weakness")
+        st.caption("Size = % Stocks < -0.7 ATR (Negative) | Color = Mean Strength (Drop / ATR)")
+        
+        fig_sec = px.treemap(
+            df_sector_agg,
+            path=['Sector'],
+            values='PctQualified', # Size
+            color='MeanStrength',  # Color (Negative values)
+            color_continuous_scale=color_scale_weakness, 
+            title='Sectors by Weakness Intensity',
+            hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength'],
+            custom_data=['QualifiedCount', 'PctQualified']
+        )
+        fig_sec.update_traces(texttemplate='%{label}<br>(%{customdata[0]}) %{customdata[1]:.1f}%')
+        
+        st.plotly_chart(fig_sec, use_container_width=True)
+        
+        st.divider()
+        
+        # --- Visualization 2: Industry Treemaps per Sector ---
+        st.subheader("Industry Weakness by Sector")
+        st.caption("Detailed view per Sector.")
+        
+        sectors = df_ind_agg['Sector'].unique()
+        sectors.sort()
+        
+        cols = st.columns(2)
+        
+        for i, sector in enumerate(sectors):
+            df_sec_ind = df_ind_agg[df_ind_agg['Sector'] == sector].copy()
+            
+            if df_sec_ind.empty or df_sec_ind['PctQualified'].sum() == 0:
+                continue
+                
+            fig = px.treemap(
+                df_sec_ind,
+                path=['Industry'],
+                values='PctQualified',
+                color='MeanStrength',
+                color_continuous_scale=color_scale_weakness,
+                title=f"{sector}",
+                hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength'],
+                custom_data=['QualifiedCount', 'PctQualified']
+            )
+            fig.update_traces(texttemplate='%{label}<br>(%{customdata[0]}) %{customdata[1]:.1f}%')
+            
             with cols[i % 2]:
                 st.plotly_chart(fig, use_container_width=True)
 

@@ -497,6 +497,10 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
         sectors = query.all()
         total_sectors = len(sectors)
         
+        # Tracking variables for reporting
+        all_sector_names = [s.name for s in sectors]
+        updated_sectors = []
+        
         for idx, sector in enumerate(sectors):
             try:
                 constituents = {c.ticker: c.id for c in sector.constituents}
@@ -734,6 +738,19 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                     progress_callback(msg, (idx + 1) / total_sectors)
                 
                 print(f"  Finished {sector.name}.")
+
+                # --- Status Report per User Request ---
+                updated_sectors.append(sector.name)
+                pending_sectors = [s for s in all_sector_names if s not in updated_sectors]
+                
+                print(f"  [Status Report]")
+                print(f"  > Updated ({len(updated_sectors)}): {', '.join(updated_sectors)}")
+                if pending_sectors:
+                    print(f"  > Pending ({len(pending_sectors)}): {', '.join(pending_sectors)}")
+                else:
+                    print(f"  > All sectors updated.")
+                print("-" * 50)
+                # --------------------------------------
                 
             except Exception as e:
                 print(f"CRITICAL ERROR updating sector {sector.name}: {e}")
@@ -1799,6 +1816,8 @@ def get_atr_variation_stats(target_date=None):
         merged['change'] = (merged['close'] - merged['prev_close'])
         # User defined criteria: Variation > 0.7 * ATR and Positive
         merged['is_above_atr'] = merged['change'] > (0.7 * merged['atr14'])
+        merged['is_below_atr'] = merged['change'] < (-0.7 * merged['atr14'])
+        merged['is_volatile'] = merged['change'].abs() > (0.7 * merged['atr14'])
         merged['signal_strength'] = merged['change'] / merged['atr14'] # Ratio
         
         return merged
@@ -1854,3 +1873,63 @@ def fetch_sector_from_yahoo(tickers: list) -> dict:
             print(f"  Error fetching {t} from Yahoo: {e}")
             
     return found_sectors
+
+def get_industries_for_tickers(tickers: list) -> dict:
+    """
+    Identifies the industry for a list of tickers.
+    Returns: dict {ticker: industry_name}
+    """
+    db = next(get_db())
+    try:
+        # Clean inputs
+        clean_tickers = [t.strip().upper() for t in tickers if t and t.strip()]
+        if not clean_tickers:
+            return {}
+            
+        results = db.query(Constituent.ticker, Constituent.industry)\
+            .filter(Constituent.ticker.in_(clean_tickers))\
+            .all()
+            
+        return {r[0]: r[1] for r in results}
+    finally:
+        db.close()
+
+def get_industry_counts() -> dict:
+    """
+    Returns the total number of constituents per industry in the database.
+    Returns: dict {industry_name: count}
+    """
+    db = next(get_db())
+    try:
+        results = db.query(Constituent.industry, func.count(Constituent.id))\
+            .join(Sector)\
+            .filter(Sector.type == 'cap')\
+            .group_by(Constituent.industry)\
+            .all()
+            
+        return {r[0]: r[1] for r in results if r[0]} # Ensure industry is not None
+    finally:
+        db.close()
+
+def fetch_industry_from_yahoo(tickers: list) -> dict:
+    """
+    Fetches industry information from Yahoo Finance for a list of tickers.
+    """
+    if not tickers:
+        return {}
+
+    found_industries = {}
+    
+    print(f"Fetching Yahoo industry info for: {tickers}")
+    
+    for t in tickers:
+        try:
+            info = yf.Ticker(t).info
+            y_industry = info.get('industry')
+            
+            if y_industry:
+                found_industries[t] = y_industry
+        except Exception as e:
+            print(f"  Error fetching {t} from Yahoo: {e}")
+            
+    return found_industries
