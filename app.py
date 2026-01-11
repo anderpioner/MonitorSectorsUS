@@ -4,6 +4,11 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import data_service as ds
 import pandas as pd
+import importlib
+importlib.reload(ds)
+
+# Debug Version
+# st.sidebar.write(f"Data Service Version: {getattr(ds, 'VERSION', 'Unknown')}")
 
 st.set_page_config(page_title="US Market Sector Monitor", layout="wide")
 
@@ -40,7 +45,7 @@ if "current_view" not in st.session_state:
 
 opts_etf = ["Overview", "Performance Matrix", "Momentum Ranking", "Momentum Score charts"]
 opts_breadth = ["Sector Charts", "Market Breadth", "New Highs / Lows", "ATR Strength", "ATR Neutral", "ATR Weakness", "EMA Trend Setup", "Stocks > 25% (84d)", "Análise de Setores", "Análise de Indústrias"]
-opts_individual = ["Stocks Counting"]
+opts_individual = ["Stocks Counting", "Top Performers", "ATR Performers", "AI Theme Analysis"]
 opts_admin = ["Data Management"]
 
 # Determine indices based on current state
@@ -1266,6 +1271,224 @@ elif page == "Sector Charts":
 
         st.divider()
 
+elif page == "Top Performers":
+    st.header("Top Gainers & Losers by Sector")
+    
+    # Date Selection
+    available_dates = ds.get_available_dates()
+    if not available_dates:
+        st.warning("No data available in the database. Please update the data in the Data Management page.")
+    else:
+        # User requested: "Crie um menu onde seja possível escolher a data em que se deseja visualizar os top gainers."
+        selected_date = st.selectbox("Select Date:", available_dates, key="top_performers_date_sel")
+        
+        if selected_date:
+            with st.spinner("Calculating performance..."):
+                gainers, losers = ds.get_top_performers(selected_date)
+            
+            if gainers is None:
+                st.warning(f"Could not find a previous trading day to calculate returns for {selected_date}.")
+            elif not gainers:
+                st.warning(f"No return data found for {selected_date}.")
+            else:
+                st.subheader(f"Top 20 Gainers (% Change)")
+                # Convert gainers map to DataFrame where keys are columns
+                df_gainers = pd.DataFrame(gainers)
+                # Ensure rows are 1 to 20
+                df_gainers.index = range(1, len(df_gainers) + 1)
+                
+                # Normalize column widths
+                # Assuming about 100px for each of the 11 columns fits well in 'wide' mode
+                col_config = {col: st.column_config.TextColumn(col, width="small") for col in df_gainers.columns}
+                
+                st.dataframe(df_gainers, use_container_width=True, column_config=col_config)
+                
+                st.divider()
+                
+                st.subheader(f"Top 20 Losers (% Change)")
+                df_losers = pd.DataFrame(losers)
+                df_losers.index = range(1, len(df_losers) + 1)
+                st.dataframe(df_losers, use_container_width=True, column_config=col_config)
+
+elif page == "ATR Performers":
+    st.header("ATR Performers (Variation / ATR)")
+    st.markdown("""
+    Esta página identifica as ações que tiveram o movimento mais forte do dia em relação à sua volatilidade média (ATR).
+    Um valor de **2.00x** significa que a ação se moveu 2 vezes o seu ATR médio diário.
+    """)
+    
+    available_dates = ds.get_available_dates()
+    if not available_dates:
+        st.warning("No data available.")
+    else:
+        selected_date = st.selectbox("Selecione a Data:", available_dates, key="atr_perf_date_sel")
+        
+        if selected_date:
+            view_mode = st.radio("Selecione a Visualização:", ["Tabelas", "Treemap (Heatmap)"], horizontal=True, key="atr_perf_view_sel")
+            
+            if view_mode == "Tabelas":
+                with st.spinner("Calculando performance relativa ao ATR..."):
+                    gainers, losers = ds.get_atr_performers(selected_date)
+                
+                if gainers is None:
+                    st.warning(f"Não foi possível calcular retornos para {selected_date}.")
+                elif not gainers:
+                    st.warning(f"Sem dados para {selected_date}.")
+                else:
+                    st.subheader("Top 20 ATR Gainers (Strength)")
+                    df_gainers = pd.DataFrame(gainers)
+                    df_gainers.index = range(1, len(df_gainers) + 1)
+                    
+                    # Use same config as Top Performers
+                    col_config = {col: st.column_config.TextColumn(col, width="small") for col in df_gainers.columns}
+                    st.dataframe(df_gainers, use_container_width=True, column_config=col_config)
+                    
+                    st.divider()
+                    
+                    st.subheader("Top 20 ATR Losers (Weakness)")
+                    df_losers = pd.DataFrame(losers)
+                    df_losers.index = range(1, len(df_losers) + 1)
+                    st.dataframe(df_losers, use_container_width=True, column_config=col_config)
+                    
+                    st.divider()
+                    
+                    if st.button("🪄 Gerar Análise de Temas via AI (Baseado em ATR)", type="primary"):
+                        with st.spinner("Buscando anomalias de volatilidade no mercado..."):
+                            top_atr_gainers = ds.get_market_top_atr_performers(selected_date, top_n=50)
+                        
+                        if top_atr_gainers.empty:
+                            st.info("Não foi possível encontrar dados para a análise de mercado total.")
+                        else:
+                            with st.spinner("Gemini está identificando as narrativas por trás destas anomalias..."):
+                                analysis = ds.analyze_atr_themes_with_ai(selected_date, top_atr_gainers)
+                                st.markdown("### Análise de Temas (Anomalias de Volatilidade)")
+                                st.markdown(analysis)
+            else:
+                # Treemap View
+                focus = st.radio("Foco do Heatmap:", ["Bullish (Strength)", "Neutral (Volatility)", "Bearish (Weakness)"], horizontal=True, key="atr_perf_focus")
+                
+                with st.spinner("Gerando Treemaps..."):
+                    df_atr = ds.get_atr_variation_stats(target_date=selected_date)
+                
+                if df_atr.empty:
+                    st.warning(f"Sem dados de ATR para {selected_date}.")
+                else:
+                    # Logic mirrored from individual ATR pages
+                    total_counts_sector = df_atr.groupby('Sector')['ticker'].count().reset_index(name='TotalCount')
+                    total_counts_industry = df_atr.groupby(['Sector', 'Industry'])['ticker'].count().reset_index(name='TotalCount')
+                    
+                    if focus == "Bullish (Strength)":
+                        df_qualified = df_atr[df_atr['is_above_atr']].copy()
+                        color_scale = ['#0000ff', '#0040ff', '#0080ff', '#00c0ff', '#00ffff', '#00ffc0', '#00ff80', '#00ff40', '#00ff00']
+                        c_range = [0.7, 3.0] # Fixed range to avoid outliers washing out colors
+                        title_suffix = "Bullish Strength"
+                        size_cap = "Size = % Stocks > 0.7 ATR (Positive) | Color = Mean Strength (Gain / ATR)"
+                    elif focus == "Bearish (Weakness)":
+                        df_qualified = df_atr[df_atr['is_below_atr']].copy()
+                        color_scale = ['#cc5500', '#e65c00', '#ff6600', '#ff8000', '#ff9933', '#ffb366', '#ffcc99', '#ffe5cc', '#ffff00']
+                        c_range = [-3.0, -0.7] # Fixed range for negative moves
+                        title_suffix = "Bearish Weakness"
+                        size_cap = "Size = % Stocks < -0.7 ATR (Negative) | Color = Mean Strength (Drop / ATR)"
+                    else:
+                        df_qualified = df_atr[df_atr['is_volatile']].copy()
+                        color_scale = ['#4b0082', '#800080', '#ba55d3', '#e6e6fa', '#f0f0f0', '#e0ffff', '#87cefa', '#00bfff', '#0000ff']
+                        c_range = [-2, 2]
+                        title_suffix = "Volatility"
+                        size_cap = "Size = % Active Stocks (> 0.7 ATR Move) | Color = Mean Strength (Blue=Up, Purple=Down)"
+
+                    # Preparation of Ticker-level data for drill-down
+                    df_tickers = df_qualified.copy()
+                    df_tickers = pd.merge(df_tickers, total_counts_sector.rename(columns={'TotalCount': 'TotalCount_Sec'}), on='Sector', how='left')
+                    df_tickers = pd.merge(df_tickers, total_counts_industry.rename(columns={'TotalCount': 'TotalCount_Ind'}), on=['Sector', 'Industry'], how='left')
+                    
+                    # Normalized Weights to keep sizes proportional to PctQualified
+                    # sum(Weight_Sec) per Sector = PctQualified of Sector
+                    df_tickers['Weight_Sec'] = 100.0 / df_tickers['TotalCount_Sec']
+                    # sum(Weight_Ind) per Industry = PctQualified of Industry
+                    df_tickers['Weight_Ind'] = 100.0 / df_tickers['TotalCount_Ind']
+
+                    # --- Visualization 1: Sector Treemap (Drill-down: Sector > Industry > Ticker) ---
+                    st.subheader(f"Sector {title_suffix}")
+                    st.caption(size_cap + " | Click para Drill-down")
+                    
+                    fig_sec = px.treemap(
+                        df_tickers,
+                        path=['Sector', 'Industry', 'ticker'],
+                        values='Weight_Sec',
+                        color='signal_strength',
+                        color_continuous_scale=color_scale,
+                        range_color=c_range,
+                        hover_data={'signal_strength': ':.2f', 'Weight_Sec': ':.1f'},
+                    )
+                    fig_sec.update_traces(
+                        texttemplate='<b>%{label}</b><br>%{value:.1f}%',
+                        hovertemplate='<b>%{label}</b><br>Strength: %{color:.2f}x ATR<br>Weight: %{value:.1f}%'
+                    )
+                    st.plotly_chart(fig_sec, use_container_width=True)
+
+                    st.divider()
+
+                    # --- Visualization 2: Industry Treemaps per Sector (Drill-down: Industry > Ticker) ---
+                    st.subheader(f"Industry {title_suffix} by Sector")
+                    st.caption("Detailed view per Sector. Click in filters to see individual tickers.")
+                    
+                    sectors = sorted(df_tickers['Sector'].unique())
+                    cols = st.columns(2)
+                    
+                    for i, sector in enumerate(sectors):
+                        df_sec_tickers = df_tickers[df_tickers['Sector'] == sector].copy()
+                        if df_sec_tickers.empty: continue
+                        
+                        fig = px.treemap(
+                            df_sec_tickers,
+                            path=['Industry', 'ticker'],
+                            values='Weight_Ind',
+                            color='signal_strength',
+                            color_continuous_scale=color_scale,
+                            range_color=c_range,
+                            title=f"{sector}",
+                            hover_data={'signal_strength': ':.2f', 'Weight_Ind': ':.1f'}
+                        )
+                        fig.update_traces(
+                            texttemplate='<b>%{label}</b><br>%{value:.1f}%',
+                            hovertemplate='<b>%{label}</b><br>Strength: %{color:.2f}x ATR<br>Weight: %{value:.1f}%'
+                        )
+                        cols[i % 2].plotly_chart(fig, use_container_width=True)
+
+elif page == "AI Theme Analysis":
+    st.header("AI Theme Analysis: Market Winners")
+    st.markdown("""
+    Esta página utiliza Inteligência Artificial (Gemini) para identificar temas e narrativas comuns 
+    entre as 50 ações de maior alta no dia selecionado.
+    """)
+    
+    available_dates = ds.get_available_dates()
+    if not available_dates:
+        st.warning("No data available.")
+    else:
+        selected_date = st.selectbox("Selecione a Data:", available_dates, key="ai_theme_date_sel")
+        
+        if selected_date:
+            with st.spinner("Buscando maiores altas do mercado..."):
+                top_gainers = ds.get_market_top_gainers(selected_date, top_n=50)
+            
+            if top_gainers.empty:
+                st.info(f"Sem dados de retorno para {selected_date}.")
+            else:
+                st.subheader(f"Top 50 Gainers - {selected_date}")
+                st.dataframe(
+                    top_gainers[['Ticker', 'Sector', 'Industry', 'Return']], 
+                    use_container_width=True,
+                    height=300
+                )
+                
+                if st.button("🪄 Gerar Análise de Temas (AI)", type="primary"):
+                    with st.spinner("Gemini está analisando os dados..."):
+                        analysis = ds.analyze_themes_with_ai(selected_date, top_gainers)
+                        st.markdown("---")
+                        st.markdown("### Análise da AI")
+                        st.markdown(analysis)
+
 elif page == "Stocks Counting":
     st.header("Sector Constituents")
     st.markdown("View the list of stocks (tickers) belonging to each sector.")
@@ -1561,118 +1784,82 @@ elif page == "ATR Strength":
     st.markdown("---")
     
     # Date Selection
-    latest_date = ds.get_latest_data_date()
-    # Ideally allow date selection, but sticking to latest for now
-    st.info(f"Showing data for: **{latest_date}**")
-    
-    # Fetch Data
-    with st.spinner("Calculating ATR Stats..."):
-        df_atr = ds.get_atr_variation_stats(target_date=latest_date)
-        
-    if df_atr.empty:
-        st.warning("No data found for the selected date.")
+    available_dates = ds.get_available_dates()
+    if not available_dates:
+        st.warning("No data available.")
     else:
-        # Filter for logic
-        # Count total stocks per sector
-        total_counts_sector = df_atr.groupby('Sector')['ticker'].count().reset_index(name='TotalCount')
-        total_counts_industry = df_atr.groupby(['Sector', 'Industry'])['ticker'].count().reset_index(name='TotalCount')
+        selected_date = st.selectbox("Selecione a Data:", available_dates, key="atr_strength_date_sel")
         
-        # Filter: Stocks > 1 ATR (Implicitly Positive based on new logic)
-        df_qualified = df_atr[df_atr['is_above_atr']].copy()
-        
-        # --- Sector Aggregation ---
-        # Count qualified
-        qual_counts_sector = df_qualified.groupby('Sector')['ticker'].count().reset_index(name='QualifiedCount')
-        # Mean Signal Strength
-        qual_strength_sector = df_qualified.groupby('Sector')['signal_strength'].mean().reset_index(name='MeanStrength')
-        
-        # Merge Sector
-        df_sector_agg = pd.merge(total_counts_sector, qual_counts_sector, on='Sector', how='left').fillna(0)
-        df_sector_agg = pd.merge(df_sector_agg, qual_strength_sector, on='Sector', how='left') # MeanStrength can be NaN if 0 qualified
-        
-        df_sector_agg['PctQualified'] = (df_sector_agg['QualifiedCount'] / df_sector_agg['TotalCount']) * 100
-        # Fill NaN Strength with 0 or Neutral? Let's say 0 but handle color scale
-        df_sector_agg['MeanStrength'] = df_sector_agg['MeanStrength'].fillna(0)
-        
-        # --- Industry Aggregation ---
-        qual_counts_ind = df_qualified.groupby(['Sector', 'Industry'])['ticker'].count().reset_index(name='QualifiedCount')
-        qual_strength_ind = df_qualified.groupby(['Sector', 'Industry'])['signal_strength'].mean().reset_index(name='MeanStrength')
-        
-        df_ind_agg = pd.merge(total_counts_industry, qual_counts_ind, on=['Sector', 'Industry'], how='left').fillna(0)
-        df_ind_agg = pd.merge(df_ind_agg, qual_strength_ind, on=['Sector', 'Industry'], how='left')
-        
-        df_ind_agg['PctQualified'] = (df_ind_agg['QualifiedCount'] / df_ind_agg['TotalCount']) * 100
-        df_ind_agg['MeanStrength'] = df_ind_agg['MeanStrength'].fillna(0)
-        
-        # --- Visualization 1: Sector Treemap ---
-        st.subheader("Sector Bullish Strength")
-        st.caption("Size = % Stocks > 0.7 ATR (Positive) | Color = Mean Strength (Gain / ATR)")
-        
-        fig_sec = px.treemap(
-            df_sector_agg,
-            path=['Sector'],
-            values='PctQualified', # Size
-            color='MeanStrength',  # Color
-            # User custom scale: Blue (Low) -> Green (High)
-            color_continuous_scale=[
-                '#0000ff', '#0040ff', '#0080ff', '#00c0ff', '#00ffff', 
-                '#00ffc0', '#00ff80', '#00ff40', '#00ff00'
-            ],
-            title='Sectors by Volatility Intensity',
-            hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength'],
-            custom_data=['QualifiedCount', 'PctQualified']
-        )
-        fig_sec.update_traces(texttemplate='%{label}<br>(%{customdata[0]}) %{customdata[1]:.1f}%') # Add Count and Pct to Label
-
-        # Fix: If PctQualified is 0, Treemap might hide it.
-        # But we want to show it. Treemap values must be positive.
-        # If 0, maybe set small epsilon? Or user accepts they disappear?
-        # User requested "Size proportional to percentage". If 0%, size 0, disappears. Correct.
-        
-        st.plotly_chart(fig_sec, use_container_width=True)
-        
-        st.divider()
-        
-        # --- Visualization 2: Industry Treemap ---
-        st.divider()
-        
-        # --- Visualization 2: Industry Treemaps per Sector ---
-        st.subheader("Industry Strength by Sector")
-        st.caption("Detailed view per Sector. Color scale is relative to the specific Sector.")
-        
-        # Get unique sectors
-        sectors = df_ind_agg['Sector'].unique()
-        sectors.sort()
-        
-        # Create grid layout (e.g., 2 columns)
-        cols = st.columns(2)
-        
-        for i, sector in enumerate(sectors):
-            df_sec_ind = df_ind_agg[df_ind_agg['Sector'] == sector].copy()
-            
-            # Skip if no data
-            if df_sec_ind.empty or df_sec_ind['PctQualified'].sum() == 0:
-                continue
+        if selected_date:
+            # Fetch Data
+            with st.spinner("Calculating ATR Stats..."):
+                df_atr = ds.get_atr_variation_stats(target_date=selected_date)
                 
-            fig = px.treemap(
-                df_sec_ind,
-                path=['Industry'],
-                values='PctQualified',
-                color='MeanStrength',
-                # User custom scale: Blue (Low) -> Green (High)
-                color_continuous_scale=[
-                    '#0000ff', '#0040ff', '#0080ff', '#00c0ff', '#00ffff', 
-                    '#00ffc0', '#00ff80', '#00ff40', '#00ff00'
-                ],
-                title=f"{sector}",
-                hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength'],
-                custom_data=['QualifiedCount', 'PctQualified']
-            )
-            fig.update_traces(texttemplate='%{label}<br>(%{customdata[0]}) %{customdata[1]:.1f}%') # Add Count and Pct to Label
-            
+            if df_atr.empty:
+                st.warning(f"No data found for {selected_date}.")
+            else:
+                # Filter for logic
+                # Count total stocks per sector
+                total_counts_sector = df_atr.groupby('Sector')['ticker'].count().reset_index(name='TotalCount')
+                total_counts_industry = df_atr.groupby(['Sector', 'Industry'])['ticker'].count().reset_index(name='TotalCount')
+                
+                # Filter: Stocks > 0.7 ATR (Bullish)
+                df_qualified = df_atr[df_atr['is_above_atr']].copy()
+                
+                # --- Sector Aggregation ---
+                qual_counts_sector = df_qualified.groupby('Sector')['ticker'].count().reset_index(name='QualifiedCount')
+                qual_strength_sector = df_qualified.groupby('Sector')['signal_strength'].mean().reset_index(name='MeanStrength')
+                
+                df_sector_agg = pd.merge(total_counts_sector, qual_counts_sector, on='Sector', how='left').fillna(0)
+                df_sector_agg = pd.merge(df_sector_agg, qual_strength_sector, on='Sector', how='left')
+                df_sector_agg['PctQualified'] = (df_sector_agg['QualifiedCount'] / df_sector_agg['TotalCount']) * 100
+                df_sector_agg['MeanStrength'] = df_sector_agg['MeanStrength'].fillna(0)
+                
+                # --- Industry Aggregation ---
+                qual_counts_ind = df_qualified.groupby(['Sector', 'Industry'])['ticker'].count().reset_index(name='QualifiedCount')
+                qual_strength_ind = df_qualified.groupby(['Sector', 'Industry'])['signal_strength'].mean().reset_index(name='MeanStrength')
+                
+                df_ind_agg = pd.merge(total_counts_industry, qual_counts_ind, on=['Sector', 'Industry'], how='left').fillna(0)
+                df_ind_agg = pd.merge(df_ind_agg, qual_strength_ind, on=['Sector', 'Industry'], how='left')
+                df_ind_agg['PctQualified'] = (df_ind_agg['QualifiedCount'] / df_ind_agg['TotalCount']) * 100
+                df_ind_agg['MeanStrength'] = df_ind_agg['MeanStrength'].fillna(0)
+                
+                color_scale_bullish = ['#0000ff', '#0040ff', '#0080ff', '#00c0ff', '#00ffff', '#00ffc0', '#00ff80', '#00ff40', '#00ff00']
+                c_range = [0.7, 3.0]
 
-            with cols[i % 2]:
-                st.plotly_chart(fig, use_container_width=True)
+                # --- Visualization 1: Sector Treemap ---
+                st.subheader("Sector Bullish Strength")
+                st.caption("Size = % Stocks > 0.7 ATR (Positive) | Color = Mean Strength (Gain / ATR)")
+                
+                fig_sec = px.treemap(
+                    df_sector_agg, path=['Sector'], values='PctQualified', color='MeanStrength',
+                    color_continuous_scale=color_scale_bullish, range_color=c_range,
+                    hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength'],
+                    custom_data=['QualifiedCount', 'PctQualified']
+                )
+                fig_sec.update_traces(texttemplate='%{label}<br>(%{customdata[0]}) %{customdata[1]:.1f}%')
+                st.plotly_chart(fig_sec, use_container_width=True)
+                
+                st.divider()
+                
+                # --- Visualization 2: Industry Treemaps per Sector ---
+                st.subheader("Industry Strength by Sector")
+                st.caption("Detailed view per Sector.")
+                
+                sectors = sorted(df_ind_agg['Sector'].unique())
+                cols = st.columns(2)
+                for i, sector in enumerate(sectors):
+                    df_sec_ind = df_ind_agg[df_ind_agg['Sector'] == sector].copy()
+                    if df_sec_ind.empty or df_sec_ind['PctQualified'].sum() == 0: continue
+                        
+                    fig = px.treemap(
+                        df_sec_ind, path=['Industry'], values='PctQualified', color='MeanStrength',
+                        color_continuous_scale=color_scale_bullish, range_color=c_range, title=f"{sector}",
+                        hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength'],
+                        custom_data=['QualifiedCount', 'PctQualified']
+                    )
+                    fig.update_traces(texttemplate='%{label}<br>(%{customdata[0]}) %{customdata[1]:.1f}%')
+                    cols[i % 2].plotly_chart(fig, use_container_width=True)
 
 
 
@@ -1682,216 +1869,164 @@ elif page == "ATR Neutral":
     st.markdown("---")
     
     # Date Selection
-    latest_date = ds.get_latest_data_date()
-    st.info(f"Showing data for: **{latest_date}**")
-    
-    # Fetch Data
-    with st.spinner("Calculating ATR Stats..."):
-        df_atr = ds.get_atr_variation_stats(target_date=latest_date)
-        
-    if df_atr.empty:
-        st.warning("No data found for the selected date.")
+    available_dates = ds.get_available_dates()
+    if not available_dates:
+        st.warning("No data available.")
     else:
-        # Filter: Significant Moves (Volatile)
-        # Abs(change) > 0.7 * ATR
-        df_qualified = df_atr[df_atr['is_volatile']].copy()
+        selected_date = st.selectbox("Selecione a Data:", available_dates, key="atr_neutral_date_sel")
         
-        # Total counts (Denominator is all stocks)
-        total_counts_sector = df_atr.groupby('Sector')['ticker'].count().reset_index(name='TotalCount')
-        total_counts_industry = df_atr.groupby(['Sector', 'Industry'])['ticker'].count().reset_index(name='TotalCount')
-        
-        # --- Sector Aggregation ---
-        qual_counts_sector = df_qualified.groupby('Sector')['ticker'].count().reset_index(name='QualifiedCount')
-        # Mean Signal Strength (Can be positive or negative)
-        qual_strength_sector = df_qualified.groupby('Sector')['signal_strength'].mean().reset_index(name='MeanStrength')
-        
-        df_sector_agg = pd.merge(total_counts_sector, qual_counts_sector, on='Sector', how='left').fillna(0)
-        df_sector_agg = pd.merge(df_sector_agg, qual_strength_sector, on='Sector', how='left')
-        
-        df_sector_agg['PctQualified'] = (df_sector_agg['QualifiedCount'] / df_sector_agg['TotalCount']) * 100
-        df_sector_agg['MeanStrength'] = df_sector_agg['MeanStrength'].fillna(0)
-        
-        # --- Industry Aggregation ---
-        qual_counts_ind = df_qualified.groupby(['Sector', 'Industry'])['ticker'].count().reset_index(name='QualifiedCount')
-        qual_strength_ind = df_qualified.groupby(['Sector', 'Industry'])['signal_strength'].mean().reset_index(name='MeanStrength')
-        
-        df_ind_agg = pd.merge(total_counts_industry, qual_counts_ind, on=['Sector', 'Industry'], how='left').fillna(0)
-        df_ind_agg = pd.merge(df_ind_agg, qual_strength_ind, on=['Sector', 'Industry'], how='left')
-        
-        df_ind_agg['PctQualified'] = (df_ind_agg['QualifiedCount'] / df_ind_agg['TotalCount']) * 100
-        df_ind_agg['MeanStrength'] = df_ind_agg['MeanStrength'].fillna(0)
-        
-        # Color Scale: Blue (Positive) to Purple (Negative)
-        # Deep Purple (Neg) -> Light Purple -> Grey -> Light Blue -> Deep Blue (Pos)
-        color_scale_neutral = [
-            '#4b0082', '#800080', '#ba55d3', '#e6e6fa', '#f0f0f0', 
-            '#e0ffff', '#87cefa', '#00bfff', '#0000ff'
-        ]
-        
-        # --- Visualization 1: Sector Treemap ---
-        st.subheader("Sector Volatility")
-        st.caption("Size = % Active Stocks (> 0.7 ATR Move) | Color = Mean Strength (Blue=Up, Purple=Down)")
-        
-        fig_sec = px.treemap(
-            df_sector_agg,
-            path=['Sector'],
-            values='PctQualified', # Size
-            color='MeanStrength',  # Color (Diverging)
-            color_continuous_scale=color_scale_neutral, 
-            # Center color scale at 0? 
-            # If we don't fix range, 0 might not be center if data is skewed.
-            # Ideally we center it.
-            range_color=[-2, 2], # Clip at 2x ATR average move? Or dynamic symetric?
-            title='Sectors by Volatility Activity',
-            hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength'],
-            custom_data=['QualifiedCount', 'PctQualified']
-        )
-        fig_sec.update_traces(texttemplate='%{label}<br>(%{customdata[0]}) %{customdata[1]:.1f}%')
-        
-        st.plotly_chart(fig_sec, use_container_width=True)
-        
-        st.divider()
-        
-        # --- Visualization 2: Industry Treemaps per Sector ---
-        st.subheader("Industry Volatility by Sector")
-        
-        sectors = df_ind_agg['Sector'].unique()
-        sectors.sort()
-        
-        cols = st.columns(2)
-        
-        for i, sector in enumerate(sectors):
-            df_sec_ind = df_ind_agg[df_ind_agg['Sector'] == sector].copy()
-            
-            if df_sec_ind.empty or df_sec_ind['PctQualified'].sum() == 0:
-                continue
+        if selected_date:
+            # Fetch Data
+            with st.spinner("Calculating ATR Stats..."):
+                df_atr = ds.get_atr_variation_stats(target_date=selected_date)
                 
-            fig = px.treemap(
-                df_sec_ind,
-                path=['Industry'],
-                values='PctQualified',
-                color='MeanStrength',
-                color_continuous_scale=color_scale_neutral,
-                range_color=[-2, 2],
-                title=f"{sector}",
-                hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength'],
-                custom_data=['QualifiedCount', 'PctQualified']
-            )
-            fig.update_traces(texttemplate='%{label}<br>(%{customdata[0]}) %{customdata[1]:.1f}%')
-            
-            with cols[i % 2]:
-                st.plotly_chart(fig, use_container_width=True)
+            if df_atr.empty:
+                st.warning(f"No data found for {selected_date}.")
+            else:
+                # Filter: Significant Moves (Volatile)
+                df_qualified = df_atr[df_atr['is_volatile']].copy()
+                
+                # Total counts
+                total_counts_sector = df_atr.groupby('Sector')['ticker'].count().reset_index(name='TotalCount')
+                total_counts_industry = df_atr.groupby(['Sector', 'Industry'])['ticker'].count().reset_index(name='TotalCount')
+                
+                # --- Sector Aggregation ---
+                qual_counts_sector = df_qualified.groupby('Sector')['ticker'].count().reset_index(name='QualifiedCount')
+                qual_strength_sector = df_qualified.groupby('Sector')['signal_strength'].mean().reset_index(name='MeanStrength')
+                
+                df_sector_agg = pd.merge(total_counts_sector, qual_counts_sector, on='Sector', how='left').fillna(0)
+                df_sector_agg = pd.merge(df_sector_agg, qual_strength_sector, on='Sector', how='left')
+                df_sector_agg['PctQualified'] = (df_sector_agg['QualifiedCount'] / df_sector_agg['TotalCount']) * 100
+                df_sector_agg['MeanStrength'] = df_sector_agg['MeanStrength'].fillna(0)
+                
+                # --- Industry Aggregation ---
+                qual_counts_ind = df_qualified.groupby(['Sector', 'Industry'])['ticker'].count().reset_index(name='QualifiedCount')
+                qual_strength_ind = df_qualified.groupby(['Sector', 'Industry'])['signal_strength'].mean().reset_index(name='MeanStrength')
+                
+                df_ind_agg = pd.merge(total_counts_industry, qual_counts_ind, on=['Sector', 'Industry'], how='left').fillna(0)
+                df_ind_agg = pd.merge(df_ind_agg, qual_strength_ind, on=['Sector', 'Industry'], how='left')
+                df_ind_agg['PctQualified'] = (df_ind_agg['QualifiedCount'] / df_ind_agg['TotalCount']) * 100
+                df_ind_agg['MeanStrength'] = df_ind_agg['MeanStrength'].fillna(0)
+                
+                # Diverging Scale
+                color_scale_neutral = ['#4b0082', '#800080', '#ba55d3', '#e6e6fa', '#f0f0f0', '#e0ffff', '#87cefa', '#00bfff', '#0000ff']
+                c_range = [-2, 2]
+                
+                # --- Visualization 1: Sector Treemap ---
+                st.subheader("Sector Volatility")
+                st.caption("Size = % Active Stocks (> 0.7 ATR Move) | Color = Mean Strength (Blue=Up, Purple=Down)")
+                
+                fig_sec = px.treemap(
+                    df_sector_agg, path=['Sector'], values='PctQualified', color='MeanStrength',
+                    color_continuous_scale=color_scale_neutral, range_color=c_range,
+                    hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength'],
+                    custom_data=['QualifiedCount', 'PctQualified']
+                )
+                fig_sec.update_traces(texttemplate='%{label}<br>(%{customdata[0]}) %{customdata[1]:.1f}%')
+                st.plotly_chart(fig_sec, use_container_width=True)
+                
+                st.divider()
+                
+                # --- Visualization 2: Industry Treemaps per Sector ---
+                st.subheader("Industry Volatility by Sector")
+                st.caption("Detailed view per Sector.")
+                
+                sectors = sorted(df_ind_agg['Sector'].unique())
+                cols = st.columns(2)
+                for i, sector in enumerate(sectors):
+                    df_sec_ind = df_ind_agg[df_ind_agg['Sector'] == sector].copy()
+                    if df_sec_ind.empty or df_sec_ind['PctQualified'].sum() == 0: continue
+                        
+                    fig = px.treemap(
+                        df_sec_ind, path=['Industry'], values='PctQualified', color='MeanStrength',
+                        color_continuous_scale=color_scale_neutral, range_color=c_range, title=f"{sector}",
+                        hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength'],
+                        custom_data=['QualifiedCount', 'PctQualified']
+                    )
+                    fig.update_traces(texttemplate='%{label}<br>(%{customdata[0]}) %{customdata[1]:.1f}%')
+                    cols[i % 2].plotly_chart(fig, use_container_width=True)
 
 
 elif page == "ATR Weakness":
     st.header("ATR Weakness Panel (Bearish)")
     st.markdown("---")
     
-    # Date Selection (Mirrors ATR Strength)
-    latest_date = ds.get_latest_data_date()
-    st.info(f"Showing data for: **{latest_date}**")
-    
-    # Fetch Data
-    with st.spinner("Calculating ATR Stats..."):
-        df_atr = ds.get_atr_variation_stats(target_date=latest_date)
-        
-    if df_atr.empty:
-        st.warning("No data found for the selected date.")
+    # Date Selection
+    available_dates = ds.get_available_dates()
+    if not available_dates:
+        st.warning("No data available.")
     else:
-        # Filter for Weakness Logic
-        # Total counts (Same as Strength, denominator is all stocks)
-        total_counts_sector = df_atr.groupby('Sector')['ticker'].count().reset_index(name='TotalCount')
-        total_counts_industry = df_atr.groupby(['Sector', 'Industry'])['ticker'].count().reset_index(name='TotalCount')
+        selected_date = st.selectbox("Selecione a Data:", available_dates, key="atr_weakness_date_sel")
         
-        # Filter: Stocks < -0.7 ATR (Weakness)
-        # Note: signal_strength will be negative (e.g. -1.5).
-        df_qualified = df_atr[df_atr['is_below_atr']].copy()
-        
-        # --- Sector Aggregation ---
-        qual_counts_sector = df_qualified.groupby('Sector')['ticker'].count().reset_index(name='QualifiedCount')
-        # Mean Signal Strength (Negative values)
-        qual_strength_sector = df_qualified.groupby('Sector')['signal_strength'].mean().reset_index(name='MeanStrength')
-        
-        # Merge Sector
-        df_sector_agg = pd.merge(total_counts_sector, qual_counts_sector, on='Sector', how='left').fillna(0)
-        df_sector_agg = pd.merge(df_sector_agg, qual_strength_sector, on='Sector', how='left')
-        
-        df_sector_agg['PctQualified'] = (df_sector_agg['QualifiedCount'] / df_sector_agg['TotalCount']) * 100
-        df_sector_agg['MeanStrength'] = df_sector_agg['MeanStrength'].fillna(0)
-        
-        # --- Industry Aggregation ---
-        qual_counts_ind = df_qualified.groupby(['Sector', 'Industry'])['ticker'].count().reset_index(name='QualifiedCount')
-        qual_strength_ind = df_qualified.groupby(['Sector', 'Industry'])['signal_strength'].mean().reset_index(name='MeanStrength')
-        
-        df_ind_agg = pd.merge(total_counts_industry, qual_counts_ind, on=['Sector', 'Industry'], how='left').fillna(0)
-        df_ind_agg = pd.merge(df_ind_agg, qual_strength_ind, on=['Sector', 'Industry'], how='left')
-        
-        df_ind_agg['PctQualified'] = (df_ind_agg['QualifiedCount'] / df_ind_agg['TotalCount']) * 100
-        df_ind_agg['MeanStrength'] = df_ind_agg['MeanStrength'].fillna(0)
-        
-        # Color Scale: Orange to Yellow
-        # Logic: We want STRONGER NEGATIVE (e.g. -3.0) to be DARK ORANGE.
-        # Weaker Negative (e.g. -0.7) to be YELLOW.
-        # Plotly maps min value to start of scale, max value to end.
-        
-        # Range of data: -3.0 (Min) to -0.7 (Max).
-        # Scale: ['#cc5500' (Dark/Burnt Orange), ..., '#ffff00' (Yellow)]
-        # If we map directly: Min (-3.0) -> Start (#cc5500). Max (-0.7) -> End (#ffff00).
-        # This matches the "Dark = Strong" intuition.
-        color_scale_weakness = [
-            '#cc5500', '#e65c00', '#ff6600', '#ff8000', '#ff9933', 
-            '#ffb366', '#ffcc99', '#ffe5cc', '#ffff00'
-        ]
-        
-        # --- Visualization 1: Sector Treemap ---
-        st.subheader("Sector Bearish Weakness")
-        st.caption("Size = % Stocks < -0.7 ATR (Negative) | Color = Mean Strength (Drop / ATR)")
-        
-        fig_sec = px.treemap(
-            df_sector_agg,
-            path=['Sector'],
-            values='PctQualified', # Size
-            color='MeanStrength',  # Color (Negative values)
-            color_continuous_scale=color_scale_weakness, 
-            title='Sectors by Weakness Intensity',
-            hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength'],
-            custom_data=['QualifiedCount', 'PctQualified']
-        )
-        fig_sec.update_traces(texttemplate='%{label}<br>(%{customdata[0]}) %{customdata[1]:.1f}%')
-        
-        st.plotly_chart(fig_sec, use_container_width=True)
-        
-        st.divider()
-        
-        # --- Visualization 2: Industry Treemaps per Sector ---
-        st.subheader("Industry Weakness by Sector")
-        st.caption("Detailed view per Sector.")
-        
-        sectors = df_ind_agg['Sector'].unique()
-        sectors.sort()
-        
-        cols = st.columns(2)
-        
-        for i, sector in enumerate(sectors):
-            df_sec_ind = df_ind_agg[df_ind_agg['Sector'] == sector].copy()
-            
-            if df_sec_ind.empty or df_sec_ind['PctQualified'].sum() == 0:
-                continue
+        if selected_date:
+            # Fetch Data
+            with st.spinner("Calculating ATR Stats..."):
+                df_atr = ds.get_atr_variation_stats(target_date=selected_date)
                 
-            fig = px.treemap(
-                df_sec_ind,
-                path=['Industry'],
-                values='PctQualified',
-                color='MeanStrength',
-                color_continuous_scale=color_scale_weakness,
-                title=f"{sector}",
-                hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength'],
-                custom_data=['QualifiedCount', 'PctQualified']
-            )
-            fig.update_traces(texttemplate='%{label}<br>(%{customdata[0]}) %{customdata[1]:.1f}%')
-            
-            with cols[i % 2]:
-                st.plotly_chart(fig, use_container_width=True)
+            if df_atr.empty:
+                st.warning(f"No data found for {selected_date}.")
+            else:
+                # Filter for Weakness Logic
+                df_qualified = df_atr[df_atr['is_below_atr']].copy()
+                
+                # Total counts
+                total_counts_sector = df_atr.groupby('Sector')['ticker'].count().reset_index(name='TotalCount')
+                total_counts_industry = df_atr.groupby(['Sector', 'Industry'])['ticker'].count().reset_index(name='TotalCount')
+                
+                # --- Sector Aggregation ---
+                qual_counts_sector = df_qualified.groupby('Sector')['ticker'].count().reset_index(name='QualifiedCount')
+                qual_strength_sector = df_qualified.groupby('Sector')['signal_strength'].mean().reset_index(name='MeanStrength')
+                
+                df_sector_agg = pd.merge(total_counts_sector, qual_counts_sector, on='Sector', how='left').fillna(0)
+                df_sector_agg = pd.merge(df_sector_agg, qual_strength_sector, on='Sector', how='left')
+                df_sector_agg['PctQualified'] = (df_sector_agg['QualifiedCount'] / df_sector_agg['TotalCount']) * 100
+                df_sector_agg['MeanStrength'] = df_sector_agg['MeanStrength'].fillna(0)
+                
+                # --- Industry Aggregation ---
+                qual_counts_ind = df_qualified.groupby(['Sector', 'Industry'])['ticker'].count().reset_index(name='QualifiedCount')
+                qual_strength_ind = df_qualified.groupby(['Sector', 'Industry'])['signal_strength'].mean().reset_index(name='MeanStrength')
+                
+                df_ind_agg = pd.merge(total_counts_industry, qual_counts_ind, on=['Sector', 'Industry'], how='left').fillna(0)
+                df_ind_agg = pd.merge(df_ind_agg, qual_strength_ind, on=['Sector', 'Industry'], how='left')
+                df_ind_agg['PctQualified'] = (df_ind_agg['QualifiedCount'] / df_ind_agg['TotalCount']) * 100
+                df_ind_agg['MeanStrength'] = df_ind_agg['MeanStrength'].fillna(0)
+                
+                color_scale_weakness = ['#cc5500', '#e65c00', '#ff6600', '#ff8000', '#ff9933', '#ffb366', '#ffcc99', '#ffe5cc', '#ffff00']
+                c_range = [-3.0, -0.7]
+                
+                # --- Visualization 1: Sector Treemap ---
+                st.subheader("Sector Bearish Weakness")
+                st.caption("Size = % Stocks < -0.7 ATR (Negative) | Color = Mean Strength (Drop / ATR)")
+                
+                fig_sec = px.treemap(
+                    df_sector_agg, path=['Sector'], values='PctQualified', color='MeanStrength',
+                    color_continuous_scale=color_scale_weakness, range_color=c_range,
+                    hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength'],
+                    custom_data=['QualifiedCount', 'PctQualified']
+                )
+                fig_sec.update_traces(texttemplate='%{label}<br>(%{customdata[0]}) %{customdata[1]:.1f}%')
+                st.plotly_chart(fig_sec, use_container_width=True)
+                
+                st.divider()
+                
+                # --- Visualization 2: Industry Treemaps per Sector ---
+                st.subheader("Industry Weakness by Sector")
+                st.caption("Detailed view per Sector.")
+                
+                sectors = sorted(df_ind_agg['Sector'].unique())
+                cols = st.columns(2)
+                for i, sector in enumerate(sectors):
+                    df_sec_ind = df_ind_agg[df_ind_agg['Sector'] == sector].copy()
+                    if df_sec_ind.empty or df_sec_ind['PctQualified'].sum() == 0: continue
+                        
+                    fig = px.treemap(
+                        df_sec_ind, path=['Industry'], values='PctQualified', color='MeanStrength',
+                        color_continuous_scale=color_scale_weakness, range_color=c_range, title=f"{sector}",
+                        hover_data=['TotalCount', 'QualifiedCount', 'MeanStrength'],
+                        custom_data=['QualifiedCount', 'PctQualified']
+                    )
+                    fig.update_traces(texttemplate='%{label}<br>(%{customdata[0]}) %{customdata[1]:.1f}%')
+                    cols[i % 2].plotly_chart(fig, use_container_width=True)
 
 
 elif page == "EMA Trend Setup":

@@ -6,6 +6,14 @@ from models import Sector, PriceData, Constituent, BreadthMetric, ConstituentPri
 from sqlalchemy.dialects.sqlite import insert
 from datetime import date, datetime, timedelta
 import time
+import os
+import google.generativeai as genai
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Version: 1.0.1
+VERSION = "1.0.1"
 
 # List of US Sector ETFs (SPDR and Invesco Equal Weight)
 # Format: { 'Sector Name': {'cap': 'TickerCW', 'equal': 'TickerEW'} }
@@ -21,6 +29,20 @@ SECTORS_CONFIG = {
     'Real Estate Sector': {'cap': 'XLRE', 'equal': 'RSPR'},
     'Technology Sector': {'cap': 'XLK', 'equal': 'RSPT'},
     'Utilities Sector': {'cap': 'XLU', 'equal': 'RSPU'}
+}
+
+SECTOR_ABBR = {
+    'Communication Services Sector': 'Comm',
+    'Consumer Cyclical Sector': 'Cyc',
+    'Consumer Defensive Sector': 'Def',
+    'Energy Sector': 'Energy',
+    'Financial Services Sector': 'Fin',
+    'Healthcare Sector': 'Health',
+    'Industrials Sector': 'Ind',
+    'Basic Materials Sector': 'Mat',
+    'Real Estate Sector': 'R.Estate',
+    'Technology Sector': 'Tech',
+    'Utilities Sector': 'Util'
 }
 
 def initialize_sectors_in_db():
@@ -60,41 +82,71 @@ def update_sector_data(period="10y"):
         tickers.append(types['equal'])
         
     print(f"Fetching data for: {tickers}")
-    data = yf.download(tickers, period=period, auto_adjust=True)['Close']
+    raw_data = yf.download(tickers, period=period, auto_adjust=True)
     
-    if isinstance(data, pd.Series):
-        data = data.to_frame()
+    if raw_data.empty:
+        print("No data downloaded.")
+        return
 
     try:
         # Resolve Sector IDs and Objects
         sector_map = {s.ticker: s for s in db.query(Sector).all()}
         
-        for ticker in data.columns:
+        for ticker in tickers:
             if ticker not in sector_map:
                 continue
                 
             sector_obj = sector_map[ticker]
-            series = data[ticker].dropna()
+            
+            # Extract data for specific ticker
+            if len(tickers) > 1:
+                if ticker not in raw_data['Close'].columns: continue
+                series = pd.DataFrame({
+                    'open': raw_data['Open'][ticker],
+                    'high': raw_data['High'][ticker],
+                    'low': raw_data['Low'][ticker],
+                    'close': raw_data['Close'][ticker]
+                }).dropna()
+            else:
+                series = raw_data[['Open', 'High', 'Low', 'Close']].dropna()
+                series.columns = ['open', 'high', 'low', 'close']
             
             # Keep track if we added/updated anything for this ticker
             updated_ticker = False
             
-            for dt, price in series.items():
-                if pd.isna(price):
-                    continue
-                    
-                # Check if exists (Naive approach for now, optimize with bulk upsert later if needed)
+            for dt, row in series.iterrows():
+                # Check if exists
                 date_val = dt.date()
                 existing = db.query(PriceData).filter_by(sector_id=sector_obj.id, date=date_val).first()
                 
                 if not existing:
-                    new_price = PriceData(sector_id=sector_obj.id, date=date_val, close=float(price))
+                    new_price = PriceData(
+                        sector_id=sector_obj.id, 
+                        date=date_val, 
+                        open=float(row['open']),
+                        high=float(row['high']),
+                        low=float(row['low']),
+                        close=float(row['close'])
+                    )
                     db.add(new_price)
                     updated_ticker = True
                 else:
-                    # Update close if changed (e.g. adjustments)
-                    if abs(existing.close - float(price)) > 0.001:
-                        existing.close = float(price)
+                    # Update if changed
+                    changes = False
+                    if existing.open is None or abs(existing.open - float(row['open'])) > 0.001:
+                        existing.open = float(row['open'])
+                        changes = True
+                    if existing.high is None or abs(existing.high - float(row['high'])) > 0.001:
+                        existing.high = float(row['high'])
+                        changes = True
+                    if existing.low is None or abs(existing.low - float(row['low'])) > 0.001:
+                        existing.low = float(row['low'])
+                        changes = True
+                    if abs(existing.close - float(row['close'])) > 0.001:
+                        existing.close = float(row['close'])
+                        changes = True
+                    
+                    if changes:
                         updated_ticker = True
             
             db.commit() # Commit prices first
@@ -433,8 +485,9 @@ def fetch_batch_history(db, map_id_to_ticker, cutoff_date, days_needed=365):
     # We need to explicitly select columns to avoid huge objects if extended
     query = db.query(
         ConstituentPrice.constituent_id, 
-        ConstituentPrice.date, 
+        ConstituentPrice.date,
         ConstituentPrice.close, 
+        ConstituentPrice.open,
         ConstituentPrice.high, 
         ConstituentPrice.low
     ).filter(
@@ -457,6 +510,7 @@ def fetch_batch_history(db, map_id_to_ticker, cutoff_date, days_needed=365):
         
         data_by_id[r.constituent_id].append({
             'date': pd.to_datetime(r.date),
+            'open': float(r.open if r.open is not None else r.close),
             'close': float(r.close),
             'high': float(h),
             'low': float(l)
@@ -565,11 +619,13 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                                     # Need to handle cases where some tickers fail
                                     if ticker not in raw_data['Close'].columns:
                                         continue
+                                    t_open = raw_data['Open'][ticker]
                                     t_close = raw_data['Close'][ticker]
                                     t_high = raw_data['High'][ticker]
                                     t_low = raw_data['Low'][ticker]
                                 else:
                                     # Single Index: (Price)
+                                    t_open = raw_data['Open']
                                     t_close = raw_data['Close']
                                     t_high = raw_data['High']
                                     t_low = raw_data['Low']
@@ -578,6 +634,7 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
 
                             # Combine into DataFrame and Drop NaNs
                             df_t = pd.DataFrame({
+                                'open': t_open,
                                 'close': t_close, 
                                 'high': t_high, 
                                 'low': t_low
@@ -595,6 +652,7 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                             else:
                                 calc_df = df_t
                             
+                            opens = calc_df['open']
                             series = calc_df['close']
                             highs = calc_df['high']
                             lows = calc_df['low']
@@ -627,6 +685,7 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                             c_id = constituents[ticker]
                             
                             processed_df = pd.DataFrame({
+                                'open': opens,
                                 'close': series,
                                 'high': highs,
                                 'low': lows,
@@ -657,6 +716,7 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                                 records_to_upsert.append({
                                     'constituent_id': c_id,
                                     'date': date_val,
+                                    'open': val(row['open']),
                                     'close': float(row['close']),
                                     'high': val(row['high']),
                                     'low': val(row['low']),
@@ -686,6 +746,7 @@ def update_constituents_data(sector_name=None, start_date=None, progress_callbac
                                     stmt = stmt.on_conflict_do_update(
                                         index_elements=['constituent_id', 'date'],
                                         set_={
+                                            'open': stmt.excluded.open,
                                             'close': stmt.excluded.close,
                                             'high': stmt.excluded.high,
                                             'low': stmt.excluded.low,
@@ -1933,3 +1994,340 @@ def fetch_industry_from_yahoo(tickers: list) -> dict:
             print(f"  Error fetching {t} from Yahoo: {e}")
             
     return found_industries
+
+def get_available_dates():
+    """Returns sorted list of dates available in ConstituentPrice."""
+    db = next(get_db())
+    try:
+        results = db.query(ConstituentPrice.date).distinct().order_by(ConstituentPrice.date.desc()).all()
+        return [r[0] for r in results]
+    finally:
+        db.close()
+
+def get_top_performers(target_date, top_n=20):
+    """
+    Returns top gainers and losers for each sector on target_date.
+    Calculates return as (Close_Target / Close_Prev) - 1.
+    """
+    db = next(get_db())
+    try:
+        # 1. Find the previous available date before target_date
+        prev_date_row = db.query(ConstituentPrice.date)\
+            .filter(ConstituentPrice.date < target_date)\
+            .order_by(ConstituentPrice.date.desc())\
+            .first()
+        
+        if not prev_date_row:
+            return None, None
+            
+        prev_date = prev_date_row[0]
+        
+        # 2. Fetch prices for both dates
+        # Subquery for prices at target date
+        p_target = db.query(ConstituentPrice.constituent_id, ConstituentPrice.close.label('close_t'))\
+            .filter(ConstituentPrice.date == target_date).subquery()
+            
+        # Subquery for prices at previous date
+        p_prev = db.query(ConstituentPrice.constituent_id, ConstituentPrice.close.label('close_p'))\
+            .filter(ConstituentPrice.date == prev_date).subquery()
+            
+        # Main query
+        results = db.query(
+            Sector.name.label('sector'),
+            Constituent.ticker,
+            p_target.c.close_t,
+            p_prev.c.close_p
+        ).join(Constituent, Sector.id == Constituent.sector_id)\
+         .join(p_target, Constituent.id == p_target.c.constituent_id)\
+         .join(p_prev, Constituent.id == p_prev.c.constituent_id)\
+         .filter(Sector.type == 'cap')\
+         .all()
+         
+        if not results:
+            return {}, {}
+            
+        df = pd.DataFrame(results, columns=['Sector', 'Ticker', 'Close_T', 'Close_P'])
+        df['Return'] = (df['Close_T'] / df['Close_P'] - 1) * 100
+        
+        # Initialize maps with all sectors from config to ensure they appear as columns
+        # Use abbreviations for column headers
+        gainers_map = {SECTOR_ABBR.get(s, s): [""] * top_n for s in SECTORS_CONFIG.keys()}
+        losers_map = {SECTOR_ABBR.get(s, s): [""] * top_n for s in SECTORS_CONFIG.keys()}
+        
+        for sector_name in df['Sector'].unique():
+            abbr = SECTOR_ABBR.get(sector_name, sector_name)
+            if abbr not in gainers_map: continue 
+            
+            group = df[df['Sector'] == sector_name]
+            sorted_group = group.sort_values(by='Return', ascending=False)
+            
+            # Gainers
+            top_gainers = sorted_group.head(top_n)
+            g_list = [f"{r.Ticker} ({r.Return:.2f}%)" for _, r in top_gainers.iterrows()]
+            # Pad or truncate to top_n
+            gainers_map[abbr] = (g_list + [""] * top_n)[:top_n]
+            
+            # Losers
+            top_losers = group.sort_values(by='Return', ascending=True).head(top_n)
+            l_list = [f"{r.Ticker} ({r.Return:.2f}%)" for _, r in top_losers.iterrows()]
+            losers_map[abbr] = (l_list + [""] * top_n)[:top_n]
+            
+        return gainers_map, losers_map
+        
+    finally:
+        db.close()
+
+def get_market_top_gainers(target_date, top_n=50):
+    """Returns top N gainers across all sectors for target_date."""
+    db = next(get_db())
+    try:
+        prev_date_row = db.query(ConstituentPrice.date)\
+            .filter(ConstituentPrice.date < target_date)\
+            .order_by(ConstituentPrice.date.desc())\
+            .first()
+        
+        if not prev_date_row:
+            return pd.DataFrame()
+            
+        prev_date = prev_date_row[0]
+        
+        # 1. Fetch target date results with constituent_id for merging
+        results = db.query(
+            Constituent.id.label('constituent_id'),
+            Constituent.ticker,
+            Sector.name.label('sector'),
+            Constituent.industry,
+            ConstituentPrice.close.label('close_t')
+        ).join(Constituent, Constituent.id == ConstituentPrice.constituent_id)\
+         .join(Sector, Sector.id == Constituent.sector_id)\
+         .filter(ConstituentPrice.date == target_date)\
+         .filter(Sector.type == 'cap')\
+         .all()
+         
+        if not results:
+            return pd.DataFrame()
+            
+        df_target = pd.DataFrame(results, columns=['constituent_id', 'Ticker', 'Sector', 'Industry', 'Close_T'])
+        
+        # 2. Fetch previous date prices
+        prev_results = db.query(
+            ConstituentPrice.constituent_id,
+            ConstituentPrice.close.label('close_p')
+        ).filter(ConstituentPrice.date == prev_date).all()
+        
+        df_prev = pd.DataFrame(prev_results, columns=['constituent_id', 'close_p'])
+        
+        # 3. Merge and Calculate
+        df = pd.merge(df_target, df_prev, on='constituent_id', how='inner')
+        df['Return'] = (df['Close_T'] / df['close_p'] - 1) * 100
+        
+        return df.sort_values(by='Return', ascending=False).head(top_n)
+        
+    finally:
+        db.close()
+
+def analyze_themes_with_ai(target_date, top_gainers_df):
+    """Uses Gemini to identify themes among top gainers."""
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        return "Erro: GEMINI_API_KEY não encontrada no arquivo .env."
+        
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel('gemini-2.0-flash')
+    
+    # Prepare data for prompt
+    stocks_list = []
+    for _, row in top_gainers_df.iterrows():
+        stocks_list.append(f"- {row.Ticker} ({row.Sector} / {row.Industry}): +{row.Return:.2f}%")
+        
+    stocks_str = "\n".join(stocks_list)
+    
+    prompt = f"""
+    Act as an expert US equity market analyst. 
+    Analyze the following list of the top 50 gaining stocks in the US market for {target_date}.
+    
+    Stocks List:
+    {stocks_str}
+    
+    Task:
+    1. Identify any common investment themes, sector catalysts, or macroeconomic narratives (e.g., earnings beats, interest rate expectations, commodity price movements, breakthrough technology news).
+    2. Be neutral and objective. If no clear theme exists, state that the moves appear idiosyncratic.
+    3. For each identified theme, cite at least one specific news event or reputable source (e.g., Bloomberg, Reuters, WSJ, CNBC, or official company press releases) from that period that corroborates the price action.
+    4. Conclude with a brief summary of the market sentiment (e.g., narrow leadership, broad-based rally, or specific sector strength).
+    
+    Respond in ENGLISH in a professional and concise format using Markdown.
+    """
+    
+    try:
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        return f"Erro ao gerar análise: {str(e)}"
+
+def get_atr_performers(target_date, top_n=20):
+    """
+    Returns top gainers and losers based on (Close_T - Close_P) / ATR14.
+    """
+    db = next(get_db())
+    try:
+        # 1. Find the previous available date before target_date
+        prev_date_row = db.query(ConstituentPrice.date)\
+            .filter(ConstituentPrice.date < target_date)\
+            .order_by(ConstituentPrice.date.desc())\
+            .first()
+        
+        if not prev_date_row:
+            return None, None
+            
+        prev_date = prev_date_row[0]
+        
+        # 2. Fetch prices and ATR for target date
+        p_target = db.query(
+            ConstituentPrice.constituent_id, 
+            ConstituentPrice.close.label('close_t'),
+            ConstituentPrice.atr14
+        ).filter(ConstituentPrice.date == target_date).subquery()
+            
+        # 3. Fetch prices for previous date
+        p_prev = db.query(
+            ConstituentPrice.constituent_id, 
+            ConstituentPrice.close.label('close_p')
+        ).filter(ConstituentPrice.date == prev_date).subquery()
+            
+        # 4. Main query joining with Sector/Constituent
+        results = db.query(
+            Sector.name.label('sector'),
+            Constituent.ticker,
+            p_target.c.close_t,
+            p_target.c.atr14,
+            p_prev.c.close_p
+        ).join(Constituent, Sector.id == Constituent.sector_id)\
+         .join(p_target, Constituent.id == p_target.c.constituent_id)\
+         .join(p_prev, Constituent.id == p_prev.c.constituent_id)\
+         .filter(Sector.type == 'cap')\
+         .all()
+         
+        if not results:
+            return {}, {}
+            
+        # Convert to DataFrame
+        df = pd.DataFrame(results, columns=['Sector', 'Ticker', 'Close_T', 'ATR14', 'Close_P'])
+        # Avoid division by zero or NaN ATR
+        df = df[df['ATR14'] > 0]
+        df['Signal'] = (df['Close_T'] - df['Close_P']) / df['ATR14']
+        
+        # Use abbreviations for column headers
+        gainers_map = {SECTOR_ABBR.get(s, s): [""] * top_n for s in SECTORS_CONFIG.keys()}
+        losers_map = {SECTOR_ABBR.get(s, s): [""] * top_n for s in SECTORS_CONFIG.keys()}
+        
+        for sector_name in df['Sector'].unique():
+            abbr = SECTOR_ABBR.get(sector_name, sector_name)
+            if abbr not in gainers_map: continue 
+            
+            group = df[df['Sector'] == sector_name]
+            
+            # Gainers (Highest Signal)
+            top_gainers = group.sort_values(by='Signal', ascending=False).head(top_n)
+            g_list = [f"{r.Ticker} ({r.Signal:.2f}x)" for _, r in top_gainers.iterrows()]
+            gainers_map[abbr] = (g_list + [""] * top_n)[:top_n]
+            
+            # Losers (Lowest Signal)
+            top_losers = group.sort_values(by='Signal', ascending=True).head(top_n)
+            l_list = [f"{r.Ticker} ({r.Signal:.2f}x)" for _, r in top_losers.iterrows()]
+            losers_map[abbr] = (l_list + [""] * top_n)[:top_n]
+            
+        return gainers_map, losers_map
+        
+    finally:
+        db.close()
+
+def get_market_top_atr_performers(target_date, top_n=50):
+    """Returns top N performers by (Variation / ATR) across all sectors."""
+    db = next(get_db())
+    try:
+        prev_date_row = db.query(ConstituentPrice.date)\
+            .filter(ConstituentPrice.date < target_date)\
+            .order_by(ConstituentPrice.date.desc())\
+            .first()
+        
+        if not prev_date_row:
+            return pd.DataFrame()
+            
+        prev_date = prev_date_row[0]
+        
+        # 1. Fetch target date results
+        results = db.query(
+            Constituent.id.label('constituent_id'),
+            Constituent.ticker,
+            Sector.name.label('sector'),
+            Constituent.industry,
+            ConstituentPrice.close.label('close_t'),
+            ConstituentPrice.atr14
+        ).join(Constituent, Constituent.id == ConstituentPrice.constituent_id)\
+         .join(Sector, Sector.id == Constituent.sector_id)\
+         .filter(ConstituentPrice.date == target_date)\
+         .filter(Sector.type == 'cap')\
+         .all()
+         
+        if not results:
+            return pd.DataFrame()
+            
+        df_target = pd.DataFrame(results, columns=['constituent_id', 'Ticker', 'Sector', 'Industry', 'Close_T', 'ATR14'])
+        
+        # 2. Fetch previous date prices
+        prev_results = db.query(
+            ConstituentPrice.constituent_id,
+            ConstituentPrice.close.label('close_p')
+        ).filter(ConstituentPrice.date == prev_date).all()
+        
+        df_prev = pd.DataFrame(prev_results, columns=['constituent_id', 'close_p'])
+        
+        # 3. Merge and Calculate
+        df = pd.merge(df_target, df_prev, on='constituent_id', how='inner')
+        df = df[df['ATR14'] > 0]
+        df['Signal'] = (df['Close_T'] - df['close_p']) / df['ATR14']
+        df['Return'] = (df['Close_T'] / df['close_p'] - 1) * 100
+        
+        return df.sort_values(by='Signal', ascending=False).head(top_n)
+        
+    finally:
+        db.close()
+
+def analyze_atr_themes_with_ai(target_date, top_atr_df):
+    """Uses Gemini to identify themes among top ATR performers."""
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        return "Erro: GEMINI_API_KEY não encontrada."
+        
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel('gemini-2.0-flash')
+    
+    # Prepare data for prompt
+    stocks_list = []
+    for _, row in top_atr_df.iterrows():
+        stocks_list.append(f"- {row.Ticker} ({row.Sector} / {row.Industry}): {row.Signal:.2f}x ATR (+{row.Return:.2f}%)")
+        
+    stocks_str = "\n".join(stocks_list)
+    
+    prompt = f"""
+    Act as an expert US equity analyst specializing in Momentum and Market Volatility.
+    The following list shows the 50 stocks with the most significant price moves relative to their 14-day ATR (Average True Range) on {target_date}.
+    
+    This metric (Variation/ATR) highlights "Price Anomalies" - stocks moving significantly beyond their normal daily range.
+    
+    Anomalous Moves:
+    {stocks_str}
+    
+    Task:
+    1. Objectively analyze whether these anomalies are driven by a common theme, a sector-wide catalyst, or macroeconomic events (e.g., earnings reports, clinical trial data, regulatory news, or rotation into specific market caps).
+    2. For each theme identified, cite at least one specific news source or event (Bloomberg, CNBC, Reuters, WSJ) that explains the price action for the affected stocks.
+    3. Determine if the overall market sentiment reflected in these moves suggests an aggressive "Risk-on" environment or isolated occurrences.
+    
+    Respond in ENGLISH in a technical and clear format using Markdown.
+    """
+    
+    try:
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        return f"Erro na análise: {str(e)}"

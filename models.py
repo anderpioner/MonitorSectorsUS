@@ -22,6 +22,9 @@ class PriceData(Base):
     id = Column(Integer, primary_key=True, index=True)
     sector_id = Column(Integer, ForeignKey("sectors.id"), nullable=False)
     date = Column(Date, nullable=False, index=True)
+    open = Column(Float, nullable=True)
+    high = Column(Float, nullable=True)
+    low = Column(Float, nullable=True)
     close = Column(Float, nullable=False)
     momentum_score = Column(Float, nullable=True)
     
@@ -49,6 +52,7 @@ class ConstituentPrice(Base):
     id = Column(Integer, primary_key=True, index=True)
     constituent_id = Column(Integer, ForeignKey("constituents.id"), nullable=False, index=True)
     date = Column(Date, nullable=False, index=True)
+    open = Column(Float, nullable=True)
     close = Column(Float, nullable=False)
     high = Column(Float, nullable=True)
     low = Column(Float, nullable=True)
